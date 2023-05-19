@@ -1,2 +1,2 @@
 # Kafka-Sonar
-One Stop Shop for Managing Kafka Microservices in Docker
+One-stop shop Docker extension for seamless Kafka cluster management on Docker Desktop 🐋 🚀

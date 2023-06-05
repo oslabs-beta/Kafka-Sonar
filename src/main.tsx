@@ -1,10 +1,29 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from 'react-router-dom';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+import Cluster from './pages/Cluster';
+
+const appRouter = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/">
+      <Route index element={<Cluster />} />
+      <Route path="/cluster" element={<Cluster />} />
+      <Route path="/broker" element={<Cluster />} />
+      <Route path="/consumer" element={<Cluster />} />
+    </Route>
+  )
+);
+
+const root = document.getElementById('root');
+
+createRoot(root as HTMLElement).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+    <RouterProvider router={appRouter} />
+  </React.StrictMode>
+);

@@ -9,10 +9,9 @@ import MuiDrawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
-// import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+// import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
@@ -25,7 +24,9 @@ import DeviceHubIcon from '@mui/icons-material/DeviceHub'; // broker
 import PolylineIcon from '@mui/icons-material/Polyline'; // consumer
 
 import SvgIcon from '@mui/material/SvgIcon';
-import { ReactComponent as OrangeLogo } from './../../public/kafka-sonar-orange-logo.svg';
+import { ReactComponent as OrangeLogo } from './../assets/kafka-sonar-orange-logo.svg';
+import BrokerStats from './BrokerStats';
+import PartitionStats from './PartitionStats';
 // import { ReactComponent as WhiteLogo } from './../../public/kafka-sonar-white-logo.svg';
 
 const drawerWidth = 200;
@@ -103,24 +104,34 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer() {
-  const theme = useTheme();
-  // theme.typography.fontFamily = ['Montserrat', 'sans-serif'].join(',');
-  const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate();
+interface Props {
+  brokerStats?: JSX.Element;
+  partitionStats?: JSX.Element;
+}
 
+function NavDrawer(props: Props) {
+  const { brokerStats, partitionStats } = props;
+
+  const theme = useTheme();
+
+  const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
 
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <Drawer variant="permanent" open={open}>
+      <Drawer
+        variant="permanent"
+        open={open}
+        sx={{ backgroundColor: 'transparent' }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -132,7 +143,7 @@ export default function MiniDrawer() {
               ...(open && { display: 'none' }),
             }}
           >
-            <MenuIcon />
+            <ChevronRightIcon />
           </IconButton>
           <SvgIcon fontSize="large">
             <OrangeLogo />
@@ -144,12 +155,15 @@ export default function MiniDrawer() {
             src="./../../public/kafka-sonar-white-logo.svg"
             style={{ margin: 10, width: 75 }}
           />
-          <IconButton backgroundColor="red" onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerClose}
+            sx={{
+              ...(!open && { display: 'none' }),
+            }}
+          >
+            <ChevronLeftIcon />
           </IconButton>
         </Toolbar>
         <Divider color="#f8fbfd" />
@@ -161,7 +175,7 @@ export default function MiniDrawer() {
               onClick={
                 index === 0
                   ? () => {
-                      navigate('/cluster');
+                      navigate('/');
                     }
                   : index === 1
                   ? () => {
@@ -201,8 +215,6 @@ export default function MiniDrawer() {
                 <ListItemText
                   primary={text}
                   sx={{
-                    color: '#f8fbfd',
-                    fontFamily: 'Montserrat, sans-serif',
                     opacity: open ? 1 : 0,
                   }}
                 />
@@ -211,9 +223,12 @@ export default function MiniDrawer() {
           ))}
         </List>
       </Drawer>
-      {/* <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-      </Box> */}
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        {brokerStats}
+        {partitionStats}
+      </Box>
     </Box>
   );
 }
+
+export default NavDrawer;

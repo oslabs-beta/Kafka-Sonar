@@ -12,28 +12,31 @@ import { Typography } from '@mui/material';
 //   color: theme.palette.text.secondary,
 // }));
 
-export default function BrokerStats() {
+export default function PartitionStats() {
   return (
     <>
       <Typography variant="subtitle2" align="center">
-        Broker Statistics
+        Partition Statistics
       </Typography>
       <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
         <Grid container spacing={2}>
-          <Grid item xs={2.4}>
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&from=1686259664226&to=1686263264226&panelId=44"></iframe>
+          <Grid item xs={2}>
+            Total Leaders
           </Grid>
-          <Grid item xs={2.4}>
-            Offline Brokers
+          <Grid item xs={2}>
+            Total Replicas
           </Grid>
-          <Grid item xs={2.4}>
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&from=1686259971413&to=1686263571413&panelId=31"></iframe>
+          <Grid item xs={2}>
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&from=1686261011028&to=1686264611028&panelId=32"></iframe>
           </Grid>
-          <Grid item xs={2.4}>
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&from=1686260676891&to=1686264276891&panelId=9"></iframe>
+          <Grid item xs={2}>
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&from=1686261492778&to=1686265092778&panelId=33"></iframe>
           </Grid>
-          <Grid item xs={2.4}>
-            Avg RF
+          <Grid item xs={2}>
+            In-sync Replicas
+          </Grid>
+          <Grid item xs={2}>
+            Out-of-sync Replicas
           </Grid>
         </Grid>
       </Box>

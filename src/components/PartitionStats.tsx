@@ -21,16 +21,16 @@ export default function PartitionStats() {
       <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
         <Grid container spacing={2}>
           <Grid item xs={2}>
-            Total Leaders
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=14"></iframe>
           </Grid>
           <Grid item xs={2}>
-            Total Replicas
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=15"></iframe>
           </Grid>
           <Grid item xs={2}>
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&from=1686261011028&to=1686264611028&panelId=32"></iframe>
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=32"></iframe>
           </Grid>
           <Grid item xs={2}>
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&from=1686261492778&to=1686265092778&panelId=33"></iframe>
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=33"></iframe>
           </Grid>
           <Grid item xs={2}>
             In-sync Replicas

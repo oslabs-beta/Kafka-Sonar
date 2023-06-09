@@ -13,11 +13,24 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Dashboard from './pages/Dashboard';
 import BrokerStats from './components/BrokerStats';
 import PartitionStats from './components/PartitionStats';
+import BrokerUtilization from './components/BrokerUtil';
+import BrokerIO from './components/BrokerIO';
+import TopicIO from './components/TopicIO';
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
-      <Route index element={<Dashboard brokerStats={<BrokerStats />} />} />
+      <Route
+        index
+        element={
+          <Dashboard
+            brokerStats={<BrokerStats />}
+            brokerUtil={<BrokerUtilization />}
+            brokerIO={<BrokerIO />}
+            topicIO={<TopicIO />}
+          />
+        }
+      />
       <Route
         path="/broker"
         element={

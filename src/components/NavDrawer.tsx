@@ -107,10 +107,13 @@ const Drawer = styled(MuiDrawer, {
 interface Props {
   brokerStats?: JSX.Element;
   partitionStats?: JSX.Element;
+  brokerUtil?: JSX.Element;
+  brokerIO?: JSX.Element;
+  topicIO?: JSX.Element;
 }
 
 function NavDrawer(props: Props) {
-  const { brokerStats, partitionStats } = props;
+  const { brokerStats, partitionStats, brokerUtil, brokerIO, topicIO } = props;
 
   const theme = useTheme();
 
@@ -225,7 +228,10 @@ function NavDrawer(props: Props) {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {brokerStats}
+        {brokerUtil}
         {partitionStats}
+        {brokerIO}
+        {topicIO}
       </Box>
     </Box>
   );

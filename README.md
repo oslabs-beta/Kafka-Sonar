@@ -1,2 +1,3 @@
 # Kafka-Sonar
-One-stop shop Docker extension for seamless Kafka cluster management on Docker Desktop 🐋 🚀
+
+One-stop shop Docker Desktop extension for Kafka cluster partition troubleshooting 🐋 🚀

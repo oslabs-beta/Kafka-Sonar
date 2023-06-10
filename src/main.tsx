@@ -10,12 +10,13 @@ import {
 import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import Dashboard from './pages/Dashboard';
-import BrokerStats from './components/BrokerStats';
-import PartitionStats from './components/PartitionStats';
-import BrokerUtilization from './components/BrokerUtil';
+import App from './App';
 import BrokerIO from './components/BrokerIO';
+import BrokerStats from './components/BrokerStats';
+import BrokerUtilization from './components/BrokerUtil';
+import PartitionStats from './components/PartitionStats';
 import TopicIO from './components/TopicIO';
+import NetworkEfficiency from './components/NetworkEfficiency';
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -23,18 +24,20 @@ const appRouter = createBrowserRouter(
       <Route
         index
         element={
-          <Dashboard
+          <App
+            partitionStats={<PartitionStats />}
             brokerStats={<BrokerStats />}
             brokerUtil={<BrokerUtilization />}
             brokerIO={<BrokerIO />}
             topicIO={<TopicIO />}
+            networkEff={<NetworkEfficiency />}
           />
         }
       />
       <Route
         path="/broker"
         element={
-          <Dashboard
+          <App
             brokerStats={<BrokerStats />}
             partitionStats={<PartitionStats />}
           />
@@ -42,7 +45,7 @@ const appRouter = createBrowserRouter(
       />
       <Route
         path="/consumer"
-        element={<Dashboard partitionStats={<PartitionStats />} />}
+        element={<App partitionStats={<PartitionStats />} />}
       />
     </Route>
   )

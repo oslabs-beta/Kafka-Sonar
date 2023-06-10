@@ -15,6 +15,7 @@
     "@docker/docker-mui-theme": "^0.0.11",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@fontsource-variable/montserrat": "^5.0.3",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.4",
     "dotenv": "^16.1.3",

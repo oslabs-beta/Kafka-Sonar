@@ -6,6 +6,6 @@ app.get('/test', (req: Request, res: Response) => {
   res.send('hello');
 })
 
-app.listen(3000, () => {
-  console.log('listening on Port 3000...')
+app.listen(3333, () => {
+  console.log('listening on Port 3333...')
 })

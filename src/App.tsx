@@ -1,12 +1,13 @@
-// Baseline code reference: https://mui.com/material-ui/react-drawer/#mini-variant-drawer
 import * as React from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+
+// MUI component reference: https://mui.com/material-ui/react-drawer/#mini-variant-drawer
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
+// import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -16,6 +17,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
+
 // custom selected or created icons
 import HubIcon from '@mui/icons-material/Hub'; // cluster
 import DeviceHubIcon from '@mui/icons-material/DeviceHub'; // broker
@@ -23,9 +25,11 @@ import PolylineIcon from '@mui/icons-material/Polyline'; // consumer
 import SvgIcon from '@mui/material/SvgIcon';
 import { ReactComponent as OrangeLogo } from './../src/assets/kafka-sonar-orange-logo.svg';
 // import { ReactComponent as WhiteLogo } from './../../public/kafka-sonar-white-logo.svg';
+
 // TS types
 import Props from './types/types';
-// Font supports weights 100-900
+
+// Variable Fontsource font supports weights 100-900
 import '@fontsource-variable/montserrat';
 
 export default function App(props: Props) {
@@ -74,6 +78,9 @@ export default function App(props: Props) {
   }));
 
   const {
+    // login,
+    // signup,
+    // connect,
     brokerStats,
     partitionStats,
     brokerUtil,
@@ -82,7 +89,7 @@ export default function App(props: Props) {
     networkEff,
   } = props;
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true); // switch to false to change drawer to be closed on App load
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -143,7 +150,7 @@ export default function App(props: Props) {
               onClick={
                 index === 0
                   ? () => {
-                      navigate('/');
+                      navigate('/cluster');
                     }
                   : index === 1
                   ? () => {
@@ -196,6 +203,9 @@ export default function App(props: Props) {
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        {/* {login}
+        {signup}
+        {connect} */}
         {partitionStats}
         {brokerStats}
         {networkEff}

@@ -10,6 +10,9 @@ import {
 import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
 import CssBaseline from '@mui/material/CssBaseline';
 
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Connect from './pages/Connect';
 import App from './App';
 import BrokerIO from './components/BrokerIO';
 import BrokerStats from './components/BrokerStats';
@@ -21,8 +24,14 @@ import NetworkEfficiency from './components/NetworkEfficiency';
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
+      <Route index element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/connect" element={<Connect />} />
+      {/* <Route index element={<App login={<Login />} />} />
+      <Route path="/signup" element={<App signup={<Signup />} />} />
+      <Route path="/connect" element={<App connect={<Connect />} />} /> */}
       <Route
-        index
+        path="/cluster"
         element={
           <App
             partitionStats={<PartitionStats />}

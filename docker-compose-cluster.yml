@@ -103,6 +103,9 @@ services:
     volumes:
       - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
 
+  # Use kafkasonar-dev to run FE only
+  # Use kafkasonar-dev-server to run FE and BE
+
   kafkasonar-dev:
     image: upasana90daniel98/kafkasonar-dev
     container_name: kafkasonar-dev
@@ -113,6 +116,17 @@ services:
       - ./:/usr/src/app
       - node_modules:/usr/src/app/node_modules
     command: npm run frontend
+
+  # kafkasonar-dev-server:
+  #   image: upasana90daniel98/kafkasonar-dev-server
+  #   container_name: kafkasonar-dev-server
+  #   ports:
+  #     - '5175:5175'
+  #   working_dir: /usr/src/app
+  #   volumes:
+  #     - ./:/usr/src/app
+  #     - node_modules:/usr/src/app/node_modules
+  #   command: npm run dev
 
 volumes:
   node_modules:

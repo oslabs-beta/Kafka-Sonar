@@ -14,7 +14,7 @@ export default defineConfig({
     //   usePolling: true,
     // },
     proxy: {
-      '/test': 'http://localhost:3000',
+      '/test': 'http://localhost:3333',
     },
   },
 });

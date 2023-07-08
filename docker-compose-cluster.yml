@@ -1,6 +1,6 @@
 version: '3'
-services:
 
+services:
   grafana:
     image: 'grafana/grafana:latest'
     container_name: grafana
@@ -33,15 +33,15 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     ports:
-    - "2181:2181"
+      - '2181:2181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_SERVERS: zoo1:2888:3888
       EXTRA_ARGS: -javaagent:/demo-cluster/configs/jmx-exporter/jmx_prometheus_javaagent-0.18.0.jar=8081:/demo-cluster/configs/jmx-exporter/zookeeper.yml
-      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
+      KAFKA_HEAP_OPTS: '-Xmx512M -Xms512M'
     volumes:
-    - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
+      - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
 
   kafka1:
     image: confluentinc/cp-kafka:latest
@@ -57,11 +57,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:29092,PLAINTEXT_HOST://localhost:9091
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'true'
       KAFKA_OPTS: -javaagent:/demo-cluster/configs/jmx-exporter/jmx_prometheus_javaagent-0.18.0.jar=8081:/demo-cluster/configs/jmx-exporter/kafka.yml
-      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
+      KAFKA_HEAP_OPTS: '-Xmx512M -Xms512M'
     volumes:
-     - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
+      - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
 
   kafka2:
     image: confluentinc/cp-kafka:latest
@@ -77,11 +77,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'true'
       KAFKA_OPTS: -javaagent:/demo-cluster/configs/jmx-exporter/jmx_prometheus_javaagent-0.18.0.jar=8081:/demo-cluster/configs/jmx-exporter/kafka.yml
-      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
+      KAFKA_HEAP_OPTS: '-Xmx512M -Xms512M'
     volumes:
-     - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
+      - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
 
   kafka3:
     image: confluentinc/cp-kafka:latest
@@ -97,8 +97,22 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:29092,PLAINTEXT_HOST://localhost:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'true'
       KAFKA_OPTS: -javaagent:/demo-cluster/configs/jmx-exporter/jmx_prometheus_javaagent-0.18.0.jar=8081:/demo-cluster/configs/jmx-exporter/kafka.yml
-      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
+      KAFKA_HEAP_OPTS: '-Xmx512M -Xms512M'
     volumes:
-     - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
+      - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
+
+  kafkasonar-dev:
+    image: upasana90daniel98/kafkasonar-dev
+    container_name: kafkasonar-dev
+    ports:
+      - '5175:5175'
+    working_dir: /usr/src/app
+    volumes:
+      - ./:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+    command: npm run frontend
+
+volumes:
+  node_modules:

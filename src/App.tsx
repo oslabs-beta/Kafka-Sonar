@@ -82,11 +82,11 @@ export default function App(props: Props) {
     // signup,
     // connect,
     brokerStats,
-    partitionStats,
     brokerUtil,
     brokerIO,
     topicIO,
     networkEff,
+    partitionStats,
   } = props;
 
   const [open, setOpen] = React.useState(true); // switch to false to change drawer to be closed on App load
@@ -206,12 +206,12 @@ export default function App(props: Props) {
         {/* {login}
         {signup}
         {connect} */}
-        {partitionStats}
         {brokerStats}
-        {networkEff}
+        {brokerUtil}
         {brokerIO}
         {topicIO}
-        {brokerUtil}
+        {networkEff}
+        {partitionStats}
       </Box>
     </Box>
   );

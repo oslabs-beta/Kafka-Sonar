@@ -34,7 +34,6 @@ const appRouter = createBrowserRouter(
         path="/cluster"
         element={
           <App
-            partitionStats={<PartitionStats />}
             brokerStats={<BrokerStats />}
             brokerUtil={<BrokerUtilization />}
             brokerIO={<BrokerIO />}
@@ -45,12 +44,7 @@ const appRouter = createBrowserRouter(
       />
       <Route
         path="/broker"
-        element={
-          <App
-            brokerStats={<BrokerStats />}
-            partitionStats={<PartitionStats />}
-          />
-        }
+        element={<App partitionStats={<PartitionStats />} />}
       />
       <Route
         path="/consumer"

@@ -1,0 +1,23 @@
+# The following is a separate YAML that extends docker-compose-cluster.yml. It's an X11 configuration that enables 'cypress open' Test Runner (i.e. headed mode) to show on the host machine.
+# Reference: https://github.com/bahmutov/cypress-open-from-docker-compose/blob/master/e2e/cy-open.yml
+
+# Use below to run Cypress in headed mode.
+# Can use command "docker compose -f docker-compose-cluster.yml -f cy-open.yml up --exit-code-from cypress" so the exit code tells you if the tests passed (0) or failed (1 or other non-0 number).
+
+version: '3'
+
+services:
+  cypress:
+    entrypoint: cypress open --project ./
+    environment:
+      # get the IP address of the host machine and allow X11 to accept
+      # incoming connections from that IP address
+      #   IP=$(ipconfig getifaddr en0)
+      #   /usr/X11/bin/xhost + $IP
+      # then pass the environment variable DISPLAY to show Cypress GUI on the host system
+      #   DISPLAY=$IP:0
+      - DISPLAY
+    volumes:
+      # for Cypress to communicate with the X11 server pass this socket file
+      # in addition to any other mapped volumes
+      - /tmp/.X11-unix:/tmp/.X11-unix

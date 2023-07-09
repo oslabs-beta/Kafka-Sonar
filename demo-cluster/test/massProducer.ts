@@ -1,4 +1,4 @@
-import { Kafka, logLevel, Producer, Admin } from 'kafkajs';
+import { Kafka, logLevel, Producer, Admin, CompressionTypes } from 'kafkajs';
 
 const kafka = new Kafka({
   clientId: 'test-producer',
@@ -13,15 +13,13 @@ const topic = 'test-topic';
 const run = async (): Promise<void> => {
   // connect the admin and create a topic if it hasn't already been created
   await admin.connect();
-  const clusterInfo = await admin.describeCluster();
-  console.log('CLUSTER INFO ->', clusterInfo);
   const topicsList = await admin.listTopics();
-  console.log('TOPICS ->', topicsList);
   if (!topicsList.length) {
     await admin.createTopics({
       topics: [{ 
         topic,
-        replicationFactor: 3
+        replicationFactor: 3,
+        numPartitions: 3
       }],
     });
   }
@@ -34,12 +32,12 @@ const run = async (): Promise<void> => {
   await producer.connect();
   while (number > 0) {
     await producer.send({
-      topic: 'test-topic',
-      messages: [
-        {
-          key: `${number}`,
-          value: `Message #${number}`,
-        }
+      topic,
+      compression: CompressionTypes.GZIP,
+      messages: [{
+        key: `key-${number}`,
+        value: `value-${number}-${new Date().toISOString()}`,
+      }
       ]
     })
     number -= 1;
@@ -47,4 +45,29 @@ const run = async (): Promise<void> => {
   await producer.disconnect();
 };
 
-run();
+run().catch(e => console.error(`[test/mass-producer] ${e.message}, e`));
+
+const errorTypes = ['unhandledRejection', 'uncaughtException']
+const signalTraps = ['SIGTERM', 'SIGINT', 'SIGUSR2']
+
+errorTypes.forEach(type => {
+  process.on(type, async () => {
+    try {
+      console.log(`process.on ${type}`)
+      await producer.disconnect()
+      process.exit(0)
+    } catch (_) {
+      process.exit(1)
+    }
+  })
+});
+
+signalTraps.forEach(type => {
+  process.once(type, async () => {
+    try {
+      await producer.disconnect()
+    } finally {
+      process.kill(process.pid, type)
+    }
+  });
+});

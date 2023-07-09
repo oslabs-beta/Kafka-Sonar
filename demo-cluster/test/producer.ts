@@ -16,7 +16,7 @@ const producer: Producer = kafka.producer();
 const topic = 'test-topic';
 
 const getRandomNumber = (): number => Math.round(Math.random() * 1000)
-const createMessage = (num: number): TestMessage => ({
+export const createMessage = (num: number): TestMessage => ({
   key: `key-${num}`,
   value: `value-${num}-${new Date().toISOString()}`,
 })
@@ -46,7 +46,8 @@ const run = async (): Promise<void> => {
     await admin.createTopics({
       topics: [{ 
         topic,
-        replicationFactor: 3
+        replicationFactor: 3,
+        numPartitions: 3
       }],
     });
   }
@@ -73,7 +74,7 @@ errorTypes.forEach(type => {
       process.exit(1)
     }
   })
-})
+});
 
 signalTraps.forEach(type => {
   process.once(type, async () => {
@@ -82,5 +83,5 @@ signalTraps.forEach(type => {
     } finally {
       process.kill(process.pid, type)
     }
-  })
-})
+  });
+});

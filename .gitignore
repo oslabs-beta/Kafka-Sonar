@@ -26,3 +26,4 @@ dist-ssr
 # Environment
 .env
 demo-cluster/configs/grafana
+cypress/videos

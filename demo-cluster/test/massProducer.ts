@@ -1,7 +1,7 @@
 import { Kafka, logLevel, Producer, Admin, CompressionTypes } from 'kafkajs';
 
 const kafka = new Kafka({
-  clientId: 'test-producer',
+  clientId: 'test-producer-mass',
   brokers: ['localhost:9091', 'localhost:8098', 'localhost:8099'],
   logLevel: logLevel.WARN,
 });

@@ -12,6 +12,7 @@
     "backend": "nodemon server/server.ts",
     "demo-cluster": "docker compose -f docker-compose-cluster.yml up",
     "demo-cluster-produce": "ts-node-esm demo-cluster/test/producer.ts",
+    "demo-cluster-produce-mass": "ts-node-esm demo-cluster/test/massProducer.ts",
     "demo-cluster-consume": "ts-node-esm demo-cluster/test/consumer.ts",
     "cy:open": "cypress open",
     "cy:run": "cypress run"

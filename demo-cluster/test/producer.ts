@@ -1,4 +1,4 @@
-import { Kafka, logLevel, Producer, Admin } from 'kafkajs';
+import { Kafka, logLevel, Producer, Admin, CompressionTypes } from 'kafkajs';
 
 const kafka = new Kafka({
   clientId: 'test-producer',
@@ -6,8 +6,34 @@ const kafka = new Kafka({
   logLevel: logLevel.WARN,
 });
 
+interface TestMessage {
+  key: string,
+  value: string,
+}
+
 const admin: Admin = kafka.admin();
 const producer: Producer = kafka.producer();
+const topic = 'test-topic';
+
+const getRandomNumber = (): number => Math.round(Math.random() * 1000)
+const createMessage = (num: number): TestMessage => ({
+  key: `key-${num}`,
+  value: `value-${num}-${new Date().toISOString()}`,
+})
+
+const sendMessage = (): Promise<void> => {
+  return producer
+    .send({
+      topic,
+      compression: CompressionTypes.GZIP,
+      messages: Array(getRandomNumber())
+        .fill(null)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .map(_ => createMessage(getRandomNumber())),
+    })
+    .then(console.log)
+    .catch(e => console.error(`[example/producer] ${e.message}`, e))
+}
 
 const run = async (): Promise<void> => {
   // connect the admin and create a topic if it hasn't already been created
@@ -19,32 +45,42 @@ const run = async (): Promise<void> => {
   if (!topicsList.length) {
     await admin.createTopics({
       topics: [{ 
-        topic: 'test-topic',
+        topic,
         replicationFactor: 3
       }],
     });
   }
   await admin.disconnect();
 
-  // Produce an arbitrary but large number of messages to the topic 'test-topic'
-  const randomNumber = (min: number, max: number): number => Math.floor(Math.random() * (max - min) + min);
-  let number: number = randomNumber(1000, 5000);
+
 
   await producer.connect();
-  while (number > 0) {
-    console.log('NUMBER -> ', number);
-    await producer.send({
-      topic: 'test-topic',
-      messages: [
-        {
-          key: `${number}`,
-          value: `Message #${number}`,
-        }
-      ]
-    })
-    number -= 1;
-  }
-  await producer.disconnect();
+  setInterval(sendMessage, 3000);
 };
 
-run();
+run().catch(e => console.error(`[test/producer] ${e.message}, e`));
+
+const errorTypes = ['unhandledRejection', 'uncaughtException']
+const signalTraps = ['SIGTERM', 'SIGINT', 'SIGUSR2']
+
+errorTypes.forEach(type => {
+  process.on(type, async () => {
+    try {
+      console.log(`process.on ${type}`)
+      await producer.disconnect()
+      process.exit(0)
+    } catch (_) {
+      process.exit(1)
+    }
+  })
+})
+
+signalTraps.forEach(type => {
+  process.once(type, async () => {
+    try {
+      await producer.disconnect()
+    } finally {
+      process.kill(process.pid, type)
+    }
+  })
+})

@@ -21,7 +21,7 @@ export default function BrokerStats() {
           </Grid>
           <Grid item xs sm md>
             {/* Offline brokers (stat) - cannot find on Grafana Dashboards, will need to custom query */}
-            <Skeleton animation={false} variant="rectangular" height={160} />
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=47"></iframe>
           </Grid>
           <Grid item xs={2.4} sm={2.4} md={2.4}>
             {/* Active controllers (stat) (EITHER count OR count and broker ID?) */}

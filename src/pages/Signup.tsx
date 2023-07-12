@@ -22,9 +22,11 @@ const useInput = (initValue: string) => {
 };
 
 export default function Signup(): JSX.Element {
+  // custom hook
   const [email, emailOnChange] = useInput('');
   const [password, passwordOnChange] = useInput('');
-  const [role, setRole] = useState('User');
+  // useState
+  const [role, setRole] = useState<string>('User');
 
   // role select handler to update state
   const roleOnChange = (e: MouseEvent) => {
@@ -37,9 +39,8 @@ export default function Signup(): JSX.Element {
       elevation={2}
       style={{
         width: '60vh',
-        height: '80vh',
-        padding: 30,
-        margin: '80px auto',
+        padding: 20,
+        margin: '40px auto',
       }}
     >
       <img

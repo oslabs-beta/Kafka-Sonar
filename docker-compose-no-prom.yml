@@ -21,7 +21,6 @@ services:
     container_name: kafka1
     ports:
       - '9091:9091'
-      - '9991:8081'
     depends_on:
       - zookeeper
     environment:
@@ -41,7 +40,6 @@ services:
     container_name: kafka2
     ports:
       - '8098:8098'
-      - '9992:8081'
     depends_on:
       - zookeeper
     environment:
@@ -61,7 +59,6 @@ services:
     container_name: kafka3
     ports:
       - '8099:8099'
-      - '9993:8081'
     depends_on:
       - zookeeper
     environment:
@@ -76,32 +73,6 @@ services:
     volumes:
       - ./demo-cluster/configs/jmx-exporter:/demo-cluster/configs/jmx-exporter
 
-  grafana:
-    image: 'grafana/grafana:latest'
-    container_name: grafana
-    ports:
-      - '3000:3000'
-    environment:
-      GF_PATHS_DATA: /var/lib/grafana
-      GF_SECURITY_ADMIN_PASSWORD: kafka
-      GF_SECURITY_ALLOW_EMBEDDING: true
-      CORS_ALLOW_ORIGIN: '*'
-      GF_AUTH_ANONYMOUS_ENABLED: true
-      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
-    volumes:
-      - ./demo-cluster/configs/grafana/provisioning:/etc/grafana/provisioning
-      - ./demo-cluster/configs/grafana/dashboards:/var/lib/grafana/dashboards
-    depends_on:
-      - prometheus
-
-  prometheus:
-    image: 'prom/prometheus:latest'
-    container_name: prometheus
-    ports:
-      - '9090:9090'
-    volumes:
-      - ./demo-cluster/configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    command: '--config.file=/etc/prometheus/prometheus.yml'
 
   # Use kafkasonar-dev to run FE only
   # Use kafkasonar-dev-server to run FE and BE
@@ -127,23 +98,6 @@ services:
       - ./:/usr/src/app
       - node_modules:/usr/src/app/node_modules
     command: npm run dev
-
-  # References: https://mtlynch.io/painless-web-app-testing/#creating-an-end-to-end-test, https://www.cypress.io/blog/2019/05/02/run-cypress-with-a-single-docker-command/
-  # cypress:
-  #   image: cypress/included:latest
-  #   container_name: cypress
-  #   depends_on:
-  #     # - kafkasonar-dev
-  #     - kafkasonar-dev-server
-  #   environment:
-  #     # - CYPRESS_baseUrl=http://localhost:5175/ # Cypress cannot find / work with this URL.
-  #     # - CYPRESS_baseUrl=http://kafkasonar-dev:5175/
-  #     - CYPRESS_baseUrl=http://kafkasonar-dev-server:5175/
-  #   working_dir: /usr/src/app/cypress
-  #   volumes:
-  #     - ./:/usr/src/app/cypress
-  # Above is enough to run Cypress in headless mode.
-  # Can use command "docker compose -f docker-compose-cluster.yml up --exit-code-from cypress" so the exit code tells you if the tests passed (0) or failed (1 or other non-0 number).
 
 volumes:
   node_modules:

@@ -2,32 +2,18 @@ import axios from 'axios';
 import { Buffer } from 'buffer';
 import fs from 'fs';
 
-// the below function successfully write a dynamic .yml file
-const write = (host, port) => {
-  
-  const ymlString = `
-  global:
-    scrape_interval: 15s
-  
-  rule_files:
-  
-  scrape_configs:
-    - job_name: "kafka"
-  
-      static_configs:
-        - targets: ["${host}:${port}"]`
-  const data = new Uint8Array(Buffer.from(ymlString));
-  // @ts-ignore
-  fs.writeFileSync('./demo-cluster/configs/prometheus/test.yml', data, (err: undefined) => {
-    if (err) console.log('ERROR', err);
-    console.log('the file has been saved!');
-  });
-}
+// PROMETHEUS CONTROLLER METHODS:
+  // promController.initConfig - initializes the prometheus config (next middleware spins up Prometheus based on that config, next middleware spins up Grafana)
+  // promController.query - queries Prometheus instance each minute, next middleware modifies data if needed, next middleware saves to DB, nextmiddleware sends to FE if needed
 
-// write('kafka99', '9999');
+// START UP PROMETHEUS IN A MIDDLEWARE AND THEN GRAFANA AFTER THAT:
+// https://www.reddit.com/r/docker/comments/mwtl92/automatically_spinning_up_containers_on_post/
+// https://www.howtogeek.com/devops/how-to-get-started-using-the-docker-engine-api/
+// ***** CAN invoke Docker commands from the backend: https://docs.docker.com/desktop/extensions-sdk/guides/use-docker-socket-from-backend/
 
 const writeMany = (jmxArr) => {
   // shape of user input
+  // recall that the final implementation of this will use sockets, not HTTP (ask Upasana about that)
   // req.body.jmx = [{port, host}, {port, host}, ...]
 
   // create targets array based on user input
@@ -56,9 +42,9 @@ const writeMany = (jmxArr) => {
 }
 
 const test = [
-  { host: 'kafka1', port: '9999' },
-  { host: 'kafka2', port: '9999' },
-  { host: 'kafka3', port: '9999' },
+  { host: 'kafka1', port: '8081' },
+  { host: 'kafka2', port: '8081' },
+  { host: 'kafka3', port: '8081' },
 ]
 writeMany(test);
 

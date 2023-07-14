@@ -66,7 +66,6 @@ export default function Login(): JSX.Element {
       elevation={2}
       style={{
         width: '60vh',
-        height: '70vh',
         padding: 20,
         margin: '80px auto',
       }}
@@ -128,8 +127,8 @@ export default function Login(): JSX.Element {
         style={{ margin: '15px auto' }}
       >
         <Link to="/signup">
-          For the option to save your cluster connection info, please sign up
-          for an account
+          For the option to save your cluster connection info and cluster run
+          logs, please sign up for an account
         </Link>
       </Typography>
       <Typography

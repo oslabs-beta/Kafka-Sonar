@@ -8,6 +8,8 @@ export default function TopicIO() {
       <Typography variant="subtitle2" fontFamily="inherit" align="center">
         Topics I/O
       </Typography>
+
+      {/* Following were metrics that didn't work while running demo cluster */}
       <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
         <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
           <Grid item xs sm md>

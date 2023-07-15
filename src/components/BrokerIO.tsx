@@ -8,6 +8,8 @@ export default function BrokerIO() {
       <Typography variant="subtitle2" fontFamily="inherit" align="center">
         Broker I/O
       </Typography>
+
+      {/* Following were metrics that were used in BrokerStats directly */}
       <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
         <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
           <Grid item xs sm md>

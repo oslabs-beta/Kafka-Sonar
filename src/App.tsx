@@ -33,7 +33,7 @@ import Props from './types/types';
 import '@fontsource-variable/montserrat';
 
 export default function App(props: Props) {
-  const drawerWidth = 200;
+  const drawerWidth = 220;
 
   const openedMixin = (theme: Theme): CSSObject => ({
     backgroundColor: '#0d090a',
@@ -78,15 +78,12 @@ export default function App(props: Props) {
   }));
 
   const {
-    // login,
-    // signup,
-    // connect,
+    connect,
     brokerStats,
-    brokerUtil,
-    brokerIO,
-    topicIO,
-    networkEff,
+    // brokerIO,
     partitionStats,
+    networkEff,
+    resourceUtil,
   } = props;
 
   const [open, setOpen] = React.useState(true); // switch to false to change drawer to be closed on App load
@@ -143,75 +140,74 @@ export default function App(props: Props) {
         </Toolbar>
         <Divider color="#f8fbfd" />
         <List>
-          {['Cluster', 'Broker', 'Consumer'].map((text, index) => (
-            <ListItem
-              key={text}
-              disablePadding
-              onClick={
-                index === 0
-                  ? () => {
-                      navigate('/cluster');
-                    }
-                  : index === 1
-                  ? () => {
-                      navigate('/broker');
-                    }
-                  : () => {
-                      navigate('/consumer');
-                    }
-              }
-              sx={{
-                display: 'block',
-              }}
-            >
-              <ListItemButton
+          {['Saved Connections', 'New Connection', 'Cluster Metrics'].map(
+            (text, index) => (
+              <ListItem
+                key={text}
+                disablePadding
+                onClick={
+                  index === 0
+                    ? () => {
+                        navigate('/saved');
+                      }
+                    : index === 1
+                    ? () => {
+                        navigate('/connect');
+                      }
+                    : () => {
+                        navigate('/cluster');
+                      }
+                }
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  display: 'block',
                 }}
               >
-                <ListItemIcon
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                    color: '#f8fbfd',
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
                   }}
                 >
-                  {index === 0 ? (
-                    <HubIcon />
-                  ) : index === 1 ? (
-                    <DeviceHubIcon />
-                  ) : (
-                    <PolylineIcon />
-                  )}
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography variant="inherit" fontFamily="inherit">
-                      {text}
-                    </Typography>
-                  }
-                  sx={{
-                    opacity: open ? 1 : 0,
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                      color: '#f8fbfd',
+                    }}
+                  >
+                    {index === 0 ? (
+                      <HubIcon />
+                    ) : index === 1 ? (
+                      <DeviceHubIcon />
+                    ) : (
+                      <PolylineIcon />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography variant="inherit" fontFamily="inherit">
+                        {text}
+                      </Typography>
+                    }
+                    sx={{
+                      opacity: open ? 1 : 0,
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            )
+          )}
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        {/* {login}
-        {signup}
-        {connect} */}
+        {connect}
         {brokerStats}
-        {brokerUtil}
-        {brokerIO}
-        {topicIO}
-        {networkEff}
+        {/* {brokerIO} */}
         {partitionStats}
+        {networkEff}
+        {resourceUtil}
       </Box>
     </Box>
   );

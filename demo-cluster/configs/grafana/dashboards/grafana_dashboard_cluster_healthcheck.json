@@ -185,7 +185,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -269,7 +269,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -353,7 +353,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -437,7 +437,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -637,7 +637,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "none",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -716,7 +716,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "none",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -796,7 +796,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "none",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -874,7 +874,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "none",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -1161,7 +1161,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "none",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -1241,7 +1241,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "none",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -1321,7 +1321,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "none",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {

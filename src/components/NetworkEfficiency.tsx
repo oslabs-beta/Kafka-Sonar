@@ -13,7 +13,7 @@ export default function NetworkEfficiency() {
         <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
           <Grid item xs={8} sm={8} md={8}>
             {/* Avg E2E req handling time (graph) */}
-            <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=1"></iframe>{' '}
+            <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=48"></iframe>{' '}
           </Grid>
           <Grid item xs={2} sm={2} md={2}>
             {/* Producer request rate OR req to server (broker?) / sec (graph) */}

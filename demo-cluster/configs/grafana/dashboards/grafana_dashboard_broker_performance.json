@@ -637,7 +637,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "kafka_network_request_metrics_time_ms{instance=~\"$instance\", request=~\"$request\", aggregate=~\"Mean\", scope=~\"Total\",env=\"$env\"}",
+          "expr": "kafka_network_request_metrics_time_ms{request=~\"$request\", aggregate=~\"Mean\", scope=~\"Total\",env=\"$env\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}} / {{ aggregate}}",

@@ -1,68 +1,48 @@
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-// import Skeleton from '@mui/material/Skeleton';
+
+// NOTE: breakpoint props (xs, sm, md, etc.) do NOT work when flex-direction is column or reverse-column!
 
 export default function PartitionView() {
   return (
     <>
-      <Typography variant="subtitle2" fontFamily="inherit" align="center">
+      <Typography
+        variant="subtitle2"
+        fontFamily="inherit"
+        align="center"
+        margin="-20px auto 20px"
+      >
         Partition Statistics
       </Typography>
-      <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
-        <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
+
+      {/* Direct child-items of this grid flex column-wise, enabling flex-basis to increase height of those rows */}
+      <Grid container gap={1} direction={'column'}>
+        {/* Direct child-items of this grid flex row-wise, enabling use of breakpoint props */}
+        <Grid container item gap={1} flexBasis={'21vh'}>
           <Grid item xs sm md>
-            {/* Offline replicas (stat) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=32"></iframe>
           </Grid>
           <Grid item xs sm md>
-            {/* URPs (stat) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=33"></iframe>
           </Grid>
           <Grid item xs sm md>
-            {/* Partitions under Min ISR (stat) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=36"></iframe>
           </Grid>
         </Grid>
-      </Box>
-      <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
-        <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
-          <Grid item xs sm md>
-            {/* Total partitions (stat) */}
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=15"></iframe>
-          </Grid>
+        <Grid item flexBasis={'32vh'}>
+          <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=15"></iframe>
         </Grid>
-      </Box>
-      <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
-        <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
-          <Grid item xs sm md>
-            {/* Total leaders (stat) */}
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=14"></iframe>
-          </Grid>
+        <Grid item flexBasis={'32vh'}>
+          <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=14"></iframe>
         </Grid>
-      </Box>
-      <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
-        <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
-          <Grid item xs sm md>
-            {/* Unclean Leader Election Rate */}
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=9"></iframe>
-          </Grid>
+        <Grid item flexBasis={'32vh'}>
+          <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=9"></iframe>
         </Grid>
-      </Box>
-
-      {/* Following were metrics we were unable to query using PromQL due to lack of documentation / bandwidth to research: */}
-      {/* <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
-        <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
-          <Grid item xs sm md>
-            // In-sync Replicas (stat)
-            <Skeleton animation={false} variant="rectangular" height={160} />
-          </Grid>
-          <Grid item xs sm md>
-            // Out-of-sync Replicas (stat)
-            <Skeleton animation={false} variant="rectangular" height={160} />
-          </Grid>
-        </Grid>
-      </Box> */}
+      </Grid>
     </>
   );
 }
+
+// Following metrics we were unable to query using PromQL due to lack of documentation / bandwidth to research:
+// In-sync Replicas (stat)
+// Out-of-sync Replicas (stat)

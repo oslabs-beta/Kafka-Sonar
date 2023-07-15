@@ -23,9 +23,9 @@ import ResourceUsage from './components/ResourceUsage';
 import ClusterView from './components/ClusterView';
 import PartitionView from './components/PartitionView';
 // unused components
-// import BrokerIO from './components/BrokerIO'; // moved iframes from this component into ClusterStats directly
-// import TopicIO from './components/TopicIO'; // unused b/c Grafana graphs don't render topic i/o during demo cluster runs
-// import NetworkEfficiency from './components/NetworkEfficiency'; // moved iframes from this component into ClusterStats directly
+// import BrokerIO from './components/unused/BrokerIO'; // moved iframes from this component into ClusterStats directly
+// import TopicIO from './components/unused/TopicIO'; // unused b/c Grafana graphs don't render topic i/o during demo cluster runs
+// import NetworkEfficiency from './components/unused/NetworkEfficiency'; // moved iframes from this component into ClusterStats directly
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(

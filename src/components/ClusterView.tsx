@@ -1,77 +1,60 @@
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-// import Skeleton from '@mui/material/Skeleton';
 import './../App.css';
 
-// Referenced:
-// https://mui.com/material-ui/react-grid/#auto-layout
-// https://mui.com/material-ui/react-grid/#responsive-values
+// NOTE: breakpoint props (xs, sm, md, etc.) do NOT work when flex-direction is column or reverse-column!
 
 export default function ClusterView() {
   return (
     <>
-      <Typography variant="subtitle2" fontFamily="inherit" align="center">
+      <Typography
+        variant="subtitle2"
+        fontFamily="inherit"
+        align="center"
+        margin="-20px auto 20px"
+      >
         Cluster Activity
       </Typography>
-      <Box component="main" sx={{ display: 'flex', p: 3 }}>
-        <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
+
+      {/* Direct child-items of this grid flex column-wise, enabling flex-basis to increase height of those rows */}
+      <Grid container gap={1} direction={'column'}>
+        {/* Direct child-items of this grid flex row-wise, enabling use of breakpoint props */}
+        <Grid container item gap={1} flexBasis={'21vh'}>
           <Grid item xs sm md>
-            {/* Active controllers (stat) (EITHER count OR count and broker ID?) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=31"></iframe>
           </Grid>
           <Grid item xs sm md>
-            {/* Online brokers (stat) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=44"></iframe>
           </Grid>
           <Grid item xs sm md>
-            {/* Offline brokers (stat) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=47"></iframe>
           </Grid>
         </Grid>
-      </Box>
-      <Box component="main" sx={{ display: 'flex', p: 3 }}>
-        <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
+
+        <Grid container item gap={1} flexBasis={'21vh'}>
           <Grid item xs sm md>
-            {/* Producer request rate OR req to server (broker?) / sec (graph) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=39"></iframe>{' '}
           </Grid>
           <Grid item xs sm md>
-            {/* Bytes in per broker  */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=24"></iframe>
           </Grid>
           <Grid item xs sm md>
-            {/* Consumer fetch rate OR req to server (broker?) / sec (graph) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=40"></iframe>
           </Grid>
           <Grid item xs sm md>
-            {/* Bytes out per broker */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=25"></iframe>
           </Grid>
         </Grid>
-      </Box>
-      <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
-        <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
-          <Grid item xs sm md>
-            {/* Avg E2E req handling time (graph) */}
-            <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=1"></iframe>{' '}
-          </Grid>
-        </Grid>
-      </Box>
 
-      {/* Following were metrics we were unable to query using PromQL due to lack of documentation / bandwidth to research. Messages in / broker was deprioritized. */}
-      {/* <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
-        <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
-          <Grid item xs sm md>
-            // Messages in per broker
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=37"></iframe>
-          </Grid>
-          <Grid item xs sm md>
-            // Avg RF (stat)
-            <Skeleton animation={false} variant="rectangular" height={160} />
-          </Grid>
+        <Grid item flexBasis={'43vh'}>
+          <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=1"></iframe>
         </Grid>
-      </Box> */}
+      </Grid>
     </>
   );
 }
+
+// Following metrics were deprioritized:
+// Messages in per broker: <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=37"></iframe>
+// Following metrics we were unable to query using PromQL due to lack of documentation / bandwidth to research:
+// Avg Replication Factor (stat)

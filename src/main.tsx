@@ -10,45 +10,41 @@ import {
 import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
 import CssBaseline from '@mui/material/CssBaseline';
 
+import App from './App';
+
+// outside app
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+
+// in app
 import Connect from './pages/Connect';
-import App from './App';
-import BrokerIO from './components/BrokerIO';
+
+// cluster page components
 import BrokerStats from './components/BrokerStats';
-import BrokerUtilization from './components/BrokerUtil';
 import PartitionStats from './components/PartitionStats';
-import TopicIO from './components/TopicIO';
+import ResourceUtilization from './components/ResourceUtil';
 import NetworkEfficiency from './components/NetworkEfficiency';
+
+// import BrokerIO from './components/BrokerIO'; // moved iframes from this component into BrokerStats directly
+// import TopicIO from './components/TopicIO'; // unused b/c Grafana graphs don't render topic i/o during demo cluster runs
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
       <Route index element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/connect" element={<Connect />} />
-      {/* <Route index element={<App login={<Login />} />} />
-      <Route path="/signup" element={<App signup={<Signup />} />} />
-      <Route path="/connect" element={<App connect={<Connect />} />} /> */}
+      <Route path="/connect" element={<App connect={<Connect />} />} />
       <Route
         path="/cluster"
         element={
           <App
             brokerStats={<BrokerStats />}
-            brokerUtil={<BrokerUtilization />}
-            brokerIO={<BrokerIO />}
-            topicIO={<TopicIO />}
+            // brokerIO={<BrokerIO />}
+            partitionStats={<PartitionStats />}
+            resourceUtil={<ResourceUtilization />}
             networkEff={<NetworkEfficiency />}
           />
         }
-      />
-      <Route
-        path="/broker"
-        element={<App partitionStats={<PartitionStats />} />}
-      />
-      <Route
-        path="/consumer"
-        element={<App partitionStats={<PartitionStats />} />}
       />
     </Route>
   )

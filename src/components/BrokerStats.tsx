@@ -20,6 +20,10 @@ export default function BrokerStats() {
             {/* Online brokers (stat) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=44"></iframe>
           </Grid>
+          <Grid item xs sm md> 
+            {/* Offline brokers (stat) */}
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=47"></iframe>
+          </Grid>
           <Grid item xs sm md>
             {/* Active controllers (stat) (EITHER count OR count and broker ID?) */}
             <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=31"></iframe>

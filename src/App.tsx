@@ -33,7 +33,7 @@ import Props from './types/types';
 import '@fontsource-variable/montserrat';
 
 export default function App(props: Props) {
-  const drawerWidth = 220;
+  const drawerWidth = 200;
 
   const openedMixin = (theme: Theme): CSSObject => ({
     backgroundColor: '#0d090a',
@@ -77,16 +77,9 @@ export default function App(props: Props) {
     }),
   }));
 
-  const {
-    connect,
-    brokerStats,
-    // brokerIO,
-    partitionStats,
-    networkEff,
-    resourceUtil,
-  } = props;
+  const { connect, resourceUsage, clusterView, partitionView } = props;
 
-  const [open, setOpen] = React.useState(true); // switch to false to change drawer to be closed on App load
+  const [open, setOpen] = React.useState(false); // switch to false to change drawer to be closed on App load
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -125,7 +118,7 @@ export default function App(props: Props) {
           </SvgIcon> */}
           <img
             src="./../../public/kafka-sonar-white-logo.svg"
-            style={{ margin: 10, width: 75 }}
+            style={{ margin: 15, width: 75 }}
           />
           <IconButton
             color="inherit"
@@ -140,7 +133,8 @@ export default function App(props: Props) {
         </Toolbar>
         <Divider color="#f8fbfd" />
         <List>
-          {['Saved Connections', 'New Connection', 'Cluster Metrics'].map(
+          {/* {['Saved Connections', 'New Connection', 'Cluster Metrics'].map( */}
+          {['Resource Usage', 'Cluster View', 'Partition View'].map(
             (text, index) => (
               <ListItem
                 key={text}
@@ -148,14 +142,14 @@ export default function App(props: Props) {
                 onClick={
                   index === 0
                     ? () => {
-                        navigate('/saved');
+                        navigate('/resources');
                       }
                     : index === 1
                     ? () => {
-                        navigate('/connect');
+                        navigate('/cluster');
                       }
                     : () => {
-                        navigate('/cluster');
+                        navigate('/partition');
                       }
                 }
                 sx={{
@@ -203,11 +197,9 @@ export default function App(props: Props) {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {connect}
-        {brokerStats}
-        {/* {brokerIO} */}
-        {partitionStats}
-        {networkEff}
-        {resourceUtil}
+        {resourceUsage}
+        {clusterView}
+        {partitionView}
       </Box>
     </Box>
   );

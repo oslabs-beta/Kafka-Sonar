@@ -17,16 +17,15 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 
 // in app
+// used components
 import Connect from './pages/Connect';
-
-// cluster page components
-import BrokerStats from './components/BrokerStats';
-import PartitionStats from './components/PartitionStats';
-import ResourceUtilization from './components/ResourceUtil';
-import NetworkEfficiency from './components/NetworkEfficiency';
-
-// import BrokerIO from './components/BrokerIO'; // moved iframes from this component into BrokerStats directly
-// import TopicIO from './components/TopicIO'; // unused b/c Grafana graphs don't render topic i/o during demo cluster runs
+import ResourceUsage from './components/ResourceUsage';
+import ClusterView from './components/ClusterView';
+import PartitionView from './components/PartitionView';
+// unused components
+// import BrokerIO from './components/unused/BrokerIO'; // moved iframes from this component into ClusterStats directly
+// import TopicIO from './components/unused/TopicIO'; // unused b/c Grafana graphs don't render topic i/o during demo cluster runs
+// import NetworkEfficiency from './components/unused/NetworkEfficiency'; // moved iframes from this component into ClusterStats directly
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -35,16 +34,13 @@ const appRouter = createBrowserRouter(
       <Route path="/signup" element={<Signup />} />
       <Route path="/connect" element={<App connect={<Connect />} />} />
       <Route
-        path="/cluster"
-        element={
-          <App
-            brokerStats={<BrokerStats />}
-            // brokerIO={<BrokerIO />}
-            partitionStats={<PartitionStats />}
-            resourceUtil={<ResourceUtilization />}
-            networkEff={<NetworkEfficiency />}
-          />
-        }
+        path="/resources"
+        element={<App resourceUsage={<ResourceUsage />} />}
+      />
+      <Route path="/cluster" element={<App clusterView={<ClusterView />} />} />
+      <Route
+        path="/partition"
+        element={<App partitionView={<PartitionView />} />}
       />
     </Route>
   )

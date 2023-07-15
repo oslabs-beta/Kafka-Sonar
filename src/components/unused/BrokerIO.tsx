@@ -9,7 +9,7 @@ export default function BrokerIO() {
         Broker I/O
       </Typography>
 
-      {/* Following were metrics that were used in BrokerStats directly */}
+      {/* Following were metrics that were used in ClusterStats directly */}
       <Box component="main" sx={{ display: 'flex', flexGrow: 1, p: 3 }}>
         <Grid container spacing={{ xs: 1, sm: 1, md: 1 }}>
           <Grid item xs sm md>

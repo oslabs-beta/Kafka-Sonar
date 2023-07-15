@@ -47,7 +47,7 @@ export default function ClusterView() {
         </Grid>
 
         <Grid item flexBasis={'43vh'}>
-          <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=1"></iframe>
+          <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=48"></iframe>
         </Grid>
       </Grid>
     </>

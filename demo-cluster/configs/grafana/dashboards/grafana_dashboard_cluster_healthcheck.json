@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -558,7 +557,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -958,7 +957,7 @@
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -2070,6 +2069,6 @@
   "timezone": "browser",
   "title": "Kafka Cluster / Global HealthCheck",
   "uid": "e-6AJQOik",
-  "version": 2,
+  "version": 4,
   "weekStart": ""
 }

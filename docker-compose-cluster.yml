@@ -21,7 +21,6 @@ services:
     container_name: kafka1
     ports:
       - '9091:9091'
-      - '9991:8081'
     depends_on:
       - zookeeper
     environment:
@@ -41,7 +40,6 @@ services:
     container_name: kafka2
     ports:
       - '8098:8098'
-      - '9992:8081'
     depends_on:
       - zookeeper
     environment:
@@ -61,7 +59,6 @@ services:
     container_name: kafka3
     ports:
       - '8099:8099'
-      - '9993:8081'
     depends_on:
       - zookeeper
     environment:

@@ -34,11 +34,11 @@ const writeMany = (jmxArr) => {
       static_configs:
         - targets: ${targets}`
   const data = new Uint8Array(Buffer.from(ymlString));
-  // @ts-ignore
-  fs.writeFileSync('./demo-cluster/configs/prometheus/test.yml', data, (err: undefined) => {
-    if (err) console.log('ERROR', err);
-    console.log('the file has been saved!');
-  });
+  try  {
+    fs.writeFileSync('./demo-cluster/configs/prometheus/test.yml', data)
+  } catch (error) {
+    console.log('ERROR', error);
+  }
 }
 
 const test = [

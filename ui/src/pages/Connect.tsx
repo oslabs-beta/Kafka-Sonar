@@ -10,7 +10,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import './../../public/kafka-sonar-orange-logo.svg';
+import '../assets/kafka-sonar-orange-logo.svg'
 
 // custom hook to handle state changes to input boxes as a user types
 const useInput = (initValue: string) => {

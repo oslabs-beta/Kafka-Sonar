@@ -1,6 +1,6 @@
 # build backend service first
 FROM --platform=$BUILDPLATFORM node:19.6 AS builder
-WORKDIR /vm
+WORKDIR /backend
 COPY vm/package*.json .
 RUN npm install
 RUN --mount=type=cache,target=/user/src/app/.npm \
@@ -35,7 +35,7 @@ LABEL org.opencontainers.image.title="Kafka Sonar" \
     com.docker.extension.categories="" \
     com.docker.extension.changelog=""
 
-COPY --from=builder /vm vm
+COPY --from=builder /backend backend
 COPY docker-compose.yaml .
 COPY metadata.json .
 COPY docker.svg .

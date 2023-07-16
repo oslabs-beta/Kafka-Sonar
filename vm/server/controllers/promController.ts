@@ -32,10 +32,11 @@ const writeMany = (jmxArr) => {
     - job_name: "kafka"
   
       static_configs:
-        - targets: ${targets}`
+        - targets: ${targets}
+  `
   const data = new Uint8Array(Buffer.from(ymlString));
   try  {
-    fs.writeFileSync('./demo-cluster/configs/prometheus/test.yml', data)
+    fs.writeFileSync('../demo-cluster/configs/prometheus/test.yml', data)
   } catch (error) {
     console.log('ERROR', error);
   }
@@ -51,41 +52,19 @@ writeMany(test);
 // now all we need to do is figure out how to spin up docker containers on an api call
 // middleware flow should be ->
 // write promeheus config.yml
-// spin up prometheus container on localhost:9090
-// spin up Grafana on localhost:3000
+// write docker dashboard based on user-defined input (# of brokers)
+// spin up custom prometheus/grafana docker compose using those files (prom on localhost:9090, grafana on localhost:3000)
 
 
-const getPromMetrics = async () => {
-  const promBaseURL = 'http://localhost:9090/api/v1/query?query='
-  // const data = await axios.get('http://localhost:9090/api/v1/query?query=sum(kafka_controller_activecontrollercount)')
-  const data = await axios.get('http://localhost:9090/api/v1/query?query=kafka_jvm_heap_usage')
-  console.log(data.data.data.result);
-}
+// const getPromMetrics = async (query) => {
+//   const promBaseURL = 'http://localhost:9090/api/v1/query?query='
+//   query = promBaseURL + query;
+//   const data = await axios.get(query)
+//   //const data = await axios.get('http://localhost:9090/api/v1/query?query=kafka_jvm_heap_usage')
+//   console.log(data.data.data.result);
+// }
 
-// getPromMetrics();
-
-/* 
-MOST IMPORTANT
-
-What metrics do we want to alert on? 
-  CLUSTER LEVEL
-  Offline brokers > 0
-
-  BROKER LEVEL
-  Offline replicas > 0
-  URPs > 0
-  Out-of-sync replicas > 0
-
-What do we want to store in the TimescaleDB?
-  CLUSTER LEVEL
-  Messages in per Broker
-  Bytes in per Broker
-  Bytes out per Broker
-  Messages in per Topic
-  Bytes in per Topic
-  Bytes out per Topic
-  BROKER LEVEL
-*/
+// getPromMetrics('sum=(kafka_controller_activecontrollercount');
 
 /* Outstanding questions:
 - How often do we want to fetch this data? Every minute in the background, or what?

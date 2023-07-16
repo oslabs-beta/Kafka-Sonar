@@ -1,17 +1,15 @@
 # build backend service first
 FROM --platform=$BUILDPLATFORM node:19.6 AS builder
-WORKDIR /backend
-COPY backend/package*.json .
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    go mod download
+WORKDIR /vm
+COPY vm/package*.json .
+RUN npm install
+RUN --mount=type=cache,target=/user/src/app/.npm \
+    npm set cache /usr/src/app/.npm && \ 
+    npm ci
 COPY vm/. .
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    go build -trimpath -ldflags="-s -w" -o bin/service
 
 # build frontend service
-FROM --platform=$BUILDPLATFORM node:18.12-alpine3.16 AS client-builder
+FROM --platform=$BUILDPLATFORM node:19.6-alpine3.16 AS client-builder
 WORKDIR /ui
 # cache packages in layer
 COPY ui/package.json /ui/package.json
@@ -24,9 +22,9 @@ COPY ui /ui
 RUN npm run build
 
 # copy from the above what we needed (backend service, frontend assets)
-FROM alpine
+FROM --platform=$BUILDPLATFORM node:19.6-alpine3.16
 LABEL org.opencontainers.image.title="Kafka Sonar" \
-    org.opencontainers.image.description="One stop shop for Kafka Cluster Monitoring, all you need is a Cluster" \
+    org.opencontainers.image.description="One stop shop for Kafka Cluster Monitoring" \
     org.opencontainers.image.vendor="Kafka Sonar" \
     com.docker.desktop.extension.api.version="0.1.0" \
     com.docker.extension.screenshots="" \
@@ -37,7 +35,7 @@ LABEL org.opencontainers.image.title="Kafka Sonar" \
     com.docker.extension.categories="" \
     com.docker.extension.changelog=""
 
-COPY --from=builder /backend/bin/service /
+COPY --from=builder /vm vm
 COPY docker-compose.yaml .
 COPY metadata.json .
 COPY docker.svg .

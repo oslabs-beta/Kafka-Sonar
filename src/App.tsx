@@ -23,7 +23,7 @@ import HubIcon from '@mui/icons-material/Hub'; // cluster
 import DeviceHubIcon from '@mui/icons-material/DeviceHub'; // broker
 import PolylineIcon from '@mui/icons-material/Polyline'; // consumer
 import SvgIcon from '@mui/material/SvgIcon';
-import { ReactComponent as OrangeLogo } from './../src/assets/kafka-sonar-orange-logo.svg';
+import { ReactComponent as OrangeLogo } from './assets/kafka-sonar-orange-logo.svg';
 // import { ReactComponent as WhiteLogo } from './../../public/kafka-sonar-white-logo.svg';
 
 // TS types

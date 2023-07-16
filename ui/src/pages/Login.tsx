@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import '../assets/kafka-sonar-orange-logo.svg';
+import React from 'react';
 
 // custom hook to handle state changes to input boxes as a user types
 const useInput = (initValue: string) => {

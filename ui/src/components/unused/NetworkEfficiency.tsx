@@ -1,6 +1,7 @@
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import React from 'react';
 // import Skeleton from '@mui/material/Skeleton';
 
 export default function NetworkEfficiency() {

@@ -5,10 +5,12 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import FormControl from '@mui/material/FormControl/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+
+// imports for role select / dropdown
+// import FormControl from '@mui/material/FormControl/FormControl';
+// import InputLabel from '@mui/material/InputLabel';
+// import Select from '@mui/material/Select';
+// import MenuItem from '@mui/material/MenuItem';
 
 import './../../public/kafka-sonar-orange-logo.svg';
 
@@ -26,13 +28,13 @@ export default function Signup(): JSX.Element {
   const [email, emailOnChange] = useInput('');
   const [password, passwordOnChange] = useInput('');
   // useState
-  const [role, setRole] = useState<string>('User');
+  // const [role, setRole] = useState<string>('User');
 
   // role select handler to update state
-  const roleOnChange = (e: MouseEvent) => {
-    const i = e.target.value;
-    setRole(['User', 'Admin'][i]);
-  };
+  // const roleOnChange = (e: MouseEvent) => {
+  //   const i = e.target.value;
+  //   setRole(['User', 'Admin'][i]);
+  // };
 
   return (
     <Paper
@@ -40,7 +42,7 @@ export default function Signup(): JSX.Element {
       style={{
         width: '60vh',
         padding: 20,
-        margin: '40px auto',
+        margin: '15vh auto',
       }}
     >
       <img
@@ -49,7 +51,7 @@ export default function Signup(): JSX.Element {
           width: 40,
           position: 'relative',
           left: '25vh',
-          margin: '20px 0',
+          margin: '20px auto',
         }}
       />
       <Typography
@@ -84,7 +86,8 @@ export default function Signup(): JSX.Element {
         required
         style={{ margin: '15px auto' }}
       />
-      <FormControl
+      {/* Stretch feature: Implement authorized routes */}
+      {/* <FormControl
         variant="standard"
         fullWidth
         required
@@ -96,7 +99,7 @@ export default function Signup(): JSX.Element {
             return <MenuItem value={i}>{access}</MenuItem>;
           })}
         </Select>
-      </FormControl>
+      </FormControl> */}
       <Button
         variant="contained"
         color="primary"
@@ -107,21 +110,8 @@ export default function Signup(): JSX.Element {
       >
         Get Started
       </Button>
-      <Typography
-        align="center"
-        fontFamily="inherit"
-        style={{ margin: '15px auto' }}
-      >
+      <Typography align="center" fontFamily="inherit">
         <Link to="/">Have an account? Log in</Link>
-      </Typography>
-      <Typography
-        align="center"
-        fontFamily="inherit"
-        style={{ margin: '15px auto' }}
-      >
-        <Link to="/connect">
-          Quickly connect to your cluster (no account needed)
-        </Link>
       </Typography>
     </Paper>
   );

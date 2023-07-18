@@ -67,7 +67,7 @@ export default function Login(): JSX.Element {
       style={{
         width: '60vh',
         padding: 20,
-        margin: '80px auto',
+        margin: '15vh auto',
       }}
     >
       <img
@@ -76,7 +76,7 @@ export default function Login(): JSX.Element {
           width: 40,
           position: 'relative',
           left: '25vh',
-          margin: '20px 0',
+          margin: '20px auto',
         }}
       />
       <Typography
@@ -85,7 +85,7 @@ export default function Login(): JSX.Element {
         fontFamily="inherit"
         align="center"
       >
-        Login
+        Welcome Back
       </Typography>
       <TextField
         variant="standard"
@@ -121,24 +121,8 @@ export default function Login(): JSX.Element {
       >
         Log In
       </Button>
-      <Typography
-        align="center"
-        fontFamily="inherit"
-        style={{ margin: '15px auto' }}
-      >
-        <Link to="/signup">
-          For the option to save your cluster connection info and cluster run
-          logs, please sign up for an account
-        </Link>
-      </Typography>
-      <Typography
-        align="center"
-        fontFamily="inherit"
-        style={{ margin: '15px auto' }}
-      >
-        <Link to="/connect">
-          Quickly connect to your cluster (no account needed)
-        </Link>
+      <Typography align="center" fontFamily="inherit">
+        <Link to="/signup">No account yet? Sign up</Link>
       </Typography>
     </Paper>
   );

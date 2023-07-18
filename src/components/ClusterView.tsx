@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import './../App.css';
@@ -6,7 +7,7 @@ import './../App.css';
 
 export default function ClusterView() {
   return (
-    <>
+    <Fragment>
       <Typography
         variant="subtitle2"
         fontFamily="inherit"
@@ -50,7 +51,7 @@ export default function ClusterView() {
           <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=48"></iframe>
         </Grid>
       </Grid>
-    </>
+    </Fragment>
   );
 }
 

@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -47,22 +45,13 @@ export default function Connect(): JSX.Element {
         margin: '0 auto',
       }}
     >
-      <img
-        src="kafka-sonar-orange-logo.svg"
-        style={{
-          width: 40,
-          position: 'relative',
-          left: '25vh',
-          margin: '20px 0',
-        }}
-      />
       <Typography
         component="h1"
         variant="h5"
         fontFamily="inherit"
         align="center"
       >
-        Start monitoring in mere seconds
+        Enter cluster credentials
       </Typography>
       <TextField
         variant="standard"
@@ -106,14 +95,14 @@ export default function Connect(): JSX.Element {
         align="left"
         style={{ margin: '10px auto' }}
       >
-        Only certain SASL authentication mechanisms are currently supported.
+        OPTIONAL - If you need to authenticate to your cluster, only 3 SASL
+        authentication mechanisms are currently supported.
         <br></br>
         SSL will be enabled so your credentials are transmitted encrypted.
       </Typography>
       <FormControl
         variant="standard"
         fullWidth
-        required
         style={{ margin: '0 auto 5px' }}
       >
         <InputLabel>Authentication mechanism</InputLabel>
@@ -132,7 +121,6 @@ export default function Connect(): JSX.Element {
         onChange={usernameOnChange}
         label="Username"
         fullWidth
-        required
         style={{ margin: '0 auto 5px' }}
       />
       <TextField
@@ -144,36 +132,8 @@ export default function Connect(): JSX.Element {
         onChange={passwordOnChange}
         label="Password"
         fullWidth
-        required
         style={{ margin: '5px auto' }}
       />
-      <Button
-        variant="contained"
-        color="primary"
-        type="button"
-        // onClick={verifyUser}
-        fullWidth
-        style={{ margin: '20px auto 10px' }}
-      >
-        Quick Connect to Cluster
-      </Button>
-      <Typography
-        align="center"
-        fontFamily="inherit"
-        style={{ margin: '10px auto' }}
-      >
-        <Link to="/signup">
-          For the option to save your cluster connection info, please sign up
-          for an account
-        </Link>
-      </Typography>
-      <Typography
-        align="center"
-        fontFamily="inherit"
-        style={{ margin: '10px auto' }}
-      >
-        <Link to="/">Have an account? Log in</Link>
-      </Typography>
     </Paper>
   );
 }

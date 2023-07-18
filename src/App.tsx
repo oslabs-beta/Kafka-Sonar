@@ -33,7 +33,7 @@ import Props from './types/types';
 import '@fontsource-variable/montserrat';
 
 export default function App(props: Props) {
-  const drawerWidth = 200;
+  const drawerWidth = 240;
 
   const openedMixin = (theme: Theme): CSSObject => ({
     backgroundColor: '#0d090a',
@@ -118,7 +118,7 @@ export default function App(props: Props) {
           </SvgIcon> */}
           <img
             src="./../../public/kafka-sonar-white-logo.svg"
-            style={{ margin: 15, width: 75 }}
+            style={{ margin: 20, width: 75 }}
           />
           <IconButton
             color="inherit"
@@ -133,66 +133,73 @@ export default function App(props: Props) {
         </Toolbar>
         <Divider color="#f8fbfd" />
         <List>
-          {/* {['Saved Connections', 'New Connection', 'Cluster Metrics'].map( */}
-          {['Resource Usage', 'Cluster View', 'Partition View'].map(
-            (text, index) => (
-              <ListItem
-                key={text}
-                disablePadding
-                onClick={
-                  index === 0
-                    ? () => {
-                        navigate('/resources');
-                      }
-                    : index === 1
-                    ? () => {
-                        navigate('/cluster');
-                      }
-                    : () => {
-                        navigate('/partition');
-                      }
-                }
+          {/* {['Saved Connections', 'Cluster Metrics'].map( */}
+          {[
+            'Resource Usage',
+            'Cluster View',
+            'Partition View',
+            'Connect New Cluster',
+          ].map((text, index) => (
+            <ListItem
+              key={text}
+              disablePadding
+              onClick={
+                index === 0
+                  ? () => {
+                      navigate('/resources');
+                    }
+                  : index === 1
+                  ? () => {
+                      navigate('/cluster');
+                    }
+                  : index === 2
+                  ? () => {
+                      navigate('/partition');
+                    }
+                  : () => {
+                      navigate('/connect');
+                    }
+              }
+              sx={{
+                display: 'block',
+              }}
+            >
+              <ListItemButton
                 sx={{
-                  display: 'block',
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
                 }}
               >
-                <ListItemButton
+                <ListItemIcon
                   sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                    color: '#f8fbfd',
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                      color: '#f8fbfd',
-                    }}
-                  >
-                    {index === 0 ? (
-                      <HubIcon />
-                    ) : index === 1 ? (
-                      <DeviceHubIcon />
-                    ) : (
-                      <PolylineIcon />
-                    )}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Typography variant="inherit" fontFamily="inherit">
-                        {text}
-                      </Typography>
-                    }
-                    sx={{
-                      opacity: open ? 1 : 0,
-                    }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            )
-          )}
+                  {index === 0 ? (
+                    <HubIcon />
+                  ) : index === 1 ? (
+                    <DeviceHubIcon />
+                  ) : (
+                    <PolylineIcon />
+                  )}
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography variant="inherit" fontFamily="inherit">
+                      {text}
+                    </Typography>
+                  }
+                  sx={{
+                    opacity: open ? 1 : 0,
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

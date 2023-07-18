@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 
@@ -5,7 +6,7 @@ import Grid from '@mui/material/Grid';
 
 export default function ResourceUsage() {
   return (
-    <>
+    <Fragment>
       <Typography
         variant="subtitle2"
         fontFamily="inherit"
@@ -26,7 +27,7 @@ export default function ResourceUsage() {
           <iframe src="http://localhost:3000/d-solo/AdG9A1xmk/kafka-brokers-jvm-and-os?orgId=1&refresh=5s&panelId=6"></iframe>
         </Grid>
       </Grid>
-    </>
+    </Fragment>
   );
 }
 

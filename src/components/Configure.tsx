@@ -8,6 +8,9 @@ import Button from '@mui/material/Button';
 
 import './../../public/kafka-sonar-orange-logo.svg';
 
+// TS types
+import BrokerInfo from './types/types';
+
 // custom hook to handle state changes to input boxes as a user types
 const useInput = (initValue: string) => {
   const [value, setValue] = useState(initValue);
@@ -21,22 +24,38 @@ export default function Configure(): JSX.Element {
   // custom hook
   const [network, networkOnChange] = useInput('');
   // useState
-  const [brokerNums, setBrokerNums] = useState<number[]>([1]);
-  // custom hook
-  const [hosts, setHosts] = useState<string[]>();
-  const [ports, setPorts] = useState<string[]>();
+  const [brokerInfo, setBrokerInfo] = useState<BrokerInfo[]>([
+    {
+      broker: 1,
+      host: '',
+      port: '',
+    },
+  ]);
 
-  const [host, hostOnChange] = useInput('');
-  const [port, portOnChange] = useInput('');
+  // update host or port on a broker paper as the user types into either field
+  const updateHostOrPort = (e: KeyboardEvent, index: number): void => {
+    // use Textfield's / target's name to distinguish whether the user is typing into host or port field in a Broker component
+    const newBrokerInfo = [...brokerInfo];
+    newBrokerInfo[index][e.target.name] = e.target.value;
+    setBrokerInfo(newBrokerInfo);
+  };
 
   // add new broker paper
   const addBroker = () => {
-    setBrokerNums([...brokerNums, brokerNums.length + 1]);
+    setBrokerInfo([
+      ...brokerInfo,
+      {
+        // get brokerInfo array's last obj's broker value and increment by 1
+        broker: brokerInfo[brokerInfo.length - 1].broker + 1,
+        host: '',
+        port: '',
+      },
+    ]);
   };
 
-  // remove a broker paper
+  // remove last broker paper
   const removeBroker = () => {
-    setBrokerNums(brokerNums.slice(0, brokerNums.length - 1));
+    setBrokerInfo(brokerInfo.slice(0, brokerInfo.length - 1));
   };
 
   return (
@@ -84,7 +103,7 @@ export default function Configure(): JSX.Element {
         Provide the hostnames and ports for all of the brokers in your cluster.
       </Typography>
       <Grid container gap={1}>
-        {brokerNums.map((num, i) => (
+        {brokerInfo.map((brokerObj: BrokerInfo, i: number) => (
           <Grid item key={i + 1} xs={2.3} sm={2.3} md={2.3}>
             <Paper
               elevation={2}
@@ -99,15 +118,15 @@ export default function Configure(): JSX.Element {
                 align="left"
                 style={{ margin: '10px auto 0' }}
               >
-                Broker {num}
+                Broker {i + 1}
               </Typography>
               <TextField
                 variant="standard"
-                name="text"
+                name="host"
                 type="text"
                 id="text"
-                value={host}
-                onChange={hostOnChange}
+                // value={brokerInfo[i]['host']}
+                onChange={(e: KeyboardEvent) => updateHostOrPort(e, i)}
                 label="Hostname"
                 fullWidth
                 required
@@ -115,11 +134,11 @@ export default function Configure(): JSX.Element {
               />
               <TextField
                 variant="standard"
-                name="text"
+                name="port"
                 type="text"
                 id="text"
-                value={port}
-                onChange={portOnChange}
+                // value={brokerInfo[i + 1]['port']}
+                onChange={(e: KeyboardEvent) => updateHostOrPort(e, i)}
                 label="Port"
                 fullWidth
                 required

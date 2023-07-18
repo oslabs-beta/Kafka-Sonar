@@ -108,7 +108,11 @@ export default function Connect(): JSX.Element {
         <InputLabel>Authentication mechanism</InputLabel>
         <Select name="mechanisms" onChange={authOnChange}>
           {['PLAIN', 'SCRAM-SHA-256', 'SCRAM-SHA-512'].map((mechanism, i) => {
-            return <MenuItem value={i}>{mechanism}</MenuItem>;
+            return (
+              <MenuItem key={i} value={i}>
+                {mechanism}
+              </MenuItem>
+            );
           })}
         </Select>
       </FormControl>

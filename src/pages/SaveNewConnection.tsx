@@ -25,10 +25,14 @@ export default function SaveNewConnectionStepper(): JSX.Element {
   };
 
   const handleNext = () => {
+    // check 3 reqd Connect fields (client id, host, port) are NOT empty strings
+    // if any are empty, alert user and exit handler
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleFinish = () => {
+    // check all Configure fields (client id, host, port) are NOT empty strings
+    // if any are empty, alert user and exit handler
     navigate('/connect');
   };
 

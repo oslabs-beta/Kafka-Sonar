@@ -8,34 +8,23 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import './../../public/kafka-sonar-orange-logo.svg';
+// TS types
+import { ConnectProps } from '../types/types';
 
-// custom hook to handle state changes to input boxes as a user types
-const useInput = (initValue: string) => {
-  const [value, setValue] = useState(initValue);
-  const onChange = (e: KeyboardEvent): void => {
-    setValue(e.target.value);
-  };
-  return [value, onChange];
-};
-
-export default function Connect(): JSX.Element {
-  // custom hook
-  const [client, clientOnChange] = useInput('');
-  const [host, hostOnChange] = useInput('');
-  const [port, portOnChange] = useInput('');
-  // useState
-  const [auth, setAuth] = useState<string>('PLAIN');
-  // custom hook
-  const [username, usernameOnChange] = useInput('');
-  const [password, passwordOnChange] = useInput('');
-
-  // auth select handler to update state
-  const authOnChange = (e: MouseEvent) => {
-    const i = e.target.value;
-    setAuth(['PLAIN', 'SCRAM-SHA-256', 'SCRAM-SHA-512'][i]);
-  };
-
+export default function Connect({
+  client,
+  clientOnChange,
+  host,
+  hostOnChange,
+  port,
+  portOnChange,
+  auth,
+  authOnChange,
+  username,
+  usernameOnChange,
+  password,
+  passwordOnChange,
+}: ConnectProps): JSX.Element {
   return (
     <Paper
       elevation={2}
@@ -95,25 +84,29 @@ export default function Connect(): JSX.Element {
         align="left"
         style={{ margin: '10px auto' }}
       >
-        OPTIONAL - If you need to authenticate to your cluster, only 3 SASL
-        authentication mechanisms are currently supported.
+        If you need to authenticate to your cluster, only 3 SASL authentication
+        mechanisms are currently supported. SSL will be enabled so credentials
+        are transmitted encrypted.
         <br></br>
-        SSL will be enabled so your credentials are transmitted encrypted.
+        If you don't need to authenticate, select 'N/A' for Auth mechanism.
       </Typography>
       <FormControl
         variant="standard"
         fullWidth
+        required
         style={{ margin: '0 auto 5px' }}
       >
         <InputLabel>Authentication mechanism</InputLabel>
         <Select name="mechanisms" onChange={authOnChange}>
-          {['PLAIN', 'SCRAM-SHA-256', 'SCRAM-SHA-512'].map((mechanism, i) => {
-            return (
-              <MenuItem key={i} value={i}>
-                {mechanism}
-              </MenuItem>
-            );
-          })}
+          {['N/A', 'PLAIN', 'SCRAM-SHA-256', 'SCRAM-SHA-512'].map(
+            (mechanism, i) => {
+              return (
+                <MenuItem key={i} value={i}>
+                  {mechanism}
+                </MenuItem>
+              );
+            }
+          )}
         </Select>
       </FormControl>
       <TextField
@@ -130,7 +123,7 @@ export default function Connect(): JSX.Element {
       <TextField
         variant="standard"
         name="text"
-        type="text"
+        type="password"
         id="text"
         value={password}
         onChange={passwordOnChange}

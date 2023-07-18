@@ -6,58 +6,17 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 
-import './../../public/kafka-sonar-orange-logo.svg';
-
 // TS types
-import BrokerInfo from './types/types';
+import { BrokerInfo, ConfigureProps } from '../types/types';
 
-// custom hook to handle state changes to input boxes as a user types
-const useInput = (initValue: string) => {
-  const [value, setValue] = useState(initValue);
-  const onChange = (e: KeyboardEvent): void => {
-    setValue(e.target.value);
-  };
-  return [value, onChange];
-};
-
-export default function Configure(): JSX.Element {
-  // custom hook
-  const [network, networkOnChange] = useInput('');
-  // useState
-  const [brokerInfo, setBrokerInfo] = useState<BrokerInfo[]>([
-    {
-      broker: 1,
-      host: '',
-      port: '',
-    },
-  ]);
-
-  // update host or port on a broker paper as the user types into either field
-  const updateHostOrPort = (e: KeyboardEvent, index: number): void => {
-    // use Textfield's / target's name to distinguish whether the user is typing into host or port field in a Broker component
-    const newBrokerInfo = [...brokerInfo];
-    newBrokerInfo[index][e.target.name] = e.target.value;
-    setBrokerInfo(newBrokerInfo);
-  };
-
-  // add new broker paper
-  const addBroker = () => {
-    setBrokerInfo([
-      ...brokerInfo,
-      {
-        // get brokerInfo array's last obj's broker value and increment by 1
-        broker: brokerInfo[brokerInfo.length - 1].broker + 1,
-        host: '',
-        port: '',
-      },
-    ]);
-  };
-
-  // remove last broker paper
-  const removeBroker = () => {
-    setBrokerInfo(brokerInfo.slice(0, brokerInfo.length - 1));
-  };
-
+export default function Configure({
+  network,
+  networkOnChange,
+  brokerInfo,
+  updateHostOrPort,
+  addBroker,
+  removeBroker,
+}: ConfigureProps): JSX.Element {
   return (
     <Paper
       elevation={2}
@@ -125,7 +84,7 @@ export default function Configure(): JSX.Element {
                 name="host"
                 type="text"
                 id="text"
-                // value={brokerInfo[i]['host']}
+                value={brokerObj.host}
                 onChange={(e: KeyboardEvent) => updateHostOrPort(e, i)}
                 label="Hostname"
                 fullWidth
@@ -137,7 +96,7 @@ export default function Configure(): JSX.Element {
                 name="port"
                 type="text"
                 id="text"
-                // value={brokerInfo[i + 1]['port']}
+                value={brokerObj.port}
                 onChange={(e: KeyboardEvent) => updateHostOrPort(e, i)}
                 label="Port"
                 fullWidth

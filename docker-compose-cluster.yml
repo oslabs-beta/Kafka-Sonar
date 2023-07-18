@@ -103,28 +103,39 @@ services:
   # Use kafkasonar-dev to run FE only
   # Use kafkasonar-dev-server to run FE and BE
 
-  # kafkasonar-dev:
-  #   image: upasana90daniel98/kafkasonar-dev
-  #   container_name: kafkasonar-dev
+    # kafkasonar-dev-server:
+  #   image: upasana90daniel98/kafkasonar-dev-server
+  #   container_name: kafkasonar-dev-server
   #   ports:
   #     - '5175:5175'
   #   working_dir: /usr/src/app
   #   volumes:
   #     - ./:/usr/src/app
   #     - node_modules:/usr/src/app/node_modules
+  #   command: npm run dev
+
+  # kafkasonar-dev:
+  #   image: upasana90daniel98/kafkasonar-dev
+  #   container_name: kafkasonar-dev
+  #   ports:
+  #     - '5175:5175'
+  #   working_dir: /usr/src/app/
+  #   volumes:
+  #     - ./:/usr/src/app
+  #     - node_modules:/usr/src/app/node_modules
   #   command: npm run frontend
 
   kafkasonar-dev-server:
-    image: upasana90daniel98/kafkasonar-dev-server
+    image: firenaysh/kafkasonar-dev-server
     container_name: kafkasonar-dev-server
     ports:
       - '5175:5175'
     working_dir: /usr/src/app
     volumes:
-      - ./:/usr/src/app
+      - ./ui/:/usr/src/app
       - node_modules:/usr/src/app/node_modules
-    command: npm run dev
-
+    command: npm run frontend
+  
   # References: https://mtlynch.io/painless-web-app-testing/#creating-an-end-to-end-test, https://www.cypress.io/blog/2019/05/02/run-cypress-with-a-single-docker-command/
   # cypress:
   #   image: cypress/included:latest

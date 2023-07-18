@@ -1,5 +1,6 @@
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import React from 'react';
 
 // NOTE: breakpoint props (xs, sm, md, etc.) do NOT work when flex-direction is column or reverse-column!
 

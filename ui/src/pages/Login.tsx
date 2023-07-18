@@ -5,12 +5,9 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import FormControl from '@mui/material/FormControl/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 
-import './../../public/kafka-sonar-orange-logo.svg';
+import '../assets/kafka-sonar-orange-logo.svg';
+import React from 'react';
 
 // custom hook to handle state changes to input boxes as a user types
 const useInput = (initValue: string) => {
@@ -21,18 +18,49 @@ const useInput = (initValue: string) => {
   return [value, onChange];
 };
 
-export default function Signup(): JSX.Element {
-  // custom hook
+export default function Login(): JSX.Element {
   const [email, emailOnChange] = useInput('');
   const [password, passwordOnChange] = useInput('');
-  // useState
-  const [role, setRole] = useState<string>('User');
+  // const navigate = useNavigate(); // this hook allows us to redirect w/o page reload
 
-  // role select handler to update state
-  const roleOnChange = (e: MouseEvent) => {
-    const i = e.target.value;
-    setRole(['User', 'Admin'][i]);
-  };
+  // const verifyUser = () => {
+  //   const body = {
+  //     email,
+  //     password,
+  //   };
+
+  //   // use fetch API to check user has a profile in DB
+  //   fetch('/api/login', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'Application/JSON',
+  //     },
+  //     body: JSON.stringify(body),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log('login data', data); // res.locals object
+  //       // CASE 1: user doesn't exist in DB, redirect to CreateProfile
+  //       if (!data.user) {
+  //         alert(
+  //           'No user exists for the email you entered. Please create a user profile.'
+  //         );
+  //         navigate('/create-profile');
+  //       }
+
+  //       // CASE 2: user exists in DB AND password not a match, stay on Login
+  //       else if (data.user && !data.passwordIsMatch) {
+  //         alert(
+  //           'The password is incorrect for the email you entered. Please try again.'
+  //         );
+  //       }
+
+  //       // CASE 3: user exists AND password matches, redirect to ApptSummary
+  //       else if (data.user && data.passwordIsMatch) {
+  //         navigate('/appt-summary');
+  //       }
+  //     });
+  // };
 
   return (
     <Paper
@@ -40,7 +68,7 @@ export default function Signup(): JSX.Element {
       style={{
         width: '60vh',
         padding: 20,
-        margin: '40px auto',
+        margin: '80px auto',
       }}
     >
       <img
@@ -58,7 +86,7 @@ export default function Signup(): JSX.Element {
         fontFamily="inherit"
         align="center"
       >
-        Sign Up
+        Login
       </Typography>
       <TextField
         variant="standard"
@@ -84,19 +112,6 @@ export default function Signup(): JSX.Element {
         required
         style={{ margin: '15px auto' }}
       />
-      <FormControl
-        variant="standard"
-        fullWidth
-        required
-        style={{ margin: '15px auto' }}
-      >
-        <InputLabel>User or Admin access?</InputLabel>
-        <Select name="roles" onChange={roleOnChange}>
-          {['User', 'Admin'].map((access, i) => {
-            return <MenuItem value={i}>{access}</MenuItem>;
-          })}
-        </Select>
-      </FormControl>
       <Button
         variant="contained"
         color="primary"
@@ -105,14 +120,17 @@ export default function Signup(): JSX.Element {
         fullWidth
         style={{ margin: '30px auto' }}
       >
-        Get Started
+        Log In
       </Button>
       <Typography
         align="center"
         fontFamily="inherit"
         style={{ margin: '15px auto' }}
       >
-        <Link to="/">Have an account? Log in</Link>
+        <Link to="/signup">
+          For the option to save your cluster connection info and cluster run
+          logs, please sign up for an account
+        </Link>
       </Typography>
       <Typography
         align="center"

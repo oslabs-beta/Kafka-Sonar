@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -77,7 +75,7 @@ export default function Configure({
                 align="left"
                 style={{ margin: '10px auto 0' }}
               >
-                Broker {i + 1}
+                Broker {brokerObj.broker}
               </Typography>
               <TextField
                 variant="standard"
@@ -103,28 +101,28 @@ export default function Configure({
                 required
                 style={{ margin: '5px auto' }}
               />
+              <Button
+                variant="outlined"
+                color="primary"
+                type="button"
+                onClick={() => removeBroker(i)}
+                style={{ margin: '10px auto 0' }}
+              >
+                Remove Broker {brokerObj.broker}
+              </Button>
             </Paper>
           </Grid>
         ))}
       </Grid>
 
       <Button
-        variant="contained"
+        variant="outlined"
         color="primary"
         type="button"
         onClick={addBroker}
         style={{ margin: '20px auto' }}
       >
         Add Another
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        type="button"
-        onClick={removeBroker}
-        style={{ margin: '20px auto 20px 20px' }}
-      >
-        Remove Last
       </Button>
     </Paper>
   );

@@ -19,18 +19,48 @@ import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 
 // custom selected or created icons
-import HubIcon from '@mui/icons-material/Hub'; // cluster
-import DeviceHubIcon from '@mui/icons-material/DeviceHub'; // broker
-import PolylineIcon from '@mui/icons-material/Polyline'; // consumer
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import CableIcon from '@mui/icons-material/Cable';
+import HubIcon from '@mui/icons-material/Hub';
+import DeviceHubIcon from '@mui/icons-material/DeviceHub';
+import PolylineIcon from '@mui/icons-material/Polyline';
 import SvgIcon from '@mui/material/SvgIcon';
 import { ReactComponent as OrangeLogo } from './../src/assets/kafka-sonar-orange-logo.svg';
 // import { ReactComponent as WhiteLogo } from './../../public/kafka-sonar-white-logo.svg';
 
 // TS types
-import Props from './types/types';
+import { Props, NavTabOption } from './types/types';
 
 // Variable Fontsource font supports weights 100-900
 import '@fontsource-variable/montserrat';
+
+const navTabOptions: NavTabOption[] = [
+  {
+    route: '/saved',
+    icon: <BookmarkIcon />,
+    text: 'Saved Connections',
+  },
+  {
+    route: '/connect',
+    icon: <CableIcon />,
+    text: 'Connect New Cluster',
+  },
+  {
+    route: '/resources',
+    icon: <HubIcon />,
+    text: 'Resource Usage',
+  },
+  {
+    route: '/cluster',
+    icon: <DeviceHubIcon />,
+    text: 'Cluster View',
+  },
+  {
+    route: '/partition',
+    icon: <PolylineIcon />,
+    text: 'Partition View',
+  },
+];
 
 export default function App(props: Props) {
   const drawerWidth = 240;
@@ -133,33 +163,13 @@ export default function App(props: Props) {
         </Toolbar>
         <Divider color="#f8fbfd" />
         <List>
-          {/* {['Saved Connections', 'Cluster Metrics'].map( */}
-          {[
-            'Resource Usage',
-            'Cluster View',
-            'Partition View',
-            'Connect New Cluster',
-          ].map((text, index) => (
+          {navTabOptions.map((navTabInfo) => (
             <ListItem
-              key={text}
+              key={navTabInfo.text}
               disablePadding
-              onClick={
-                index === 0
-                  ? () => {
-                      navigate('/resources');
-                    }
-                  : index === 1
-                  ? () => {
-                      navigate('/cluster');
-                    }
-                  : index === 2
-                  ? () => {
-                      navigate('/partition');
-                    }
-                  : () => {
-                      navigate('/connect');
-                    }
-              }
+              onClick={() => {
+                navigate(navTabInfo.route);
+              }}
               sx={{
                 display: 'block',
               }}
@@ -179,18 +189,12 @@ export default function App(props: Props) {
                     color: '#f8fbfd',
                   }}
                 >
-                  {index === 0 ? (
-                    <HubIcon />
-                  ) : index === 1 ? (
-                    <DeviceHubIcon />
-                  ) : (
-                    <PolylineIcon />
-                  )}
+                  {navTabInfo.icon}
                 </ListItemIcon>
                 <ListItemText
                   primary={
                     <Typography variant="inherit" fontFamily="inherit">
-                      {text}
+                      {navTabInfo.text}
                     </Typography>
                   }
                   sx={{

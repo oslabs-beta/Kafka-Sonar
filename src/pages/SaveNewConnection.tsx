@@ -82,8 +82,15 @@ export default function SaveNewConnectionStepper(): JSX.Element {
   };
 
   // remove last broker paper
-  const removeBroker = () => {
-    setBrokerInfo(brokerInfo.slice(0, brokerInfo.length - 1));
+  const removeBroker: ConfigureProps['removeBroker'] = (index) => {
+    const newBrokerInfo = [
+      ...brokerInfo.slice(0, index),
+      ...brokerInfo.slice(index + 1),
+    ];
+    for (let curr = 0; curr < newBrokerInfo.length; curr++) {
+      newBrokerInfo[curr].broker = curr + 1;
+    }
+    setBrokerInfo(newBrokerInfo);
   };
 
   // SAVENEWCONNECTIONSTEPPER STATE AND HANDLERS
@@ -100,7 +107,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     if (!client || !host || !port || !auth) {
       // alert user and exit handler
       alert(
-        'Please provide at least Client ID, Hostname, Port, and Authentication mechanism.'
+        'Client ID, Hostname, Port, and Authentication mechanism are required.'
       );
       return;
     }
@@ -108,7 +115,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     else if (auth !== 'N/A' && (!username || !password)) {
       // alert user and exit handler
       alert(
-        'In order to authenticate to your cluster, please provide the username and password.'
+        'In order to authenticate to your cluster, Username and Password are required.'
       );
     }
     // otherwise, go to next step
@@ -118,9 +125,24 @@ export default function SaveNewConnectionStepper(): JSX.Element {
   };
 
   const handleFinish = () => {
-    // check all Configure fields (client id, host, port) are NOT empty strings
-    // if any are empty, alert user and exit handler
-    navigate('/connect');
+    // if any user-input field is an empty string, alert user and exit handler
+    if (!network) {
+      alert('Network is required.');
+      return;
+    }
+    for (let curr = 0; curr < brokerInfo.length; curr++) {
+      if (!brokerInfo[curr].host) {
+        alert(`Hostname for Broker ${curr + 1} is required.`);
+        return;
+      }
+      if (!brokerInfo[curr].port) {
+        alert(`Port for Broker ${curr + 1} is required.`);
+        return;
+      }
+    }
+    // !!!!!!!! POST request to BE here !!!!!!!!
+    // otherwise, redirect to Saved Cluster Connections page
+    navigate('/saved');
   };
 
   return (

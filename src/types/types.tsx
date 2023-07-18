@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 // App component Props type
 // Login and Signup don't need to be passed as props to App b/c they display outside the app
 export interface Props {
@@ -5,6 +7,13 @@ export interface Props {
   resourceUsage?: JSX.Element;
   clusterView?: JSX.Element;
   partitionView?: JSX.Element;
+}
+
+// App component navTabOption type
+export interface NavTabOption {
+  route: string;
+  icon: ReactNode;
+  text: string;
 }
 
 // Connect component Props type
@@ -30,7 +39,7 @@ export interface ConfigureProps {
   brokerInfo: BrokerInfo[];
   updateHostOrPort: (e: KeyboardEvent, index: number) => void;
   addBroker: () => void;
-  removeBroker: () => void;
+  removeBroker: (index: number) => void;
 }
 
 // Configure component brokerInfo array obj type

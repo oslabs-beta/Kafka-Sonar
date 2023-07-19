@@ -57,7 +57,8 @@ export default function Configure({
         align="left"
         style={{ margin: '10px auto 0' }}
       >
-        Provide the hostnames and ports for all of the brokers in your cluster.
+        Provide the hostnames and JMX ports for all of the brokers in your
+        cluster.
       </Typography>
       <Grid container gap={1}>
         {brokerInfo.map((brokerObj: BrokerInfo, i: number) => (

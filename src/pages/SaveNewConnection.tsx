@@ -73,8 +73,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     setBrokerInfo([
       ...brokerInfo,
       {
-        // get brokerInfo array's last obj's broker value and increment by 1
-        broker: brokerInfo[brokerInfo.length - 1].broker + 1,
+        broker: brokerInfo.length + 1,
         host: '',
         port: '',
       },

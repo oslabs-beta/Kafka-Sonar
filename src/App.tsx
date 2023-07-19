@@ -20,7 +20,7 @@ import Typography from '@mui/material/Typography';
 
 // custom selected or created icons
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import CableIcon from '@mui/icons-material/Cable';
+// import CableIcon from '@mui/icons-material/Cable';
 import HubIcon from '@mui/icons-material/Hub';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import PolylineIcon from '@mui/icons-material/Polyline';
@@ -40,11 +40,11 @@ const navTabOptions: NavTabOption[] = [
     icon: <BookmarkIcon />,
     text: 'Saved Connections',
   },
-  {
-    route: '/connect',
-    icon: <CableIcon />,
-    text: 'Connect New Cluster',
-  },
+  // {
+  //   route: '/connect',
+  //   icon: <CableIcon />,
+  //   text: 'Connect New Cluster',
+  // },
   {
     route: '/resources',
     icon: <HubIcon />,

@@ -1,4 +1,6 @@
 import { ReactNode } from 'react';
+// MUI types
+import { SelectChangeEvent } from '@mui/material/Select';
 
 // App component Props type
 // Login and Signup don't need to be passed as props to App b/c they display outside the app
@@ -25,7 +27,7 @@ export interface ConnectProps {
   port: string;
   portOnChange: () => void;
   auth: string;
-  authOnChange: (e: MouseEvent) => void;
+  authOnChange: (e: SelectChangeEvent) => void;
   username: string;
   usernameOnChange: () => void;
   password: string;

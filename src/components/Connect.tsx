@@ -95,11 +95,18 @@ export default function Connect({
         style={{ margin: '0 auto 5px' }}
       >
         <InputLabel>Authentication mechanism</InputLabel>
-        <Select name="mechanisms" onChange={authOnChange}>
+        <Select
+          name="mechanisms"
+          // following 3 attrs are needed to persist selected value when user clicks Next and then comes Back
+          displayEmpty
+          renderValue={(value) => value}
+          value={auth}
+          onChange={authOnChange}
+        >
           {['N/A', 'PLAIN', 'SCRAM-SHA-256', 'SCRAM-SHA-512'].map(
             (mechanism, i) => {
               return (
-                <MenuItem key={i} value={i}>
+                <MenuItem key={mechanism} value={i}>
                   {mechanism}
                 </MenuItem>
               );

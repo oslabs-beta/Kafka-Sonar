@@ -18,6 +18,7 @@ import Signup from './pages/Signup';
 
 // in app
 // used components
+import SavedConnectionsDataGrid from './pages/SavedConnections';
 import SaveNewConnectionStepper from './pages/SaveNewConnection';
 import ResourceUsage from './components/ResourceUsage';
 import ClusterView from './components/ClusterView';
@@ -32,6 +33,10 @@ const appRouter = createBrowserRouter(
     <Route path="/">
       <Route index element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route
+        path="/saved"
+        element={<App saved={<SavedConnectionsDataGrid />} />}
+      />
       <Route
         path="/connect"
         element={<App connect={<SaveNewConnectionStepper />} />}

@@ -5,6 +5,7 @@ import { SelectChangeEvent } from '@mui/material/Select';
 // App component Props type
 // Login and Signup don't need to be passed as props to App b/c they display outside the app
 export interface Props {
+  saved?: JSX.Element;
   connect?: JSX.Element;
   resourceUsage?: JSX.Element;
   clusterView?: JSX.Element;

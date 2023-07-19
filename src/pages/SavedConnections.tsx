@@ -1,48 +1,62 @@
-// Referenced guide for migration from MUI v5 to v6 in order to get import Data Grid from MUI X v6: https://mui.com/x/migration/migration-data-grid-v5/
-
+import { useState } from 'react';
 import Box from '@mui/material/Box';
+// Referenced guide for migration from MUI v5 to v6 in order to get import Data Grid from MUI X v6: https://mui.com/x/migration/migration-data-grid-v5/
 import { DataGrid } from '@mui/x-data-grid';
 // MUI types
 import { GridColDef } from '@mui/x-data-grid';
 
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 90 },
   {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
+    field: 'id',
+    headerName: 'ID',
+    description: 'Row number',
+    width: 90,
   },
   {
-    field: 'lastName',
-    headerName: 'Last name',
+    field: 'clientId',
+    headerName: 'Client ID',
+    description: 'Kafka application name',
     width: 150,
-    editable: true,
   },
   {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
+    field: 'host',
+    headerName: 'Hostname',
+    description: '',
+    width: 150,
+  },
+  {
+    field: 'port',
+    headerName: 'Port',
+    description: '',
     width: 110,
-    editable: true,
-    description: 'This column has a value getter and is not sortable.',
-    //     sortable: false,
   },
-];
-
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  {
+    field: 'auth',
+    headerName: 'Authentication Mechanism',
+    description: 'SASL method to authenticate to the cluster',
+    width: 150,
+  },
+  {
+    field: 'fetchMetrics',
+    headerName: 'Download metrics',
+    description:
+      'Get a CSV of metrics from all previous runs of this cluster connection',
+    width: 150,
+  },
+  {
+    field: 'fetchLogs',
+    headerName: 'Download error logs',
+    description:
+      'Get a CSV of error logs from all previous runs of this cluster connection',
+    width: 150,
+  },
 ];
 
 export default function SavedConnectionsDataGrid() {
+  const [rows, setRows] = useState([
+    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+  ]);
+
   return (
     <Box sx={{ height: 400, width: '100%' }}>
       <DataGrid

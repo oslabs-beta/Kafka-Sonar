@@ -9,8 +9,8 @@
   "ui": {
     "dashboard-tab": {
       "title": "Kafka Sonar",
-      "src": "index.html",
-      "root": "ui",
+      "root": "/ui",
+      "src": "./build/index.html",
       "backend": {
         "socket": "backend.sock"
       }

@@ -1,5 +1,6 @@
-import express, { Express, Request, Response } from 'express';
-const fs = require('fs');
+import * as express from 'express';
+import { Express, Request, Response } from 'express';
+import * as fs from 'fs';
 
 const SOCKETFILE = '/run/guest-services/backend.sock'; // Unix socket
 const app: Express = express();

@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "npm run backend && npm run frontend",
     "dev": "vite & nodemon server/server.ts",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -27,6 +28,7 @@
     "dotenv": "^16.1.3",
     "express": "^4.18.2",
     "kafkajs": "^2.2.4",
+    "pg": "^8.11.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",

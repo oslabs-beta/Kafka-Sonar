@@ -1,0 +1,19 @@
+{
+  "icon": "kafkasonar.svg",
+  "vm": {
+    "composefile": "docker-compose.yml",
+    "exposes": {
+      "socket": "backend.sock"
+    }
+  },
+  "ui": {
+    "dashboard-tab": {
+      "title": "Kafka Sonar",
+      "root": "/ui",
+      "src": "./build/index.html",
+      "backend": {
+        "socket": "backend.sock"
+      }
+    }
+  }
+}

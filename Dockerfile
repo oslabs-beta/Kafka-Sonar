@@ -1,12 +1,12 @@
 # build backend service first
-FROM --platform=$BUILDPLATFORM node:19.6 AS builder
+FROM --platform=$BUILDPLATFORM node:19.6-alpine3.16 AS builder
 WORKDIR /backend
 COPY vm/package*.json .
-RUN npm install
+# RUN npm install # Could not find origin
 RUN --mount=type=cache,target=/user/src/app/.npm \
     npm set cache /usr/src/app/.npm && \ 
     npm ci
-COPY vm/. .
+COPY vm /backend
 
 # build frontend service
 FROM --platform=$BUILDPLATFORM node:19.6-alpine3.16 AS client-builder
@@ -14,6 +14,7 @@ WORKDIR /ui
 # cache packages in layer
 COPY ui/package.json /ui/package.json
 COPY ui/package-lock.json /ui/package-lock.json
+RUN npm install
 RUN --mount=type=cache,target=/usr/src/app/.npm \
     npm set cache /usr/src/app/.npm && \
     npm ci
@@ -35,10 +36,18 @@ LABEL org.opencontainers.image.title="Kafka Sonar" \
     com.docker.extension.categories="" \
     com.docker.extension.changelog=""
 
-COPY --from=builder /backend backend
-COPY docker-compose.yaml .
+COPY docker-compose.yml .
 COPY metadata.json .
-COPY docker.svg .
-COPY --from=client-builder /ui/build ui
+COPY kafkasonar.svg .
+# COPY --chmod=755 --from=builder /backend /backend
+COPY --from=builder /backend backend
+# COPY --from=client-builder /ui/build ui
+COPY --from=client-builder /ui ui
 # run the backend service as a container, passing the socket path where the backend is listening
-CMD /service -socket /run/guest-services/backend.sock
+# RUN chmod +x /backend
+# CMD ["/backend", "-socket", "/run/guest-services/backend.sock"]
+
+# WORKDIR /backend
+# CMD ["npm", "start"]
+WORKDIR /ui
+CMD ["npm", "run", "frontend"]

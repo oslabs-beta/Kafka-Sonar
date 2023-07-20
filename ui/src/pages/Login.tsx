@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Paper from '@mui/material/Paper';
@@ -10,9 +10,9 @@ import '../assets/kafka-sonar-orange-logo.svg';
 import React from 'react';
 
 // custom hook to handle state changes to input boxes as a user types
-const useInput = (initValue: string) => {
+const useInput = (initValue: string): [string, (e: ChangeEvent<HTMLInputElement>) => void] => {
   const [value, setValue] = useState(initValue);
-  const onChange = (e: KeyboardEvent): void => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
   };
   return [value, onChange];

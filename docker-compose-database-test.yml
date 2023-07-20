@@ -7,7 +7,6 @@ services:
     ports:
       - 3333:3333
     command: npm run backend
-
   timescaledb:
     build:
       context: .

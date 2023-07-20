@@ -1,9 +1,9 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
-// import api from './routes/api.ts';
+import api from './routes/api';
 
 const app: Express = express();
 
-// app.use('/api', api);
+app.use('/api', api);
 
 app.get('/test', (req: Request, res: Response) => {
   res.send('Hello from Kafka Sonar');

@@ -6,7 +6,7 @@ const userRouter = express.Router();
 
 userRouter.get(
   '/allusers',
-  userController.getAllusers,
+  userController.getAllUsers,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.users);
   }

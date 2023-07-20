@@ -2,7 +2,7 @@ import { query } from '../models/appModel';
 import { Request, Response, NextFunction } from 'express';
 
 const userController = {
-  getAllusers: async (
+  getAllUsers: async (
     _req: Request,
     res: Response,
     next: NextFunction
@@ -11,11 +11,12 @@ const userController = {
       const request = 'SELECT * FROM users';
       // const values: any = [];
       const response: any = await query(request);
+      console.log(response);
       res.locals.users = response.rows;
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in userController.getAllusers Middleware',
+        log: 'Error occured in userController.getAllUsers Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }

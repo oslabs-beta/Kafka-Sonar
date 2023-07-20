@@ -10,9 +10,7 @@
     "demo-cluster-produce-mass": "ts-node-esm demo-cluster/test/massProducer.ts",
     "demo-cluster-consume": "ts-node-esm demo-cluster/test/consumer.ts"
   },
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",

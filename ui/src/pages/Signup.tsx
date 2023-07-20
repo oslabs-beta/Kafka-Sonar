@@ -5,16 +5,18 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import FormControl from '@mui/material/FormControl/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+// import FormControl from '@mui/material/FormControl/FormControl';
+// import InputLabel from '@mui/material/InputLabel';
+// import Select from '@mui/material/Select';
+// import MenuItem from '@mui/material/MenuItem';
 
 import '../assets/kafka-sonar-orange-logo.svg';
 import React from 'react';
 
 // custom hook to handle state changes to input boxes as a user types
-const useInput = (initValue: string): [string, (e: ChangeEvent<HTMLInputElement>) => void] => {
+const useInput = (
+  initValue: string
+): [string, (e: ChangeEvent<HTMLInputElement>) => void] => {
   const [value, setValue] = useState(initValue);
   const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
@@ -26,14 +28,14 @@ export default function Signup(): JSX.Element {
   // custom hook
   const [email, emailOnChange] = useInput('');
   const [password, passwordOnChange] = useInput('');
-  // useState
-  const [role, setRole] = useState<string>('User');
+  // // useState
+  // const [role, setRole] = useState<string>('User');
 
-  // role select handler to update state
-  const roleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const i = e.target.value;
-    setRole(['User', 'Admin'][i]);
-  };
+  // // role select handler to update state
+  // const roleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const i = e.target.value;
+  //   setRole(['User', 'Admin'][i]);
+  // };
 
   return (
     <Paper
@@ -85,7 +87,7 @@ export default function Signup(): JSX.Element {
         required
         style={{ margin: '15px auto' }}
       />
-      <FormControl
+      {/* <FormControl
         variant="standard"
         fullWidth
         required
@@ -97,7 +99,7 @@ export default function Signup(): JSX.Element {
             return <MenuItem value={i}>{access}</MenuItem>;
           })}
         </Select>
-      </FormControl>
+      </FormControl> */}
       <Button
         variant="contained"
         color="primary"
@@ -114,15 +116,6 @@ export default function Signup(): JSX.Element {
         style={{ margin: '15px auto' }}
       >
         <Link to="/">Have an account? Log in</Link>
-      </Typography>
-      <Typography
-        align="center"
-        fontFamily="inherit"
-        style={{ margin: '15px auto' }}
-      >
-        <Link to="/connect">
-          Quickly connect to your cluster (no account needed)
-        </Link>
       </Typography>
     </Paper>
   );

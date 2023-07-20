@@ -100,10 +100,10 @@ services:
       - ./demo-cluster/configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command: '--config.file=/etc/prometheus/prometheus.yml'
 
-  # Use kafkasonar-dev to run FE only
-  # Use kafkasonar-dev-server to run FE and BE
+    # Use kafkasonar-dev to run FE only
+    # Use kafkasonar-dev-server to run FE and BE
 
-    # kafkasonar-dev-server:
+  # kafkasonar-dev-server:
   #   image: upasana90daniel98/kafkasonar-dev-server
   #   container_name: kafkasonar-dev-server
   #   ports:
@@ -126,7 +126,8 @@ services:
   #   command: npm run frontend
 
   kafkasonar-dev-server:
-    image: firenaysh/kafkasonar-dev-server
+    # image: firenaysh/kafkasonar-dev-server
+    image: upasana90daniel98/kafkasonar-dev-server
     container_name: kafkasonar-dev-server
     ports:
       - '5175:5175'
@@ -135,7 +136,7 @@ services:
       - ./ui/:/usr/src/app
       - node_modules:/usr/src/app/node_modules
     command: npm run frontend
-  
+
   # References: https://mtlynch.io/painless-web-app-testing/#creating-an-end-to-end-test, https://www.cypress.io/blog/2019/05/02/run-cypress-with-a-single-docker-command/
   # cypress:
   #   image: cypress/included:latest

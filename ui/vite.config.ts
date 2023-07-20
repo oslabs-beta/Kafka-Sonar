@@ -5,7 +5,7 @@ import svgr from 'vite-plugin-svgr';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [svgr(), react()],
-  base: './', // part of fix to rendering in DD issue
+  base: './',
   build: {
     outDir: 'build'
   },

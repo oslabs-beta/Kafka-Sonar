@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import React from 'react';
@@ -6,7 +7,7 @@ import React from 'react';
 
 export default function PartitionView() {
   return (
-    <>
+    <Fragment>
       <Typography
         variant="subtitle2"
         fontFamily="inherit"
@@ -40,7 +41,7 @@ export default function PartitionView() {
           <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=9"></iframe>
         </Grid>
       </Grid>
-    </>
+    </Fragment>
   );
 }
 

@@ -1,0 +1,9 @@
+# Use the Docker socket from the extension backend:
+# https://docs.docker.com/desktop/extensions-sdk/guides/use-docker-socket-from-backend/
+services:
+  KafkaSonar:
+    image: ${DESKTOP_PLUGIN_IMAGE}
+    container_name: kafkasonar
+    ports:
+      # Expose port 5175 to the host so that you can see metrics on localhost:5175
+      - 5175:5175

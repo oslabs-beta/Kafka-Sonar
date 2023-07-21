@@ -1,6 +1,7 @@
 import express from 'express';
 import { Express, Request, Response, NextFunction } from 'express';
 import * as fs from 'fs';
+import bodyParser from 'body-parser';
 import api from './server/routes/api';
 
 const SOCKETFILE = '/run/guest-services/backend.sock'; // Unix socket
@@ -19,6 +20,8 @@ try {
 // app.get('/test', (req: Request, res: Response) => {
 //   res.send('Hello from Kafka Sonar');
 // });
+
+app.use(bodyParser.json());
 
 app.use('/api', api);
 

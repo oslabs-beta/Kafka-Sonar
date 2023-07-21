@@ -6,7 +6,7 @@ const clusterRouter = express.Router();
 
 clusterRouter.get(
   '/allclusters',
-  clusterController.getAllclusters,
+  clusterController.getAllClusters,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.clusters);
   }
@@ -14,7 +14,7 @@ clusterRouter.get(
 
 clusterRouter.get(
   '/:cluster_id',
-  clusterController.getcluster,
+  clusterController.getCluster,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.cluster);
   }
@@ -22,7 +22,7 @@ clusterRouter.get(
 
 clusterRouter.post(
   '/',
-  clusterController.postcluster,
+  clusterController.postCluster,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.cluster);
   }
@@ -30,7 +30,7 @@ clusterRouter.post(
 
 clusterRouter.put(
   '/:cluster_id',
-  clusterController.putcluster,
+  clusterController.putCluster,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.cluster);
   }
@@ -38,7 +38,7 @@ clusterRouter.put(
 
 clusterRouter.delete(
   '/:cluster_id',
-  clusterController.deletecluster,
+  clusterController.deleteCluster,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.cluster);
   }

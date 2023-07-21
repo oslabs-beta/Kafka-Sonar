@@ -2,7 +2,7 @@ import { query } from '../models/appModel';
 import { Request, Response, NextFunction } from 'express';
 
 const clusterController = {
-  getAllclusters: async (
+  getAllClusters: async (
     _req: Request,
     res: Response,
     next: NextFunction
@@ -15,12 +15,12 @@ const clusterController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in clusterController.getAllclusters Middleware',
+        log: 'Error occured in clusterController.getAllClusters Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
   },
-  getcluster: async (
+  getCluster: async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -34,54 +34,50 @@ const clusterController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in clusterController.getcluster Middleware',
+        log: 'Error occured in clusterController.getCluster Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
   },
-  postcluster: async (
+  postCluster: async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<unknown> => {
     try {
       const {
-        cluster_name,
-        industry,
-        cluster_type,
-        cluster_description,
-        host_id,
-        total_attendees,
-        cluster_location,
-        cluster_status,
-        date_time,
-        cluster_price,
+        client_id,
+        bootstrap_hostname,
+        port_number,
+        auth_mechanism,
+        username,
+        password,
+        app_cluster_id,
+        user_network,
       } = req.body;
       const request =
-        'INSERT INTO clusters (cluster_name, industry, cluster_type, cluster_description, host_id, total_attendees, cluster_location, cluster_status, date_time, cluster_price) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *';
+        'INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, app_cluster_id, user_network) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *';
       const values: any[] = [
-        cluster_name,
-        industry,
-        cluster_type,
-        cluster_description,
-        host_id,
-        total_attendees,
-        cluster_location,
-        cluster_status,
-        date_time,
-        cluster_price,
+        client_id,
+        bootstrap_hostname,
+        port_number,
+        auth_mechanism,
+        username,
+        password,
+        app_cluster_id,
+        user_network,
       ];
       const response: any = await query(request, values);
       res.locals.cluster = response.rows;
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in clusterController.postcluster Middleware',
+        log: 'Error occured in clusterController.postCluster Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
   },
-  putcluster: async (
+  putCluster: async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -89,30 +85,26 @@ const clusterController = {
     try {
       const cluster_id = req.params.cluster_id;
       const {
-        cluster_name,
-        industry,
-        cluster_type,
-        cluster_description,
-        host_id,
-        total_attendees,
-        cluster_location,
-        cluster_status,
-        date_time,
-        cluster_price,
+        client_id,
+        bootstrap_hostname,
+        port_number,
+        auth_mechanism,
+        username,
+        password,
+        app_cluster_id,
+        user_network,
       } = req.body;
       const request =
-        'UPDATE clusters SET cluster_name = $1, industry = $2, cluster_type = $3, cluster_description = $4, host_id = $5, total_attendees =$6, cluster_location = $7, cluster_status = $8, date_time = $9, cluster_price = $10 WHERE cluster_id= $11 RETURNING *';
+        'UPDATE clusters SET client_id = $1, bootstrap_hostname = $2, port_number = $3, auth_mechanism = $4, username = $5, password = $6, app_cluster_id = $7, user_network = $8 WHERE cluster_id = $9 RETURNING *';
       const values: any[] = [
-        cluster_name,
-        industry,
-        cluster_type,
-        cluster_description,
-        host_id,
-        total_attendees,
-        cluster_location,
-        cluster_status,
-        date_time,
-        cluster_price,
+        client_id,
+        bootstrap_hostname,
+        port_number,
+        auth_mechanism,
+        username,
+        password,
+        app_cluster_id,
+        user_network,
         cluster_id,
       ];
       const response: any = await query(request, values);
@@ -120,12 +112,12 @@ const clusterController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in clusterController.putcluster Middleware',
+        log: 'Error occured in clusterController.putCluster Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
   },
-  deletecluster: async (
+  deleteCluster: async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -139,7 +131,7 @@ const clusterController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in clusterController.deletecluster Middleware',
+        log: 'Error occured in clusterController.deleteCluster Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }

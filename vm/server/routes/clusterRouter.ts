@@ -44,4 +44,28 @@ clusterRouter.delete(
   }
 );
 
+clusterRouter.get(
+  '/userclusters/:user_id',
+  clusterController.getUserClusters,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.clusters);
+  }
+);
+
+clusterRouter.post(
+  '/userclusters/:user_id/:cluster_id',
+  clusterController.postUserCluster,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.cluster);
+  }
+);
+
+clusterRouter.delete(
+  '/userclusters/:user_id/:cluster_id',
+  clusterController.deleteUserCluster,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.cluster);
+  }
+);
+
 export default clusterRouter;

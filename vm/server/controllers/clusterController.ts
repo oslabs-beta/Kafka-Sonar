@@ -45,6 +45,7 @@ const clusterController = {
     next: NextFunction
   ): Promise<unknown> => {
     try {
+      const { user_id } = req.params;
       const {
         client_id,
         bootstrap_hostname,
@@ -57,6 +58,8 @@ const clusterController = {
       } = req.body;
       const request =
         'INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, app_cluster_id, user_network) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *';
+      // const request =
+      //   'WITH new_cluster AS (INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, app_cluster_id, user_network) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING * ) INSERT INTO users_in_clusters (user_id, cluster_id) SELECT $9 AS user_id, new_cluster.cluster_id FROM new_cluster;';
       const values: any[] = [
         client_id,
         bootstrap_hostname,
@@ -123,7 +126,7 @@ const clusterController = {
     next: NextFunction
   ): Promise<unknown> => {
     try {
-      const cluster_id = req.params.cluster_id;
+      const { cluster_id } = req.params;
       const request = 'DELETE FROM clusters WHERE cluster_id = $1 RETURNING *';
       const values: any[] = [cluster_id];
       const response: any = await query(request, values);
@@ -132,6 +135,67 @@ const clusterController = {
     } catch (err) {
       return next({
         log: 'Error occured in clusterController.deleteCluster Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+  getUserClusters: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { user_id } = req.params;
+      const request =
+        'SELECT * FROM clusters JOIN users_in_clusters ON clusters.cluster_id = users_in_clusters.cluster_id WHERE users_in_clusters.user_id = $1';
+      const values: any = [user_id];
+      const response: any = await query(request, values);
+      res.locals.clusters = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.getUserClusters Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+  postUserCluster: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { user_id, cluster_id } = req.params;
+
+      const request =
+        'INSERT INTO users_in_clusters (user_id, cluster_id) VALUES ($1,$2) RETURNING *';
+      const values: any[] = [user_id, cluster_id];
+      const response: any = await query(request, values);
+      res.locals.cluster = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.postUserCluster Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+  deleteUserCluster: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { user_id, cluster_id } = req.params;
+      const request =
+        'DELETE FROM users_in_clusters WHERE user_id = $1 AND cluster_id = $2 RETURNING *';
+      const values: any[] = [user_id, cluster_id];
+      const response: any = await query(request, values);
+      res.locals.cluster = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.deleteUserCluster Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }

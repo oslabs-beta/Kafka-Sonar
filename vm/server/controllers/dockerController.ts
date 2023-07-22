@@ -18,7 +18,7 @@ const dockerController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in configController.configPrometheus Middleware',
+        log: 'Error occured in configController.writeMetricsCompose Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }

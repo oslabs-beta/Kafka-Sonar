@@ -57,7 +57,7 @@ const configController = {
         return next();
       } catch (err) {
         return next({
-          log: 'Error occured in configController.configPrometheus Middleware',
+          log: 'Error occured in configController.writeGrafanaDashboard Middleware',
           message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
         });
       }

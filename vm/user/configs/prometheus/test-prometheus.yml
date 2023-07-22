@@ -1,5 +1,4 @@
-export default (targets: String) => {
-  return (`
+
     global:
       scrape_interval: 15s
     
@@ -9,6 +8,4 @@ export default (targets: String) => {
       - job_name: "kafka"
     
         static_configs:
-          - targets: ${targets}`
-  )
-}
+          - targets: ["test:5555","test:5555","test:5555"]

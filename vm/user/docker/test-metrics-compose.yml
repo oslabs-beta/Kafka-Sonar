@@ -1,18 +1,14 @@
-// need to figure out Grafana aspect of this with Steven
-
-export default (network: String, client_id: String) => {
-  return (
-`version: '3.5'
+version: '3.5'
 
 networks:
-  ${network}:
+  test:
     external: true
 
 services:
   grafana:
     image: 'grafana/grafana:latest'
     networks:
-      - ${network}
+      - test
     container_name: grafana
     ports:
       - '3000:3000'
@@ -30,14 +26,10 @@ services:
   prometheus:
     image: 'prom/prometheus:latest'
     networks:
-      - ${network}
+      - test
     container_name: prometheus
     ports:
       - '9090:9090'
     volumes:
-      - ../user/configs/prometheus/${client_id}-prometheus.yml:/etc/prometheus/${client_id}-prometheus.yml
-    command: '--config.file=/etc/prometheus/${client_id}-prometheus.yml'`);
-}
-
-// we are in root/vm/utils/writeMetricsCompose.ts, volume paths are in root/vm/user/configs/prometheus/<name> for prometheus
-// command for prometheus: ../user/configs/prometheus/${client_id}-prometheus.yml:/etc/prometheus/${client_id}-prometheus.yml
+      - ../user/configs/prometheus/test-prometheus.yml:/etc/prometheus/test-prometheus.yml
+    command: '--config.file=/etc/prometheus/test-prometheus.yml'

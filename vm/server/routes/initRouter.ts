@@ -10,6 +10,7 @@ initRouter.post(
   configController.configPrometheus,
   // configController.writeGrafanaDashboard,
   dockerController.writeMetricsCompose,
+  // dockerController.metricsComposeUp,
   (req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json('test complete, check for custom files')
   });

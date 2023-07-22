@@ -3,6 +3,7 @@ import { Buffer } from 'buffer';
 import fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
 import writePrometheusConfig from '../utils/writePrometheusConfig';
+import writeBuffer from '../utils/writeBuffer';
 
 const configController = {
   configPrometheus: async (
@@ -20,14 +21,15 @@ const configController = {
       shape of jmxPorts is as follows:
       [ { broker: number, port: string, host: string }, ...]
     */
-    // create prometheus targets based on jmxPorts
+    // create prometheus targets based on jmxPorts, strigify them since we are inserting them into a custom yml
     const targets = JSON.stringify(jmxPorts.map(jmxObj => {
       const { host, port } = jmxObj;
       return `${host}:${port}`;
     }));
     // insert targets into a custom yml
     const prometheusConfigYml = writePrometheusConfig(targets);
-    const configBuffer = new Uint8Array(Buffer.from(prometheusConfigYml));
+    // convert to buffer
+    const configBuffer = writeBuffer(prometheusConfigYml);
     try {
       // we are currently in root/vm/server/controllers/configController.ts
       // want to write to root/vm/user/configs/prometheus

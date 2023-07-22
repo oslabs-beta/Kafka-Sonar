@@ -20,6 +20,8 @@ try {
 //   res.send('Hello from Kafka Sonar');
 // });
 
+app.use(express.json());
+
 app.use('/api', api);
 
 // catch-all route handler

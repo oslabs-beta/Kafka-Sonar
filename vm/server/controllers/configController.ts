@@ -1,7 +1,8 @@
-import fs from 'fs';
+import fs, { write } from 'fs';
 import { Request, Response, NextFunction } from 'express';
 import writePrometheusConfig from '../utils/writePrometheusConfig';
 import writeBuffer from '../utils/writeBuffer';
+import writeGrafanaDashboard from '../utils/writeGrafanaDashboard';
 
 const configController = {
   configPrometheus: async (
@@ -21,8 +22,8 @@ const configController = {
     */
     // create prometheus targets based on jmxPorts, strigify them since we are inserting them into a custom yml
     const targets = JSON.stringify(jmxPorts.map(jmxObj => {
-      const { host, port } = jmxObj;
-      return `${host}:${port}`;
+      const { jmx_hostname, jmx_port_number } = jmxObj;
+      return `${jmx_hostname}:${jmx_port_number}`;
     }));
     // insert targets into a custom yml
     const prometheusConfigYml = writePrometheusConfig(targets);
@@ -48,6 +49,18 @@ const configController = {
     ): Promise<void> => {
       // get the number of brokers from preivous middleware
       const { numberOfBrokers } = res.locals;
+      const { userData: { clientData: { client_id } } } = req.body;
+      const grafanaDashboardJson = writeGrafanaDashboard(numberOfBrokers);
+      const dashboardBuffer = writeBuffer(grafanaDashboardJson);
+      try {
+        fs.writeFileSync(`./user/configs/grafana/dashboards/${client_id}-health.json`, dashboardBuffer);
+        return next();
+      } catch (err) {
+        return next({
+          log: 'Error occured in configController.configPrometheus Middleware',
+          message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+        });
+      }
     }
 };
 

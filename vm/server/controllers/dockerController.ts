@@ -1,5 +1,4 @@
-import { Buffer } from 'buffer';
-import fs, { write } from 'fs';
+import fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
 import writeMetricsCompose from '../utils/writeMetricsCompose';
 import writeBuffer from '../utils/writeBuffer';
@@ -10,9 +9,9 @@ const dockerController = {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { userData: { network } } = req.body;
+    const { userData: { user_network } } = req.body;
     const { userData: { clientData: { client_id } } } = req.body;
-    const customCompose = writeMetricsCompose(network, client_id);
+    const customCompose = writeMetricsCompose(user_network, client_id);
     const composeBuffer = writeBuffer(customCompose);
     try {
       fs.writeFileSync(`./user/docker/${client_id}-metrics-compose.yml`, composeBuffer);

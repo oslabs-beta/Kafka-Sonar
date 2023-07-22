@@ -8,7 +8,7 @@ const initRouter = express.Router();
 initRouter.post(
   '/test',
   configController.configPrometheus,
-  // configController.writeGrafanaDashboard,
+  configController.writeGrafanaDashboard,
   dockerController.writeMetricsCompose,
   // dockerController.metricsComposeUp,
   (req: Request, res: Response, _next: NextFunction): void => {

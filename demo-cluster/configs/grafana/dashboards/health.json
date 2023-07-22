@@ -149,7 +149,7 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "description": "Total number of brokers with a state running (i.e 3)",
+      "description": "Total number of brokers with a state running",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -224,7 +224,7 @@
           "refId": "A"
         }
       ],
-      "title": "Brokers Running(>=3)",
+      "title": "Brokers Running",
       "type": "stat"
     },
     {
@@ -309,7 +309,7 @@
           "refId": "A"
         }
       ],
-      "title": "Brokers Offline(=0)",
+      "title": "Brokers Offline",
       "type": "stat"
     },
     {

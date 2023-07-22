@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Buffer } from 'buffer';
 import fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
+import writePrometheusConfig from '../utils/writePrometheusConfig';
 
 const configController = {
   configPrometheus: async (
@@ -25,24 +26,12 @@ const configController = {
       return `${host}:${port}`;
     }));
     // insert targets into a custom yml
-    const prometheusConfigYml = `
-    global:
-      scrape_interval: 15s
-    
-    rule_files:
-    
-    scrape_configs:
-      - job_name: "kafka"
-    
-        static_configs:
-          - targets: ${targets}`
-
+    const prometheusConfigYml = writePrometheusConfig(targets);
     const configBuffer = new Uint8Array(Buffer.from(prometheusConfigYml));
     try {
       // we are currently in root/vm/server/controllers/configController.ts
       // want to write to root/vm/user/configs/prometheus
       fs.writeFileSync(`./user/configs/prometheus/${client_id}-prometheus.yml`, configBuffer);
-      console.log('number of brokers',numberOfBrokers);
       return next();
     } catch (err) {
       return next({

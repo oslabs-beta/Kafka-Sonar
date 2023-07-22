@@ -54,3 +54,38 @@ export interface BrokerInfo {
   host: string;
   port: string;
 }
+
+// Login and Signup components, User type for verifyUser and postNewUser handlers
+export interface User {
+  email: string;
+  password: string;
+  role?: string;
+}
+
+export interface GridRowDef {
+  clientId: string;
+  host: string;
+  port: string;
+  auth: string;
+  // fetchMetrics: 1; // Fix: MUI button
+  // fetchLogs: 1; // Fix: MUI button
+}
+
+// FOLLOWING TYPE DEFINITIONS ARE DESIGNED TO MATCH DATABASE COL NAMES AND/OR EXPECTED BE DATA SHAPES
+
+// SaveNewConnection component, KafkaJS client info
+export interface KafkajsClientInfo {
+  client_id: string;
+  bootstrap_hostname: string;
+  port_number: string;
+  auth_mechanism: string;
+  username: string;
+  password: string;
+}
+
+// SaveNewConnection component, Connection type for handleFinish handler
+export interface Connection {
+  client: KafkajsClientInfo;
+  user_network: string;
+  jmxPorts: BrokerInfo[];
+}

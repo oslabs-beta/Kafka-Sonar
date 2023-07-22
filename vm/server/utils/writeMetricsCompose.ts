@@ -1,5 +1,3 @@
-// need to figure out Grafana aspect of this with Steven
-
 export default (network: String, client_id: String) => {
   return (
 `version: '3.5'
@@ -37,7 +35,7 @@ services:
     volumes:
       - ../user/configs/prometheus/${client_id}-prometheus.yml:/etc/prometheus/${client_id}-prometheus.yml
     command: '--config.file=/etc/prometheus/${client_id}-prometheus.yml'`);
-}
+};
 
 // we are in root/vm/utils/writeMetricsCompose.ts, volume paths are in root/vm/user/configs/prometheus/<name> for prometheus
 // command for prometheus../user/configs/prometheus/${client_id}-prometheus.yml:/etc/prometheus/${client_id}-prometheus.yml

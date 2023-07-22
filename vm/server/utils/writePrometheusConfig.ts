@@ -6,9 +6,9 @@ export default (targets: String) => {
     rule_files:
     
     scrape_configs:
-      - job_name: "kafka"
+      - job_name: "kafka-sonar"
     
         static_configs:
           - targets: ${targets}`
-  )
-}
+  );
+};

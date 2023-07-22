@@ -22,8 +22,8 @@ services:
       GF_AUTH_ANONYMOUS_ENABLED: true
       GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
     volumes:
-      - ./demo-cluster/configs/grafana/provisioning:/etc/grafana/provisioning
-      - ./demo-cluster/configs/grafana/dashboards:/var/lib/grafana/dashboards
+      - ../user/configs/grafana/provisioning:/etc/grafana/provisioning
+      - ../user/configs/grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       - prometheus
 
@@ -40,4 +40,4 @@ services:
 }
 
 // we are in root/vm/utils/writeMetricsCompose.ts, volume paths are in root/vm/user/configs/prometheus/<name> for prometheus
-// command for prometheus: ../user/configs/prometheus/${client_id}-prometheus.yml:/etc/prometheus/${client_id}-prometheus.yml
+// command for prometheus../user/configs/prometheus/${client_id}-prometheus.yml:/etc/prometheus/${client_id}-prometheus.yml

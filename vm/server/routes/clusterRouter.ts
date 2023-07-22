@@ -68,4 +68,22 @@ clusterRouter.delete(
   }
 );
 
+// add error routes
+
+clusterRouter.get(
+  '/clustererrors/:cluster_id',
+  clusterController.getClusterErrors,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.clusters);
+  }
+);
+
+clusterRouter.post(
+  '/clustererrors/:cluster_id',
+  clusterController.postClusterError,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.cluster);
+  }
+);
+
 export default clusterRouter;

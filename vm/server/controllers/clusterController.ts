@@ -200,6 +200,49 @@ const clusterController = {
       });
     }
   },
+  getClusterErrors: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { cluster_id } = req.params;
+      const request = 'SELECT * FROM error_logs WHERE cluster_id = $1';
+      const values: any = [cluster_id];
+      const response: any = await query(request, values);
+      res.locals.clusters = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.getClusterErrors Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+  postClusterError: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { cluster_id } = req.params;
+      const { message } = req.body;
+
+      console.log(cluster_id, message);
+
+      const request =
+        'INSERT INTO error_logs (cluster_id, message) VALUES ($1,$2) RETURNING *';
+      const values: any[] = [cluster_id, message];
+      const response: any = await query(request, values);
+      res.locals.cluster = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.postClusterError Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
 };
 
 export default clusterController;

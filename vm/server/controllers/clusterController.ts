@@ -243,6 +243,94 @@ const clusterController = {
       });
     }
   },
+
+  // JMX Ports
+  getJmxPorts: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { cluster_id } = req.params;
+      const request = 'SELECT * FROM jmx_ports WHERE cluster_id = $1';
+      const values: any = [cluster_id];
+      const response: any = await query(request, values);
+      res.locals.clusters = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.getJmxPorts Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+  postJmxPort: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { cluster_id } = req.params;
+      const { jmx_hostname, jmx_port_number } = req.body;
+      const request =
+        'INSERT INTO jmx_ports (cluster_id, jmx_hostname, jmx_port_number) VALUES ($1,$2,$3) RETURNING *';
+      const values: any[] = [cluster_id, jmx_hostname, jmx_port_number];
+      const response: any = await query(request, values);
+      res.locals.cluster = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.postJmxPort Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+  putJmxPort: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { cluster_id, port_id } = req.params;
+      const { jmx_hostname, jmx_port_number } = req.body;
+      const request =
+        'UPDATE jmx_ports SET jmx_hostname= $1, jmx_port_number = $2 WHERE cluster_id = $3 AND port_id = $4 RETURNING *';
+      const values: any[] = [
+        jmx_hostname,
+        jmx_port_number,
+        cluster_id,
+        port_id,
+      ];
+      const response: any = await query(request, values);
+      res.locals.cluster = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.putJmxPort Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+  deleteJmxPort: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { cluster_id, port_id } = req.params;
+      const request =
+        'DELETE FROM jmx_ports WHERE cluster_id = $1 AND port_id = $2 RETURNING *';
+      const values: any[] = [cluster_id, port_id];
+      const response: any = await query(request, values);
+      res.locals.cluster = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.deleteJmxPort Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
 };
 
 export default clusterController;

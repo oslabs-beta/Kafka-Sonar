@@ -4,6 +4,8 @@ import clusterController from '../controllers/clusterController';
 
 const clusterRouter = express.Router();
 
+// General clusters routes
+
 clusterRouter.get(
   '/allclusters',
   clusterController.getAllClusters,
@@ -44,6 +46,8 @@ clusterRouter.delete(
   }
 );
 
+// User clusters routes
+
 clusterRouter.get(
   '/userclusters/:user_id',
   clusterController.getUserClusters,
@@ -68,7 +72,7 @@ clusterRouter.delete(
   }
 );
 
-// add error routes
+// Error logs routes
 
 clusterRouter.get(
   '/clustererrors/:cluster_id',
@@ -81,6 +85,40 @@ clusterRouter.get(
 clusterRouter.post(
   '/clustererrors/:cluster_id',
   clusterController.postClusterError,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.cluster);
+  }
+);
+
+// jmx ports routes
+
+clusterRouter.get(
+  '/jmxports/:cluster_id',
+  clusterController.getJmxPorts,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.clusters);
+  }
+);
+
+clusterRouter.post(
+  '/jmxports/:cluster_id',
+  clusterController.postJmxPort,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.cluster);
+  }
+);
+
+clusterRouter.put(
+  '/jmxports/:cluster_id/:port_id',
+  clusterController.putJmxPort,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.cluster);
+  }
+);
+
+clusterRouter.delete(
+  '/jmxports/:cluster_id/:port_id',
+  clusterController.deleteJmxPort,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.cluster);
   }

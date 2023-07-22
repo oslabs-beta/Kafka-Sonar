@@ -12,7 +12,7 @@ initRouter.post(
   dockerController.writeMetricsCompose,
   // dockerController.metricsComposeUp,
   (req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json('test complete, check for custom files')
+    res.status(200).json('test complete, check for custom files');
   });
 
 export default initRouter;

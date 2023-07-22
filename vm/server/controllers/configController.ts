@@ -1,5 +1,3 @@
-import axios from 'axios';
-import { Buffer } from 'buffer';
 import fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
 import writePrometheusConfig from '../utils/writePrometheusConfig';
@@ -28,7 +26,7 @@ const configController = {
     }));
     // insert targets into a custom yml
     const prometheusConfigYml = writePrometheusConfig(targets);
-    // convert to buffer
+    // convert to buffer 
     const configBuffer = writeBuffer(prometheusConfigYml);
     try {
       // we are currently in root/vm/server/controllers/configController.ts

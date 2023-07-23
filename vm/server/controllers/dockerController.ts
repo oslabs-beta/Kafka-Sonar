@@ -11,11 +11,12 @@ const dockerController = {
     next: NextFunction,
   ): Promise<void> => {
     const { userData: { user_network } } = req.body;
-    const { userData: { clientData: { client_id } } } = req.body;
-    const customCompose = writeMetricsCompose(user_network, client_id);
+    const { clusterDir } = res.locals;
+    console.log('clusterDir in docker controller', clusterDir);
+    const customCompose = writeMetricsCompose(user_network, clusterDir);
     const composeBuffer = writeBuffer(customCompose);
     try {
-      outputFileSync(`./user/${client_id}/docker/metrics-compose.yml`, composeBuffer);
+      outputFileSync(`./user/${clusterDir}/docker/metrics-compose.yml`, composeBuffer);
       return next();
     } catch (err) {
       return next({

@@ -13,6 +13,8 @@ const configController = {
   ): Promise<void> => {
     const { userData: { jmxPorts } } = req.body;
     const { userData: { clientData: { client_id } } } = req.body;
+    const clusterDir = client_id;
+    res.locals.clusterDir = clusterDir;
     // get number of brokers from user request and add to res.locals
     const numberOfBrokers = jmxPorts.length;
     if (numberOfBrokers <= 0) throw Error();
@@ -33,7 +35,7 @@ const configController = {
     try {
       // we are currently in root/vm/server/controllers/configController.ts
       // want to write to root/vm/user/configs/prometheus
-      outputFileSync(`./user/${client_id}/configs/prometheus/prometheus.yml`, configBuffer);
+      outputFileSync(`./user/${clusterDir}/configs/prometheus/prometheus.yml`, configBuffer);
       return next();
     } catch (err) {
       return next({
@@ -49,19 +51,19 @@ const configController = {
     next: NextFunction
     ): Promise<void> => {
       // get the number of brokers from preivous middleware
-      const { numberOfBrokers } = res.locals;
-      const { userData: { clientData: { client_id } } } = req.body;
+      const { numberOfBrokers, clusterDir } = res.locals;
+      // write the custom dashboard and convert it into a buffer
       const grafanaDashboardJson = writeGrafanaDashboard(numberOfBrokers);
       const dashboardBuffer = writeBuffer(grafanaDashboardJson);
       try {
         // write the custom dashboard
-        outputFileSync(`./user/${client_id}/configs/grafana/dashboards/health.json`, dashboardBuffer);
+        outputFileSync(`./user/${clusterDir}/configs/grafana/dashboards/health.json`, dashboardBuffer);
         // copy all static grafana files into this specific cluster's directory
         // first copy over static dashboards
-        copySync(`./static/configs/grafana/dashboards/brokers_jvm_os.json`, `./user/${client_id}/configs/grafana/dashboards/brokers_jvm_os.json`);
-        copySync(`./static/configs/grafana/dashboards/performance.json`, `./user/${client_id}/configs/grafana/dashboards/performance.json`);
+        copySync(`./static/configs/grafana/dashboards/brokers_jvm_os.json`, `./user/${clusterDir}/configs/grafana/dashboards/brokers_jvm_os.json`);
+        copySync(`./static/configs/grafana/dashboards/performance.json`, `./user/${clusterDir}/configs/grafana/dashboards/performance.json`);
         // then copy over all provisioning files
-        copySync(`./static/configs/grafana/provisioning`, `./user/${client_id}/configs/grafana/provisioning/`)
+        copySync(`./static/configs/grafana/provisioning`, `./user/${clusterDir}/configs/grafana/provisioning/`)
         return next();
       } catch (err) {
         return next({

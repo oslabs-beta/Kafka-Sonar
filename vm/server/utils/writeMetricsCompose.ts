@@ -1,4 +1,4 @@
-export default (network: String, client_id: String) => {
+export default (network: String, clusterDir: String) => {
   return (
 `version: '3.5'
 
@@ -20,8 +20,8 @@ services:
       GF_AUTH_ANONYMOUS_ENABLED: true
       GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
     volumes:
-      - ./user/${client_id}/configs/grafana/provisioning:/etc/grafana/provisioning
-      - ./user/${client_id}/configs/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./user/${clusterDir}/configs/grafana/provisioning:/etc/grafana/provisioning
+      - ./user/${clusterDir}/configs/grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       - prometheus
 
@@ -33,7 +33,7 @@ services:
     ports:
       - '9090:9090'
     volumes:
-      - ./user/${client_id}/configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./user/${clusterDir}/configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command: '--config.file=/etc/prometheus/prometheus.yml'`);
 };
 

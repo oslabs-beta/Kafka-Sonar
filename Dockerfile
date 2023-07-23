@@ -44,6 +44,10 @@ COPY --from=builder /backend backend
 # COPY --from=client-builder /ui/build ui
 COPY --from=client-builder /ui ui
 
+# Copy user configs and static configs into the extension image
+COPY vm/static static
+COPY vm/user user
+
 RUN chmod +x /backend
 WORKDIR /backend
 CMD ["npm", "start"]

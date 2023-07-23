@@ -9,5 +9,8 @@ services:
       # - 5175:5175
       - 3333:3333
     volumes:
-      - ./vm/user:./backend/user
+      - user:/user
       - /var/run/docker.sock.raw:/var/run/docker.sock
+
+volumes:
+  user:

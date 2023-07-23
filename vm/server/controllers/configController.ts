@@ -1,4 +1,6 @@
-import fs, { write } from 'fs';
+import fs from 'fs';
+import pkg from 'fs-extra';
+const { copySync, outputFileSync } = pkg;
 import { Request, Response, NextFunction } from 'express';
 import writePrometheusConfig from '../utils/writePrometheusConfig';
 import writeBuffer from '../utils/writeBuffer';
@@ -32,7 +34,7 @@ const configController = {
     try {
       // we are currently in root/vm/server/controllers/configController.ts
       // want to write to root/vm/user/configs/prometheus
-      fs.writeFileSync(`./user/configs/prometheus/${client_id}-prometheus.yml`, configBuffer);
+      outputFileSync(`./user/${client_id}/configs/prometheus/prometheus.yml`, configBuffer);
       return next();
     } catch (err) {
       return next({
@@ -53,7 +55,14 @@ const configController = {
       const grafanaDashboardJson = writeGrafanaDashboard(numberOfBrokers);
       const dashboardBuffer = writeBuffer(grafanaDashboardJson);
       try {
-        fs.writeFileSync(`./user/configs/grafana/dashboards/${client_id}-health.json`, dashboardBuffer);
+        // write the custom dashboard
+        outputFileSync(`./user/${client_id}/configs/grafana/dashboards/health.json`, dashboardBuffer);
+        // copy all static grafana files into this specific cluster's directory
+        // first copy over static dashboards
+        copySync(`./static/configs/grafana/dashboards/brokers_jvm_os.json`, `./user/${client_id}/configs/grafana/dashboards/brokers_jvm_os.json`);
+        copySync(`./static/configs/grafana/dashboards/performance.json`, `./user/${client_id}/configs/grafana/dashboards/performance.json`);
+        // then copy over all provisioning files
+        copySync(`./static/configs/grafana/provisioning`, `./user/${client_id}/configs/grafana/provisioning/`)
         return next();
       } catch (err) {
         return next({

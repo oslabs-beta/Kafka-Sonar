@@ -3,7 +3,7 @@
 services:
   KafkaSonar:
     image: ${DESKTOP_PLUGIN_IMAGE}
-    container_name: kafkasonar
+    container_name: kafka-sonar
     ports:
       # Expose port 5175 to the host so that you can see metrics on localhost:5175
       - 5175:5175

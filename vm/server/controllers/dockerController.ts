@@ -1,4 +1,6 @@
 import fs from 'fs';
+import pkg from 'fs-extra';
+const { outputFileSync } = pkg;
 import { Request, Response, NextFunction } from 'express';
 import writeMetricsCompose from '../utils/writeMetricsCompose';
 import writeBuffer from '../utils/writeBuffer';
@@ -14,7 +16,7 @@ const dockerController = {
     const customCompose = writeMetricsCompose(user_network, client_id);
     const composeBuffer = writeBuffer(customCompose);
     try {
-      fs.writeFileSync(`./user/docker/${client_id}-metrics-compose.yml`, composeBuffer);
+      outputFileSync(`./user/${client_id}/docker/metrics-compose.yml`, composeBuffer);
       return next();
     } catch (err) {
       return next({

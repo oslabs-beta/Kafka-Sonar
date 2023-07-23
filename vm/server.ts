@@ -1,56 +1,22 @@
-import express from 'express';
-import { Express, Request, Response, NextFunction } from 'express';
-import * as fs from 'fs';
-import bodyParser from 'body-parser';
-import api from './server/routes/api';
+import fs from 'fs';
+import metricsServer from './server/metricsServer';
+import socketServer from './server/socketServer';
+import { SOCKET_PATH } from './server/constants';
+import { METRICS_PORT } from './server/constants';
 
-const SOCKETFILE = '/run/guest-services/backend.sock'; // Unix socket
-const app: Express = express();
-
-// After a server is done with the unix domain socket, it is not automatically destroyed.
-// You must instead unlink the socket in order to reuse that address/path.
-// To do this, we delete the file with fs.unlinkSync()
+// If a socket file exists, delete it for reusability.
 try {
-  fs.unlinkSync(SOCKETFILE);
-  console.log('Deleted the UNIX socket file.');
+  if (fs.existsSync(SOCKET_PATH)) {
+    fs.unlinkSync(SOCKET_PATH);
+  }
 } catch (err) {
-  console.log('Did not need to delete the UNIX socket file.');
+  console.error('Error deleting socket file:', err);
 }
 
-// app.get('/test', (req: Request, res: Response) => {
-//   res.send('Hello from Kafka Sonar');
-// });
-
-app.use(bodyParser.json());
-
-app.use('/api', api);
-
-// catch-all route handler
-app.use((_req: Request, res: Response): unknown =>
-  res.status(404).send("This is not the page you're looking for...")
-);
-
-// global error handler
-app.use(
-  (
-    err: unknown,
-    _req: Request,
-    res: Response,
-    _next: NextFunction
-  ): unknown => {
-    const defaultErr = {
-      log: `Express error handler caught unknown middleware error ${err}`,
-      status: 500,
-      message: { err: 'An error occurred' },
-    };
-    const errorObj = Object.assign({}, defaultErr, err);
-    console.log(errorObj.log);
-    return res.status(errorObj.status).json(errorObj.message);
-  }
-);
-
-app.listen(3333, () => {
-  console.log('listening on Port 3333...');
+metricsServer.listen(METRICS_PORT, () => {
+  console.log(`🚀 Server listening on Port ${METRICS_PORT}`);
 });
 
-// app.listen(SOCKETFILE, () => console.log(`🚀 Server listening on ${SOCKETFILE}`));
+socketServer.listen(SOCKET_PATH, () => {
+  console.log(`🚀 Server listening on Socket ${SOCKET_PATH}`);
+});

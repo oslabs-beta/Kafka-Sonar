@@ -9,6 +9,8 @@ services:
       # - 5175:5175
       - 3333:3333
     volumes:
+    # create named volume which is mapped to the /user directory in the extension container
+    # this /user directory is copied into the extension container in the Dockerfile 
       - user:/user
       - /var/run/docker.sock.raw:/var/run/docker.sock
 

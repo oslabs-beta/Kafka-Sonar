@@ -20,11 +20,11 @@ const configController = {
       shape of jmxPorts is as follows:
       [ { broker: number, port: string, host: string }, ...]
     */
-    // create prometheus targets based on jmxPorts, strigify them since we are inserting them into a custom yml
-    const targets = JSON.stringify(jmxPorts.map(jmxObj => {
+    // create prometheus targets based on jmxPorts
+    const targets = jmxPorts.map(jmxObj => {
       const { jmx_hostname, jmx_port_number } = jmxObj;
       return `${jmx_hostname}:${jmx_port_number}`;
-    }));
+    });
     // insert targets into a custom yml
     const prometheusConfigYml = writePrometheusConfig(targets);
     // convert to buffer 

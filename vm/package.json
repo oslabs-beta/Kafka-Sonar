@@ -8,6 +8,7 @@
     "start": "tsc -b && node dist/server.js"
   },
   "dependencies": {
+    "@docker/extension-api-client": "^0.3.4",
     "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "dotenv": "^16.1.3",

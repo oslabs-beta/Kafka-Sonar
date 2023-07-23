@@ -10,7 +10,7 @@ initRouter.post(
   configController.configPrometheus,
   configController.writeGrafanaDashboard,
   dockerController.writeMetricsCompose,
-  // dockerController.metricsComposeUp,
+  dockerController.metricsComposeUp,
   // save client info to cluster table, returning cluster_id
   // save jmx info to jmx table, using cluster_id as fk
   (_req: Request, res: Response, _next: NextFunction): void => {

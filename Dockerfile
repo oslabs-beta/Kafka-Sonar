@@ -51,5 +51,3 @@ COPY vm/user user
 RUN chmod +x /backend
 WORKDIR /backend
 CMD ["npm", "start"]
-# WORKDIR /ui
-# CMD ["npm", "run", "frontend"]

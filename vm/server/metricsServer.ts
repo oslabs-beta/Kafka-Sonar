@@ -1,6 +1,7 @@
 import express from 'express';
 import { Express, Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
+import api from './routes/api';
 
 const app: Express = express();
 
@@ -10,6 +11,8 @@ app.use(bodyParser.json());
 app.get('/test', (req, res) => {
   res.send(`Hello from the backend (port 3333)`);
 });
+
+app.use('/api', api);
 
 // catch-all route handler
 app.use((_req: Request, res: Response): unknown =>

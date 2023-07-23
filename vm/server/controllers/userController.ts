@@ -21,7 +21,7 @@ const userController = {
       });
     }
   },
-  getuser: async (
+  getUser: async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -35,76 +35,55 @@ const userController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in userController.getuser Middleware',
+        log: 'Error occured in userController.getUser Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
   },
-  postuser: async (
+  postUser: async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<unknown> => {
     try {
-      const { email, password } = req.body;
+      console.log(req.body);
+      const { email, password, account_type } = req.body;
+
       const request =
-        'INSERT INTO users (email, password) VALUES ($1,$2) RETURNING *';
-      const values: any[] = [email, password];
+        'INSERT INTO users (email, password, account_type) VALUES ($1,$2, $3) RETURNING *';
+      const values: any[] = [email, password, account_type];
       const response: any = await query(request, values);
       res.locals.user = response.rows;
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in userController.postuser Middleware',
+        log: 'Error occured in userController.postUser Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
   },
-  putuser: async (
+  putUser: async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<unknown> => {
     try {
       const user_id = req.params.user_id;
-      const {
-        user_name,
-        industry,
-        user_type,
-        user_description,
-        host_id,
-        total_attendees,
-        user_location,
-        user_status,
-        date_time,
-        user_price,
-      } = req.body;
+      const { email, password, account_type } = req.body;
       const request =
-        'UPDATE users SET user_name = $1, industry = $2, user_type = $3, user_description = $4, host_id = $5, total_attendees =$6, user_location = $7, user_status = $8, date_time = $9, user_price = $10 WHERE user_id= $11 RETURNING *';
-      const values: any[] = [
-        user_name,
-        industry,
-        user_type,
-        user_description,
-        host_id,
-        total_attendees,
-        user_location,
-        user_status,
-        date_time,
-        user_price,
-        user_id,
-      ];
+        'UPDATE users SET email= $1, password = $2, account_type = $3 WHERE user_id= $4 RETURNING *';
+      const values: any[] = [email, password, account_type, user_id];
       const response: any = await query(request, values);
       res.locals.user = response.rows;
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in userController.putuser Middleware',
+        log: 'Error occured in userController.putUser Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
   },
-  deleteuser: async (
+  deleteUser: async (
     req: Request,
     res: Response,
     next: NextFunction

@@ -10,7 +10,7 @@ CREATE TABLE users (
 
 
 
-CREATE TABLE cluster (
+CREATE TABLE clusters (
 	"cluster_id" serial NOT NULL UNIQUE,
 	"client_id" varchar (255) NOT NULL,
 	"bootstrap_hostname" varchar(255) NOT NULL,
@@ -63,12 +63,12 @@ CREATE TABLE error_logs (
 
 
 
-ALTER TABLE "jmx_ports" ADD CONSTRAINT "jmx_ports_fk0" FOREIGN KEY ("cluster_id") REFERENCES "cluster"("cluster_id");
+ALTER TABLE "jmx_ports" ADD CONSTRAINT "jmx_ports_fk0" FOREIGN KEY ("cluster_id") REFERENCES "clusters"("cluster_id") ON DELETE CASCADE;
 
-ALTER TABLE "users_in_clusters" ADD CONSTRAINT "users_in_clusters_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("user_id");
-ALTER TABLE "users_in_clusters" ADD CONSTRAINT "users_in_clusters_fk1" FOREIGN KEY ("cluster_id") REFERENCES "cluster"("cluster_id");
+ALTER TABLE "users_in_clusters" ADD CONSTRAINT "users_in_clusters_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE;
+ALTER TABLE "users_in_clusters" ADD CONSTRAINT "users_in_clusters_fk1" FOREIGN KEY ("cluster_id") REFERENCES "clusters"("cluster_id") ON DELETE CASCADE;
 
-ALTER TABLE "error_logs" ADD CONSTRAINT "error_logs_fk0" FOREIGN KEY ("cluster_id") REFERENCES "cluster"("cluster_id");
+ALTER TABLE "error_logs" ADD CONSTRAINT "error_logs_fk0" FOREIGN KEY ("cluster_id") REFERENCES "clusters"("cluster_id") ON DELETE CASCADE;
 
 
 

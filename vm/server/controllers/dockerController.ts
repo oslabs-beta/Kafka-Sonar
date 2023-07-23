@@ -1,4 +1,3 @@
-import fs from 'fs';
 import pkg from 'fs-extra';
 const { outputFileSync } = pkg;
 import { Request, Response, NextFunction } from 'express';

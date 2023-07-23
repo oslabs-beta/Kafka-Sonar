@@ -1,26 +1,40 @@
-import express from 'express';
+import * as express from 'express';
 import { Express, Request, Response, NextFunction } from 'express';
+import * as bodyParser from 'body-parser';
 import * as fs from 'fs';
-import api from './server/routes/api';
+// import * as api from './server/routes/api';
+import * as http from 'http';
 
-const SOCKETFILE = '/run/guest-services/backend.sock'; // Unix socket
-const app: Express = express();
+// Unix socket
+const socket = '/run/guest-services/backend.sock';
 
 // After a server is done with the unix domain socket, it is not automatically destroyed.
 // You must instead unlink the socket in order to reuse that address/path.
 // To do this, we delete the file with fs.unlinkSync()
 try {
-  fs.unlinkSync(SOCKETFILE);
-  console.log('Deleted the UNIX socket file.');
+  if (fs.existsSync(socket)) {
+    console.log('UNIX socket file exists.');
+    fs.unlinkSync(socket);
+    console.log('Deleted the UNIX socket file.');
+  }
 } catch (err) {
-  console.log('Did not need to delete the UNIX socket file.');
+  console.error('An error occurred while deleting the socket file:', err);
 }
 
-// app.get('/test', (req: Request, res: Response) => {
-//   res.send('Hello from Kafka Sonar');
-// });
+const app: Express = express();
 
-app.use('/api', api);
+app.use(bodyParser.json());
+
+app.get('/hello', (req, res) => {
+  res.send(`🚀 Server listening on ${socket}`);
+});
+
+const server = http.createServer(app);
+server.listen(socket, () => {
+  console.log(`🚀 Server listening on ${socket}`);
+});
+
+// app.use('/api', api);
 
 // catch-all route handler
 app.use((_req: Request, res: Response): unknown =>
@@ -46,8 +60,6 @@ app.use(
   }
 );
 
-app.listen(3333, () => {
-  console.log('listening on Port 3333...');
-});
-
-// app.listen(SOCKETFILE, () => console.log(`🚀 Server listening on ${SOCKETFILE}`));
+// app.listen(3333, () => {
+//   console.log('listening on Port 3333...');
+// });

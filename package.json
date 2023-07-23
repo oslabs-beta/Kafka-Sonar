@@ -2,7 +2,6 @@
   "name": "kafka-sonar",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "demo-cluster": "docker compose -f docker-compose-cluster.yml up",
@@ -10,7 +9,10 @@
     "demo-cluster-produce-mass": "ts-node-esm demo-cluster/test/massProducer.ts",
     "demo-cluster-consume": "ts-node-esm demo-cluster/test/consumer.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "kafkajs": "^2.2.4",
+    "ts-node": "^10.9.1"
+  },
   "devDependencies": {
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",

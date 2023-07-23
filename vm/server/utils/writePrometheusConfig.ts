@@ -2,7 +2,8 @@ interface Targets {
   broker: String,
   jmx_hostname: String,
   jmx_port_number: String,
-}
+};
+
 export default (targets: Targets) => {
   const targetsString = JSON.stringify(targets);
   return (`

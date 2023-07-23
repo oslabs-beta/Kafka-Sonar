@@ -7,3 +7,5 @@ services:
     ports:
       # Expose port 5175 to the host so that you can see metrics on localhost:5175
       - 5175:5175
+    volumes:
+      - ./vm/user:./backend/user

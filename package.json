@@ -10,7 +10,8 @@
     "demo-cluster-consume": "ts-node-esm demo-cluster/test/consumer.ts"
   },
   "dependencies": {
-    "kafkajs": "^2.2.4"
+    "kafkajs": "^2.2.4",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@types/node": "^20.4.2",

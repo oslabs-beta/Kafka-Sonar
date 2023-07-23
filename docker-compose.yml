@@ -5,7 +5,9 @@ services:
     image: ${DESKTOP_PLUGIN_IMAGE}
     container_name: kafka-sonar
     ports:
-      # Expose port 5175 to the host so that you can see metrics on localhost:5175
-      - 5175:5175
+      # Expose port 3333 to the host so that you can see metrics on localhost:3333
+      # - 5175:5175
+      - 3333:3333
     volumes:
       - ./vm/user:./backend/user
+      - /var/run/docker.sock.raw:/var/run/docker.sock

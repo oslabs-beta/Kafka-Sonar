@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES6",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable", "ES6"], // incl ES6 for MUI: https://mui.com/material-ui/guides/typescript/ (DOM was in the Vite TS boilerplate)
-    "module": "ESNext",
+    "module": "CommonJS",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -12,11 +12,10 @@
     "outDir": "./dist",
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "react-jsx",
 
     /* Linting */
@@ -25,8 +24,7 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["./"],
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "include": ["./**/*"],
   "ts-node": {
     "experimentalSpecifierResolution": "node"
   }

@@ -1,9 +1,9 @@
-import * as express from 'express';
+import express from 'express';
 import { Express, Request, Response, NextFunction } from 'express';
-import * as bodyParser from 'body-parser';
-import * as fs from 'fs';
-// import * as api from './server/routes/api';
-import * as http from 'http';
+import bodyParser from 'body-parser';
+import fs from 'fs';
+import api from './server/routes/api';
+import http from 'http';
 
 // Unix socket
 const socket = '/run/guest-services/backend.sock';
@@ -34,7 +34,7 @@ server.listen(socket, () => {
   console.log(`🚀 Server listening on ${socket}`);
 });
 
-// app.use('/api', api);
+app.use('/api', api);
 
 // catch-all route handler
 app.use((_req: Request, res: Response): unknown =>

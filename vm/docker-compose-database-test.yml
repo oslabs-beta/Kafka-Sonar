@@ -13,18 +13,8 @@ services:
       dockerfile: Dockerfile-database
     ports:
       - 5432:5432
-    networks:
-      my-network:
-        ipv4_address: 172.18.0.10
-    # volumes:
-    #   - timescaledb-data:/var/lib/postgresql/data
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
 
-networks:
-  my-network:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.18.0.0/16
-# volumes:
-#   timescaledb-data:
-#     external: true
+volumes:
+  timescaledb-data:

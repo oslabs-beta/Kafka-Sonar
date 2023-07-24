@@ -2,7 +2,7 @@
 FROM timescale/timescaledb:latest-pg13
 
 # Copy the initialization script to the container
-COPY data.sql .
+COPY data.sql /docker-entrypoint-initdb.d/
 
 # Set environment variables for TimescaleDB configuration
 ENV POSTGRES_USER postgres

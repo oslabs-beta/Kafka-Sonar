@@ -43,11 +43,9 @@ COPY kafkasonar.svg .
 COPY --from=builder /backend backend
 # COPY --from=client-builder /ui/build ui
 COPY --from=client-builder /ui ui
-# run the backend service as a container, passing the socket path where the backend is listening
-# RUN chmod +x /backend
-# CMD ["/backend", "-socket", "/run/guest-services/backend.sock"]
 
-# WORKDIR /backend
-# CMD ["npm", "start"]
-WORKDIR /ui
-CMD ["npm", "run", "frontend"]
+RUN chmod +x /backend
+WORKDIR /backend
+CMD ["npm", "start"]
+# WORKDIR /ui
+# CMD ["npm", "run", "frontend"]

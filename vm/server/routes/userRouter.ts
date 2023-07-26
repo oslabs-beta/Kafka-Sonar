@@ -14,7 +14,7 @@ userRouter.get(
 
 userRouter.get(
   '/:user_id',
-  userController.getuser,
+  userController.getUser,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.user);
   }
@@ -22,7 +22,7 @@ userRouter.get(
 
 userRouter.post(
   '/',
-  userController.postuser,
+  userController.postUser,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.user);
   }
@@ -30,7 +30,7 @@ userRouter.post(
 
 userRouter.put(
   '/:user_id',
-  userController.putuser,
+  userController.putUser,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.user);
   }
@@ -38,7 +38,7 @@ userRouter.put(
 
 userRouter.delete(
   '/:user_id',
-  userController.deleteuser,
+  userController.deleteUser,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.user);
   }

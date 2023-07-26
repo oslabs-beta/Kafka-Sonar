@@ -26,3 +26,6 @@ dist-ssr
 # Environment
 .env
 cypress/videos
+
+# Extra
+ui/Leftover.md

@@ -3,13 +3,13 @@ const { outputFileSync } = pkg;
 import { Request, Response, NextFunction } from 'express';
 import writeMetricsCompose from '../utils/writeMetricsCompose';
 import writeBuffer from '../utils/writeBuffer';
-import { createDockerDesktopClient } from '@docker/extension-api-client';
-// Note: This line relies on Docker Desktop's presence as a host application.
-const client = createDockerDesktopClient();
-function useDockerDesktopClient() {
-  return client;
-}
-const ddClient = useDockerDesktopClient();
+// import { createDockerDesktopClient } from '@docker/extension-api-client';
+// // Note: This line relies on Docker Desktop's presence as a host application.
+// const client = createDockerDesktopClient();
+// function useDockerDesktopClient() {
+//   return client;
+// }
+// const ddClient = useDockerDesktopClient();
 
 
 const dockerController = {
@@ -33,7 +33,7 @@ const dockerController = {
       });
     }
   },
-  metricsComposeUp: async (
+  sendMetricsComposeUp: async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -41,9 +41,15 @@ const dockerController = {
     // docker compose is stored in ./user/${clusterDir}/docker/metrics-compose.yml
     const { clusterDir } = res.locals;
     try {
-      await ddClient.extension.vm?.cli.exec(
-        `cd user/${clusterDir}/docker & docker compose up`, ['-f', 'metrics-compose.yml']
-      );
+      const cd = {
+        cmd: `cd`,
+        options: [`./user/${clusterDir}/docker`]
+      };
+      const compose = {
+        cmd: `docker-compose`,
+        options: [`-f`, `metrics-compose.yml`, `up`],
+      };
+      res.locals.commands = { cd, compose }
       return next();
     } catch (err) {
       return next({

@@ -11,6 +11,7 @@ const configController = {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
+    console.log('HERE IS THE DATA --->', req.body.userData);
     const { userData: { jmxPorts } } = req.body;
     const { userData: { clientData: { client_id } } } = req.body;
     const clusterDir = client_id;
@@ -25,8 +26,8 @@ const configController = {
     */
     // create prometheus targets based on jmxPorts
     const targets = jmxPorts.map(jmxObj => {
-      const { jmx_hostname, jmx_port_number } = jmxObj;
-      return `${jmx_hostname}:${jmx_port_number}`;
+      const { host, port } = jmxObj;
+      return `${host}:${port}`;
     });
     // insert targets into a custom yml
     const prometheusConfigYml = writePrometheusConfig(targets);

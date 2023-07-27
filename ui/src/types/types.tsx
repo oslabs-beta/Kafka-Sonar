@@ -49,8 +49,48 @@ export interface ConfigureProps {
 }
 
 // Configure component brokerInfo array obj type
+// Corresponds to backend interface jmxData
 export interface BrokerInfo {
   broker: number;
   host: string;
   port: string;
+}
+
+// Login and Signup components, User type for verifyUser and postNewUser handlers
+export interface User {
+  email: string;
+  password: string;
+  role?: string;
+}
+
+// SavedConnections component, GridRowDef type for each row obj in rows array in state
+export interface GridRowDef {
+  id: number;
+  clientId: string;
+  host: string;
+  port: string;
+  auth: string;
+  // fetchMetrics: 1; // Fix: MUI button
+  // fetchLogs: 1; // Fix: MUI button
+}
+
+// SaveNewConnection component, KafkaJS client info
+// Corresponds to backend interface clientData
+export interface KafkajsClientInfo {
+  client_id: string;
+  bootstrap_hostname: string;
+  port_number: string;
+  auth_mechanism: string;
+  username: string; // will pass empty string if auth_mechanism is not N/A
+  password: string; // will pass empty string if auth_mechanism is not N/A
+}
+
+// SaveNewConnection component, Connection type for handleFinish handler
+// Corresponds to backend interface userData
+export interface Connection {
+  userData: {
+    clientData: KafkajsClientInfo;
+    user_network: string;
+    jmxPorts: BrokerInfo[];
+  }
 }

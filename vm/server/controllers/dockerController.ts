@@ -43,13 +43,13 @@ const dockerController = {
     try {
       const cd = {
         cmd: `cd`,
-        options: [`./user/${clusterDir}/docker`]
+        options: [`./user/${clusterDir}/docker`, `&`, `docker-compose`, `-f`, `metrics-compose.yml`, `up`]
       };
-      const compose = {
-        cmd: `docker-compose`,
-        options: [`-f`, `metrics-compose.yml`, `up`],
-      };
-      res.locals.commands = { cd, compose }
+      // const compose = {
+      //   cmd: `docker-compose`,
+      //   options: [`-f`, `metrics-compose.yml`, `up`],
+      // };
+      res.locals.commands = { cd }
       return next();
     } catch (err) {
       return next({

@@ -58,14 +58,14 @@ createRoot(root as HTMLElement).render(
     <React.StrictMode>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/connect" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route
             path="/saved"
             element={<App saved={<SavedConnectionsDataGrid />} />}
           />
           <Route
-            path="/connect"
+            path="/"
             element={<App connect={<SaveNewConnectionStepper />} />}
           />
           <Route

@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { ChangeEvent, useState, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -11,24 +11,23 @@ import Typography from '@mui/material/Typography';
 import Connect from '../components/Connect';
 import Configure from '../components/Configure';
 
+import useInput from '../hooks/useInput';
+
 // TS types
-import { BrokerInfo, ConnectProps, ConfigureProps } from './../types/types';
+import {
+  BrokerInfo,
+  ConnectProps,
+  ConfigureProps,
+  Connection,
+} from './../types/types';
+
+import { createDockerDesktopClient } from '@docker/extension-api-client';
 
 // Add New Connection flow is 2 steps:
 // 1) Get KafkaJS cluster connection info
 // 2) Get JMX info (to connect Prometheus to cluster) and Docker network (to connect our spun up, containerized network to user's)
 
 const steps = ['Enter cluster credentials', 'Enter configuration details'];
-
-const useInput = (
-  initValue: string
-): [string, (e: ChangeEvent<HTMLInputElement>) => void] => {
-  const [value, setValue] = useState(initValue);
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setValue(e.target.value);
-  };
-  return [value, onChange];
-};
 
 export default function SaveNewConnectionStepper(): JSX.Element {
   // CONNECT STATE AND HANDLERS (lifted from Connect component)
@@ -125,12 +124,19 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     }
   };
 
-  const handleFinish = () => {
+  // Needed checks:
+  // 1) Do we need a catch block for when cluster authentication fails?
+  // 2) Navigate to /saved works.
+  // 3) Check toast works after going to SavedConnections page.
+
+  const handleFinish = async () => {
     // if any user-input field is an empty string, alert user and exit handler
     if (!network) {
       alert('Network is required.');
       return;
     }
+
+    // if any broker field is an empty string, alert user and exit handler
     for (let curr = 0; curr < brokerInfo.length; curr++) {
       if (!brokerInfo[curr].host) {
         alert(`Hostname for Broker ${curr + 1} is required.`);
@@ -141,9 +147,41 @@ export default function SaveNewConnectionStepper(): JSX.Element {
         return;
       }
     }
-    // !!!!!!!! POST request to BE here !!!!!!!!
-    // otherwise, redirect to Saved Cluster Connections page
-    navigate('/saved');
+
+    // instantiate DD client object
+    const ddClient = createDockerDesktopClient();
+
+    const body: Connection = {
+      userData: {
+        clientData: {
+          client_id: client,
+          bootstrap_hostname: host,
+          port_number: port,
+          auth_mechanism: auth,
+          username,
+          password,
+        },
+        user_network: network,
+        jmxPorts: brokerInfo,
+      }
+    };
+
+    // POST new connection
+    const { cd }: any = await ddClient.extension.vm.service.post('/api/init/test', body);
+    // execute commands to spin up containers:
+    alert(cd.cmd);
+
+      // store specific configs for each cluster on a specific directory on each container tied to a volume; cd into directory, and run docker compose in that directory
+      // await ddClient.extension.vm.cli.exec(cd.cmd, cd.options);
+      await ddClient.extension.vm.cli.exec('ls', ['-l'])
+     // await ddClient.extension.vm.cli.exec(compose.cmd, compose.options)
+    // redirect to SavedConnections page
+      navigate('/saved');
+      // toast success message
+      ddClient.desktopUI.toast.success(
+        'New cluster connection successfully added!'
+      );
+
   };
 
   return (

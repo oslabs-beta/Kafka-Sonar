@@ -128,7 +128,6 @@ export default function SaveNewConnectionStepper(): JSX.Element {
   // 1) Do we need a catch block for when cluster authentication fails?
   // 2) Navigate to /saved works.
   // 3) Check toast works after going to SavedConnections page.
-
   const handleFinish = async () => {
     // if any user-input field is an empty string, alert user and exit handler
     if (!network) {
@@ -152,44 +151,40 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     const ddClient = createDockerDesktopClient();
 
     const body: Connection = {
-      userData: {
-        clientData: {
-          client_id: client,
-          bootstrap_hostname: host,
-          port_number: port,
-          auth_mechanism: auth,
-          username,
-          password,
-        },
-        user_network: network,
-        jmxPorts: brokerInfo,
-      }
+      client: {
+        client_id: client,
+        bootstrap_hostname: host,
+        port_number: port,
+        auth_mechanism: auth,
+        username,
+        password,
+      },
+      user_network: network,
+      jmxPorts: brokerInfo,
     };
 
     // POST new connection
-    const command: any = await ddClient.extension.vm.service.post('/api/init/test', body);
-    // execute commands to spin up containers:
-    console.log(command);
-    const { cmd, args, options } = command;
-    alert(JSON.stringify(command));
-
-      // store specific configs for each cluster on a specific directory on each container tied to a volume; cd into directory, and run docker compose in that directory
-      
-      // await ddClient.extension.vm.cli.exec(cmd, args, options);
-      await ddClient.extension.host.cli.exec(cmd, args, options);
-    // redirect to SavedConnections page
-      navigate('/saved');
-      // toast success message
-      ddClient.desktopUI.toast.success(
-        'New cluster connection successfully added!'
-      );
-
+    ddClient.extension.vm.service
+      .post('/api/clusters', body)
+      // BE returns the newly created cluster connection (unused on FE)
+      .then((newConnection: Connection) => {
+        // redirect to SavedConnections page
+        navigate('/saved');
+        // toast success message
+        ddClient.desktopUI.toast.success(
+          'Your new cluster connection was added successfully.'
+        );
+      });
   };
 
   return (
     <Fragment>
-      <Box sx={{ width: '50%', margin: 'auto' }}>
-        <Typography component="h1" variant="h2" margin="0 auto 25px">
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        sx={{ width: '50%', margin: 'auto' }}
+      >
+        <Typography component="h1" variant="h5" margin={'-20px auto 5vh'}>
           Save New Connection
         </Typography>
         <Stepper activeStep={activeStep} alternativeLabel>
@@ -207,11 +202,11 @@ export default function SaveNewConnectionStepper(): JSX.Element {
             display: 'flex',
             flexDirection: 'row',
             pt: 2,
-            margin: '10px',
+            margin: '0 0 3vh',
           }}
         >
           {activeStep !== 0 && (
-            <Button color="inherit" onClick={handleBack} sx={{ mr: 1 }}>
+            <Button onClick={handleBack} sx={{ mr: 1 }}>
               Back
             </Button>
           )}

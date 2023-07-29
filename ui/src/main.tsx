@@ -9,8 +9,13 @@ import { createRoot } from 'react-dom/client';
 // } from 'react-router-dom';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 
-import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
 import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
+// Variable Fontsource font supports weights 100-900. Must import the font, but can be done in main or App files.
+import '@fontsource-variable/montserrat';
+import fontTheme from './themes/fontTheme';
+
+import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
 
 import App from './App';
 
@@ -56,32 +61,34 @@ createRoot(root as HTMLElement).render(
   <DockerMuiThemeProvider>
     <CssBaseline />
     <React.StrictMode>
-      <HashRouter>
-        <Routes>
-          <Route path="/connect" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route
-            path="/saved"
-            element={<App saved={<SavedConnectionsDataGrid />} />}
-          />
-          <Route
-            path="/"
-            element={<App connect={<SaveNewConnectionStepper />} />}
-          />
-          <Route
-            path="/resources"
-            element={<App resourceUsage={<ResourceUsage />} />}
-          />
-          <Route
-            path="/cluster"
-            element={<App clusterView={<ClusterView />} />}
-          />
-          <Route
-            path="/partition"
-            element={<App partitionView={<PartitionView />} />}
-          />
-        </Routes>
-      </HashRouter>
+      <ThemeProvider theme={fontTheme}>
+        <HashRouter>
+          <Routes>
+            <Route path="/saved" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route
+              path="/"
+              element={<App saved={<SavedConnectionsDataGrid />} />}
+            />
+            <Route
+              path="/connect"
+              element={<App connect={<SaveNewConnectionStepper />} />}
+            />
+            <Route
+              path="/resources"
+              element={<App resourceUsage={<ResourceUsage />} />}
+            />
+            <Route
+              path="/cluster"
+              element={<App clusterView={<ClusterView />} />}
+            />
+            <Route
+              path="/partition"
+              element={<App partitionView={<PartitionView />} />}
+            />
+          </Routes>
+        </HashRouter>
+      </ThemeProvider>
     </React.StrictMode>
   </DockerMuiThemeProvider>
 );

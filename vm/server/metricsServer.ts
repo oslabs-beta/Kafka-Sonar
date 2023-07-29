@@ -7,7 +7,7 @@ const app: Express = express();
 
 app.use(bodyParser.json());
 
-// tested with postman 
+// tested with postman
 app.get('/test', (req, res) => {
   res.send(`Hello from the backend (port 3333)`);
 });

@@ -18,7 +18,8 @@ initRouter.post(
   // save jmx info to jmx table, using cluster_id as fk
   (_req: Request, res: Response, _next: NextFunction): void => {
     // send FE back data in this shape: https://codesmithptri10.slack.com/archives/C04SNGT58CX/p1690066936887399
-    res.status(200).json(res.locals.commands);
+    console.log('THE COMMAND:', res.locals.command)
+    res.status(200).json(res.locals.command);
   });
 
 export default initRouter;

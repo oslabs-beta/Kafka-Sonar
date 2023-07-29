@@ -167,14 +167,16 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     };
 
     // POST new connection
-    const { cd }: any = await ddClient.extension.vm.service.post('/api/init/test', body);
+    const command: any = await ddClient.extension.vm.service.post('/api/init/test', body);
     // execute commands to spin up containers:
-    alert(cd.cmd);
+    console.log(command);
+    const { cmd, args, options } = command;
+    alert(JSON.stringify(command));
 
       // store specific configs for each cluster on a specific directory on each container tied to a volume; cd into directory, and run docker compose in that directory
-      // await ddClient.extension.vm.cli.exec(cd.cmd, cd.options);
-      await ddClient.extension.vm.cli.exec('ls', ['-l'])
-     // await ddClient.extension.vm.cli.exec(compose.cmd, compose.options)
+      
+      // await ddClient.extension.vm.cli.exec(cmd, args, options);
+      await ddClient.extension.host.cli.exec(cmd, args, options);
     // redirect to SavedConnections page
       navigate('/saved');
       // toast success message

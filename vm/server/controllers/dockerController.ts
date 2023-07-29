@@ -3,13 +3,6 @@ const { outputFileSync } = pkg;
 import { Request, Response, NextFunction } from 'express';
 import writeMetricsCompose from '../utils/writeMetricsCompose';
 import writeBuffer from '../utils/writeBuffer';
-// import { createDockerDesktopClient } from '@docker/extension-api-client';
-// // Note: This line relies on Docker Desktop's presence as a host application.
-// const client = createDockerDesktopClient();
-// function useDockerDesktopClient() {
-//   return client;
-// }
-// const ddClient = useDockerDesktopClient();
 
 
 const dockerController = {
@@ -40,16 +33,22 @@ const dockerController = {
   ): Promise<void> => {
     // docker compose is stored in ./user/${clusterDir}/docker/metrics-compose.yml
     const { clusterDir } = res.locals;
+    // LOOK INTO USER THE DOCKERODE NPM PACKAGE TO SPIN UP CONTAINERS
+    // https://github.com/apocas/dockerode
+    // https://stackoverflow.com/questions/40961073/starting-and-stopping-docker-container-from-other-container
+    // https://docs.docker.com/engine/api/sdk/
+    // *** https://github.com/apocas/dockerode-compose
+
     try {
-      const cd = {
-        cmd: `cd`,
-        options: [`./user/${clusterDir}/docker`, `&`, `docker-compose`, `-f`, `metrics-compose.yml`, `up`]
-      };
-      // const compose = {
-      //   cmd: `docker-compose`,
-      //   options: [`-f`, `metrics-compose.yml`, `up`],
-      // };
-      res.locals.commands = { cd }
+      // const command = {
+      //   cmd: `docker compose`,
+      //   args: [`-f`, `http://localhost:3333/backend/user/${clusterDir}/docker/metrics-compose.yml`, `up`],
+      //   // options: {
+      //   //   cwd: `./user/${clusterDir}/docker`
+      //   // }
+      //}
+      const TASK = `insert dockerode package action here`
+      // res.locals.command = command
       return next();
     } catch (err) {
       return next({

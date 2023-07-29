@@ -34,6 +34,17 @@ import { Props, NavTabOption } from './types/types';
 // Variable Fontsource font supports weights 100-900
 import '@fontsource-variable/montserrat';
 
+// Socket connection test
+import Button from '@mui/material/Button';
+import { Stack, TextField } from '@mui/material';
+import { createDockerDesktopClient } from '@docker/extension-api-client';
+// Note: This line relies on Docker Desktop's presence as a host application.
+// If you're running this React app in a browser, it won't work properly.
+const client = createDockerDesktopClient();
+function useDockerDesktopClient() {
+  return client;
+}
+
 const navTabOptions: NavTabOption[] = [
   {
     route: '/saved',
@@ -118,6 +129,14 @@ export default function App(props: Props) {
   };
 
   const navigate = useNavigate();
+
+  // Socket connection test;
+  const [response, setResponse] = React.useState<string>();
+  const ddClient = useDockerDesktopClient();
+  const fetchAndDisplayResponse = async () => {
+    const result = await ddClient.extension.vm?.service?.get('/hello');
+    setResponse(JSON.stringify(result));
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -213,6 +232,21 @@ export default function App(props: Props) {
         {clusterView}
         {partitionView}
       </Box>
+      <Stack direction="row" alignItems="start" spacing={2} sx={{ mt: 4 }}>
+        <Button variant="contained" onClick={fetchAndDisplayResponse}>
+          Call backend
+        </Button>
+
+        <TextField
+          label="Backend response"
+          sx={{ width: 480 }}
+          disabled
+          multiline
+          variant="outlined"
+          minRows={5}
+          value={response ?? ''}
+        />
+      </Stack>
     </Box>
   );
 }

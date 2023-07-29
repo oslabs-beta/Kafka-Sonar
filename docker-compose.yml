@@ -10,3 +10,13 @@ services:
       - 3333:3333
     volumes:
       - /var/run/docker.sock.raw:/var/run/docker.sock
+
+  timescaledb:
+    image: firenaysh/kafka-sonar-tsdb:latest
+    ports:
+      - 5432:5432
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
+
+volumes:
+  timescaledb-data:

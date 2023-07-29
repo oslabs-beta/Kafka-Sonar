@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Paper from '@mui/material/Paper';
@@ -11,23 +11,18 @@ import Typography from '@mui/material/Typography';
 // import MenuItem from '@mui/material/MenuItem';
 
 import '../assets/kafka-sonar-orange-logo.svg';
-import React from 'react';
-
-// custom hook to handle state changes to input boxes as a user types
-const useInput = (
-  initValue: string
-): [string, (e: ChangeEvent<HTMLInputElement>) => void] => {
-  const [value, setValue] = useState(initValue);
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setValue(e.target.value);
-  };
-  return [value, onChange];
-};
+// custom hook
+import useInput from '../hooks/useInput';
+// TS types
+import { User } from './../types/types';
+// Docker client library
+import { createDockerDesktopClient } from '@docker/extension-api-client';
 
 export default function Signup(): JSX.Element {
-  // custom hook
+  // following use custom hook
   const [email, emailOnChange] = useInput('');
   const [password, passwordOnChange] = useInput('');
+
   // // useState
   // const [role, setRole] = useState<string>('User');
 
@@ -37,13 +32,54 @@ export default function Signup(): JSX.Element {
   //   setRole(['User', 'Admin'][i]);
   // };
 
+  const navigate = useNavigate();
+
+  // Needed checks:
+  // 1) Navigate to /saved works.
+  // 2) Check toast works after going to SavedConnections page.
+  // 3) Do we want to verify the user's entered email exists by sending some token to their email?
+
+  const postNewUser = (): Promise<void> => {
+    // if email or password are empty strings
+    if (!email || !password) {
+      // alert user and exit handler
+      alert('Email and password are required.');
+      return;
+    }
+
+    // Validate email input (reference: https://bobbyhadz.com/blog/react-check-if-email-is-valid)
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      // alert user and exit handler
+      alert('Provide a valid email.');
+      return;
+    }
+
+    // instantiate DD client object
+    const ddClient = createDockerDesktopClient();
+
+    const body: User = {
+      email,
+      password,
+    };
+    // POST new user
+    ddClient.extension.vm.service
+      .post('/api/users', body)
+      // BE returns the newly created user object (unused on FE)
+      .then((newUser: User) => {
+        // redirect to SavedConnections page
+        navigate('/saved');
+        // toast success message
+        ddClient.desktopUI.toast.success('Account creation successful!');
+      });
+  };
+
   return (
     <Paper
       elevation={2}
       style={{
         width: '60vh',
         padding: 20,
-        margin: '40px auto',
+        margin: '15vh auto',
       }}
     >
       <img
@@ -55,12 +91,7 @@ export default function Signup(): JSX.Element {
           margin: '20px 0',
         }}
       />
-      <Typography
-        component="h1"
-        variant="h5"
-        fontFamily="inherit"
-        align="center"
-      >
+      <Typography component="h1" variant="h5" align="center">
         Sign Up
       </Typography>
       <TextField
@@ -73,6 +104,7 @@ export default function Signup(): JSX.Element {
         label="Email"
         fullWidth
         required
+        autoFocus
         style={{ margin: '15px auto' }}
       />
       <TextField
@@ -104,17 +136,13 @@ export default function Signup(): JSX.Element {
         variant="contained"
         color="primary"
         type="button"
-        // onClick={verifyUser}
+        onClick={postNewUser}
         fullWidth
         style={{ margin: '30px auto' }}
       >
         Get Started
       </Button>
-      <Typography
-        align="center"
-        fontFamily="inherit"
-        style={{ margin: '15px auto' }}
-      >
+      <Typography align="center">
         <Link to="/">Have an account? Log in</Link>
       </Typography>
     </Paper>

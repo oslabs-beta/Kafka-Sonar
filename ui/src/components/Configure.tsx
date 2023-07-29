@@ -25,20 +25,10 @@ export default function Configure({
         margin: '0 auto',
       }}
     >
-      <Typography
-        component="h1"
-        variant="h5"
-        fontFamily="inherit"
-        align="center"
-      >
+      <Typography component="h1" variant="h6" align="center">
         Enter configuration details
       </Typography>
-      <Typography
-        fontFamily="inherit"
-        fontSize={11}
-        align="left"
-        style={{ margin: '10px auto 0' }}
-      >
+      <Typography fontSize={11} align="left" style={{ margin: '10px auto 0' }}>
         Enter your cluster's Docker network (for example, 'kafka').
       </Typography>
       <TextField
@@ -53,12 +43,7 @@ export default function Configure({
         required
         style={{ margin: '5px auto' }}
       />
-      <Typography
-        fontFamily="inherit"
-        fontSize={11}
-        align="left"
-        style={{ margin: '10px auto 0' }}
-      >
+      <Typography fontSize={11} align="left" style={{ margin: '10px auto 0' }}>
         Provide the hostnames and JMX ports for all of the brokers in your
         cluster.
       </Typography>
@@ -73,7 +58,6 @@ export default function Configure({
               }}
             >
               <Typography
-                fontFamily="inherit"
                 fontSize={11}
                 align="left"
                 style={{ margin: '10px auto 0' }}

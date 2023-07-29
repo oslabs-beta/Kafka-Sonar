@@ -33,12 +33,7 @@ export default function Connect({
         margin: '0 auto',
       }}
     >
-      <Typography
-        component="h1"
-        variant="h5"
-        fontFamily="inherit"
-        align="center"
-      >
+      <Typography component="h1" variant="h6" align="center">
         Enter cluster credentials
       </Typography>
       <TextField
@@ -77,12 +72,7 @@ export default function Connect({
         required
         style={{ margin: '5px auto' }}
       />
-      <Typography
-        fontFamily="inherit"
-        fontSize={11}
-        align="left"
-        style={{ margin: '10px auto' }}
-      >
+      <Typography fontSize={11} align="left" style={{ margin: '10px auto' }}>
         If you need to authenticate to your cluster, only 3 SASL authentication
         mechanisms are currently supported. SSL will be enabled so credentials
         are transmitted encrypted.

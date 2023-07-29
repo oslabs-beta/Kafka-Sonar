@@ -9,8 +9,8 @@ export default function ResourceUsage() {
   return (
     <Fragment>
       <Typography
-        variant="subtitle2"
-        fontFamily="inherit"
+        component="h1"
+        variant="h5"
         align="center"
         margin="-20px auto 20px"
       >

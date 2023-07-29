@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
+import { styled, Theme, CSSObject } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
 // MUI component reference: https://mui.com/material-ui/react-drawer/#mini-variant-drawer
@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-// import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -18,32 +17,27 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 
-// custom selected or created icons
+// MUI or created icons
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-// import CableIcon from '@mui/icons-material/Cable';
 import HubIcon from '@mui/icons-material/Hub';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import PolylineIcon from '@mui/icons-material/Polyline';
 import SvgIcon from '@mui/material/SvgIcon';
 import { ReactComponent as OrangeLogo } from './assets/kafka-sonar-orange-logo.svg';
-// import { ReactComponent as WhiteLogo } from './../../public/kafka-sonar-white-logo.svg';
 
 // TS types
 import { Props, NavTabOption } from './types/types';
 
-// Variable Fontsource font supports weights 100-900
-import '@fontsource-variable/montserrat';
-
 // Socket connection test
-import Button from '@mui/material/Button';
-import { Stack, TextField } from '@mui/material';
-import { createDockerDesktopClient } from '@docker/extension-api-client';
+// import Button from '@mui/material/Button';
+// import { Stack, TextField } from '@mui/material';
+// import { createDockerDesktopClient } from '@docker/extension-api-client';
 // Note: This line relies on Docker Desktop's presence as a host application.
 // If you're running this React app in a browser, it won't work properly.
-const client = createDockerDesktopClient();
-function useDockerDesktopClient() {
-  return client;
-}
+// const client = createDockerDesktopClient();
+// function useDockerDesktopClient() {
+//   return client;
+// }
 
 const navTabOptions: NavTabOption[] = [
   {
@@ -51,11 +45,6 @@ const navTabOptions: NavTabOption[] = [
     icon: <BookmarkIcon />,
     text: 'Saved Connections',
   },
-  // {
-  //   route: '/connect',
-  //   icon: <CableIcon />,
-  //   text: 'Connect New Cluster',
-  // },
   {
     route: '/resources',
     icon: <HubIcon />,
@@ -131,16 +120,15 @@ export default function App(props: Props) {
   const navigate = useNavigate();
 
   // Socket connection test;
-  const [response, setResponse] = React.useState<string>();
-  const ddClient = useDockerDesktopClient();
-  const fetchAndDisplayResponse = async () => {
-    const result = await ddClient.extension.vm?.service?.get('/hello');
-    setResponse(JSON.stringify(result));
-  };
+  // const [response, setResponse] = React.useState<string>();
+  // const ddClient = useDockerDesktopClient();
+  // const fetchAndDisplayResponse = async () => {
+  //   const result = await ddClient.extension.vm?.service?.get('/hello');
+  //   setResponse(JSON.stringify(result));
+  // };
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {/* <CssBaseline /> */}
       <Drawer
         variant="permanent"
         open={open}
@@ -162,9 +150,6 @@ export default function App(props: Props) {
           <SvgIcon fontSize="large">
             <OrangeLogo />
           </SvgIcon>
-          {/* <SvgIcon fontSize="large" viewBox="0 0 1100 1100">
-            <WhiteLogo />
-          </SvgIcon> */}
           <img
             src="./../public/kafka-sonar-white-logo.svg"
             style={{ margin: 20, width: 75 }}
@@ -211,11 +196,7 @@ export default function App(props: Props) {
                   {navTabInfo.icon}
                 </ListItemIcon>
                 <ListItemText
-                  primary={
-                    <Typography variant="inherit" fontFamily="inherit">
-                      {navTabInfo.text}
-                    </Typography>
-                  }
+                  primary={<Typography>{navTabInfo.text}</Typography>}
                   sx={{
                     opacity: open ? 1 : 0,
                   }}
@@ -232,7 +213,7 @@ export default function App(props: Props) {
         {clusterView}
         {partitionView}
       </Box>
-      <Stack direction="row" alignItems="start" spacing={2} sx={{ mt: 4 }}>
+      {/* <Stack direction="row" alignItems="start" spacing={2} sx={{ mt: 4 }}>
         <Button variant="contained" onClick={fetchAndDisplayResponse}>
           Call backend
         </Button>
@@ -246,7 +227,7 @@ export default function App(props: Props) {
           minRows={5}
           value={response ?? ''}
         />
-      </Stack>
+      </Stack> */}
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Paper from '@mui/material/Paper';
@@ -7,37 +7,61 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import '../assets/kafka-sonar-orange-logo.svg';
-import React from 'react';
-
-// custom hook to handle state changes to input boxes as a user types
-const useInput = (initValue: string): [string, (e: ChangeEvent<HTMLInputElement>) => void] => {
-  const [value, setValue] = useState(initValue);
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setValue(e.target.value);
-  };
-  return [value, onChange];
-};
+// custom hook
+import useInput from '../hooks/useInput';
+// TS types
+import { User } from './../types/types';
+// Docker client library
+import { createDockerDesktopClient } from '@docker/extension-api-client';
 
 export default function Login(): JSX.Element {
+  // following use custom hook
   const [email, emailOnChange] = useInput('');
   const [password, passwordOnChange] = useInput('');
-  // const navigate = useNavigate(); // this hook allows us to redirect w/o page reload
 
-  // const verifyUser = () => {
-  //   const body = {
-  //     email,
-  //     password,
-  //   };
+  const navigate = useNavigate();
 
-  //   // use fetch API to check user has a profile in DB
-  //   fetch('/api/login', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'Application/JSON',
-  //     },
-  //     body: JSON.stringify(body),
-  //   })
-  //     .then((res) => res.json())
+  // Needed checks:
+  // 1) Finish writing functionality checking 3 cases when BE route for login is written. (inc any needed catch blocks)
+  // 2) Navigate to /saved works.
+  // 3) Check toast works after going to SavedConnections page.
+
+  const verifyUser = (): Promise<void> => {
+    // if email or password are empty strings
+    if (!email || !password) {
+      // alert user and exit handler
+      alert('Email and password are required.');
+      return;
+    }
+
+    // Validate email input (reference: https://bobbyhadz.com/blog/react-check-if-email-is-valid)
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      // alert user and exit handler
+      alert('Provide a valid email.');
+      return;
+    }
+
+    // instantiate DD client object
+    const ddClient = createDockerDesktopClient();
+
+    const body: User = {
+      email,
+      password,
+    };
+    // POST new user
+    ddClient.extension.vm.service
+      .post('', body)
+      // .then((res: { user: User }) => res.json().user)
+      .then((user: User) => {
+        // CASE 1: user doesn't exist in DB, redirect to Signup page
+        // CASE 2: user exists in DB AND password not a match, stay on Login
+        // CASE 3: user exists AND password matches, redirect to SavedConnections page
+        navigate('/saved');
+        // toast success message
+        ddClient.desktopUI.toast.success('Login successful!');
+      });
+  };
+
   //     .then((data) => {
   //       console.log('login data', data); // res.locals object
   //       // CASE 1: user doesn't exist in DB, redirect to CreateProfile
@@ -80,12 +104,7 @@ export default function Login(): JSX.Element {
           margin: '20px auto',
         }}
       />
-      <Typography
-        component="h1"
-        variant="h5"
-        fontFamily="inherit"
-        align="center"
-      >
+      <Typography component="h1" variant="h5" align="center">
         Welcome Back
       </Typography>
       <TextField
@@ -98,6 +117,7 @@ export default function Login(): JSX.Element {
         label="Email"
         fullWidth
         required
+        autoFocus
         style={{ margin: '15px auto' }}
       />
       <TextField
@@ -116,13 +136,13 @@ export default function Login(): JSX.Element {
         variant="contained"
         color="primary"
         type="button"
-        // onClick={verifyUser}
+        onClick={verifyUser}
         fullWidth
         style={{ margin: '30px auto' }}
       >
         Log In
       </Button>
-      <Typography align="center" fontFamily="inherit">
+      <Typography align="center">
         <Link to="/signup">No account yet? Sign up</Link>
       </Typography>
     </Paper>

@@ -173,15 +173,19 @@ export default function SaveNewConnectionStepper(): JSX.Element {
         navigate('/saved');
         // toast success message
         ddClient.desktopUI.toast.success(
-          'New cluster connection successfully added!'
+          'Your new cluster connection was added successfully.'
         );
       });
   };
 
   return (
     <Fragment>
-      <Box sx={{ width: '50%', margin: 'auto' }}>
-        <Typography component="h1" variant="h2" margin="0 auto 25px">
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        sx={{ width: '50%', margin: 'auto' }}
+      >
+        <Typography component="h1" variant="h5" margin={'-20px auto 5vh'}>
           Save New Connection
         </Typography>
         <Stepper activeStep={activeStep} alternativeLabel>
@@ -199,11 +203,11 @@ export default function SaveNewConnectionStepper(): JSX.Element {
             display: 'flex',
             flexDirection: 'row',
             pt: 2,
-            margin: '10px',
+            margin: '0 0 3vh',
           }}
         >
           {activeStep !== 0 && (
-            <Button color="inherit" onClick={handleBack} sx={{ mr: 1 }}>
+            <Button onClick={handleBack} sx={{ mr: 1 }}>
               Back
             </Button>
           )}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Paper from '@mui/material/Paper';
@@ -7,12 +7,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import '../assets/kafka-sonar-orange-logo.svg';
-
+// custom hook
 import useInput from '../hooks/useInput';
-
 // TS types
 import { User } from './../types/types';
-
+// Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 
 export default function Login(): JSX.Element {
@@ -52,7 +51,7 @@ export default function Login(): JSX.Element {
     // POST new user
     ddClient.extension.vm.service
       .post('', body)
-      .then((res: { user: User }) => res.json().user)
+      // .then((res: { user: User }) => res.json().user)
       .then((user: User) => {
         // CASE 1: user doesn't exist in DB, redirect to Signup page
         // CASE 2: user exists in DB AND password not a match, stay on Login
@@ -105,12 +104,7 @@ export default function Login(): JSX.Element {
           margin: '20px auto',
         }}
       />
-      <Typography
-        component="h1"
-        variant="h5"
-        fontFamily="inherit"
-        align="center"
-      >
+      <Typography component="h1" variant="h5" align="center">
         Welcome Back
       </Typography>
       <TextField
@@ -148,7 +142,7 @@ export default function Login(): JSX.Element {
       >
         Log In
       </Button>
-      <Typography align="center" fontFamily="inherit">
+      <Typography align="center">
         <Link to="/signup">No account yet? Sign up</Link>
       </Typography>
     </Paper>

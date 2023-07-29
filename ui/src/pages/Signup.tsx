@@ -11,12 +11,11 @@ import Typography from '@mui/material/Typography';
 // import MenuItem from '@mui/material/MenuItem';
 
 import '../assets/kafka-sonar-orange-logo.svg';
-
+// custom hook
 import useInput from '../hooks/useInput';
-
 // TS types
 import { User } from './../types/types';
-
+// Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 
 export default function Signup(): JSX.Element {
@@ -92,12 +91,7 @@ export default function Signup(): JSX.Element {
           margin: '20px 0',
         }}
       />
-      <Typography
-        component="h1"
-        variant="h5"
-        fontFamily="inherit"
-        align="center"
-      >
+      <Typography component="h1" variant="h5" align="center">
         Sign Up
       </Typography>
       <TextField
@@ -148,11 +142,7 @@ export default function Signup(): JSX.Element {
       >
         Get Started
       </Button>
-      <Typography
-        align="center"
-        fontFamily="inherit"
-        style={{ margin: '15px auto' }}
-      >
+      <Typography align="center">
         <Link to="/">Have an account? Log in</Link>
       </Typography>
     </Paper>

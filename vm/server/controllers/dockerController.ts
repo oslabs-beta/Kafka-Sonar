@@ -16,6 +16,7 @@ const dockerController = {
     next: NextFunction,
   ): Promise<void> => {
     const { userData: { user_network } } = req.body;
+    res.locals.user_network = user_network;
     const { clusterDir } = res.locals;
     // write custom prometheus/grafana docker-compose and convert to buffer
     const customCompose = writeMetricsCompose(user_network, clusterDir);
@@ -36,7 +37,7 @@ const dockerController = {
     next: NextFunction
   ): Promise<void> => {
     // docker compose is stored in ./user/${clusterDir}/docker/metrics-compose.yml
-    const { clusterDir } = res.locals;
+    const { clusterDir, user_network } = res.locals;
     // LOOK INTO USER THE DOCKERODE NPM PACKAGE TO SPIN UP CONTAINERS
     // https://github.com/apocas/dockerode
     // https://stackoverflow.com/questions/40961073/starting-and-stopping-docker-container-from-other-container
@@ -45,9 +46,7 @@ const dockerController = {
 
     try {
       const ymlPath = `./user/${clusterDir}/docker/metrics-compose.yml`
-      await docker.createNetwork(
-        { Name: `${clusterDir}-kafkasonar-metrics_kafka`}
-        )
+      await docker.createNetwork({ Name: `${clusterDir}-kafkasonar-metrics_${user_network}`})
       const compose = new DockerodeCompose(docker, ymlPath, `${clusterDir}-kafkasonar-metrics`);
       // const compose = new DockerodeCompose(docker, path);
       await compose.pull();

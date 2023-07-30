@@ -1,4 +1,5 @@
 export default (network: String, clusterDir: String) => {
+  console.log(network);
   return (
 `version: '3.5'
 

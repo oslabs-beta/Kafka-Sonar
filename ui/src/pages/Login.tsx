@@ -145,6 +145,9 @@ export default function Login(): JSX.Element {
       <Typography align="center">
         <Link to="/signup">No account yet? Sign up</Link>
       </Typography>
+      <Typography align="center">
+        <a href="/login/google">Google OAuth</a>
+      </Typography>
     </Paper>
   );
 }

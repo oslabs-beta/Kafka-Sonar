@@ -6,8 +6,8 @@ networks:
   ${network}:
     external: true
   ${clusterDir}-kafkasonar-metrics_kafka:
-    external: true
-  
+    driver: bridge
+    name: ${clusterDir}-kafkasonar-metrics_kafka
 
 services:
   grafana:

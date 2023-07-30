@@ -5,9 +5,6 @@ export default (network: String, clusterDir: String) => {
 networks:
   ${network}:
     external: true
-  ${clusterDir}-kafkasonar-metrics_kafka:
-    driver: bridge
-    name: ${clusterDir}-kafkasonar-metrics_kafka
 
 services:
   grafana:
@@ -42,3 +39,7 @@ services:
 
 // we are in root/vm/server/utils/writeMetricsCompose.ts, volume paths are in root/vm/user/configs/prometheus/<name> for prometheus
 // command for prometheus../user/configs/prometheus/${client_id}-prometheus.yml:/etc/prometheus/${client_id}-prometheus.yml
+
+// ${clusterDir}-kafkasonar-metrics_kafka:
+// driver: bridge
+// name: ${clusterDir}-kafkasonar-metrics_kafka

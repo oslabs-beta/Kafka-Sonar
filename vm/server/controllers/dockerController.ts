@@ -3,6 +3,10 @@ const { outputFileSync } = pkg;
 import { Request, Response, NextFunction } from 'express';
 import writeMetricsCompose from '../utils/writeMetricsCompose';
 import writeBuffer from '../utils/writeBuffer';
+import Dockerode from 'dockerode';
+import DockerodeCompose from 'dockerode-compose';
+
+const docker = new Dockerode({ socketPath: '/var/run/docker.sock'});
 
 
 const dockerController = {
@@ -26,7 +30,7 @@ const dockerController = {
       });
     }
   },
-  sendMetricsComposeUp: async (
+  metricsComposeUp: async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -40,15 +44,12 @@ const dockerController = {
     // *** https://github.com/apocas/dockerode-compose
 
     try {
-      // const command = {
-      //   cmd: `docker compose`,
-      //   args: [`-f`, `http://localhost:3333/backend/user/${clusterDir}/docker/metrics-compose.yml`, `up`],
-      //   // options: {
-      //   //   cwd: `./user/${clusterDir}/docker`
-      //   // }
-      //}
-      const TASK = `insert dockerode package action here`
-      // res.locals.command = command
+      console.log('HERE IS OUR DIRECTORY --------->', __dirname);
+      const path = `./user/${clusterDir}/docker/metrics-compose.yml`
+      const compose = new DockerodeCompose(docker, path, `${clusterDir}-kafkasonar-metrics`);
+      await compose.pull();
+      const state = await compose.up();
+      console.log(state);
       return next();
     } catch (err) {
       return next({

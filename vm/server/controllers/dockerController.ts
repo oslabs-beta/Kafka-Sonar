@@ -44,9 +44,11 @@ const dockerController = {
     // *** https://github.com/apocas/dockerode-compose
 
     try {
-      console.log('HERE IS OUR DIRECTORY --------->', __dirname);
-      const path = `./user/${clusterDir}/docker/metrics-compose.yml`
-      const compose = new DockerodeCompose(docker, path, `${clusterDir}-kafkasonar-metrics`);
+      const ymlPath = `./user/${clusterDir}/docker/metrics-compose.yml`
+      await docker.createNetwork(
+        { Name: `${clusterDir}-kafkasonar-metrics_kafka`}
+        )
+      const compose = new DockerodeCompose(docker, ymlPath, `${clusterDir}-kafkasonar-metrics`);
       // const compose = new DockerodeCompose(docker, path);
       await compose.pull();
       const state = await compose.up();

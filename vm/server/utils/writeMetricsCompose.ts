@@ -44,3 +44,7 @@ services:
 // ${clusterDir}-kafkasonar-metrics_kafka:
 // driver: bridge
 // name: ${clusterDir}-kafkasonar-metrics_kafka
+
+// networks:
+//   ${network}:
+//     external: true

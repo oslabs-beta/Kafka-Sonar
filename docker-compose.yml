@@ -14,5 +14,10 @@ services:
       - user:/backend/user
       - /var/run/docker.sock.raw:/var/run/docker.sock
 
+networks:
+  kafka-sonar:
+    driver: bridge
+    name: kafka-sonar
+
 volumes:
   user:

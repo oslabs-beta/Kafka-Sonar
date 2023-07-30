@@ -45,10 +45,12 @@ const dockerController = {
     // *** https://github.com/apocas/dockerode-compose
 
     try {
+      const projectName = `${clusterDir}-kafkasonar-metrics`
+      // due to an issue with dockerode-compose, create an network named projectName_${user_network}
+      // cannot find good documentation for what is causing this issue, but this workout resolves it
+      await docker.createNetwork({ Name: `${projectName}_${user_network}`})
       const ymlPath = `./user/${clusterDir}/docker/metrics-compose.yml`
-      await docker.createNetwork({ Name: `${clusterDir}-kafkasonar-metrics_${user_network}`})
-      const compose = new DockerodeCompose(docker, ymlPath, `${clusterDir}-kafkasonar-metrics`);
-      // const compose = new DockerodeCompose(docker, path);
+      const compose = new DockerodeCompose(docker, ymlPath, projectName);
       await compose.pull();
       const state = await compose.up();
       console.log(state);

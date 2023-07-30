@@ -42,8 +42,8 @@ services:
 
 volumes:
     user:
-      external: true
-      name: kafkasonar_kafkasonar-desktop-extension_user
+      external:
+        name: kafkasonar_kafkasonar-desktop-extension_user
 `);
 };
 

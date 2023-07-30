@@ -20,22 +20,6 @@ userRouter.get(
   }
 );
 
-userRouter.post(
-  '/',
-  userController.postUser,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.user);
-  }
-);
-
-userRouter.put(
-  '/:user_id',
-  userController.putUser,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.user);
-  }
-);
-
 userRouter.delete(
   '/:user_id',
   userController.deleteUser,

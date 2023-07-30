@@ -24,7 +24,7 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["./**/*"],
+  "include": ["./**/*", "custom.d.ts"],
   "ts-node": {
     "experimentalSpecifierResolution": "node"
   }

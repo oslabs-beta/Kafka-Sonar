@@ -40,49 +40,6 @@ const userController = {
       });
     }
   },
-  postUser: async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<unknown> => {
-    try {
-      console.log(req.body);
-      const { email, password, account_type } = req.body;
-
-      const request =
-        'INSERT INTO users (email, password, account_type) VALUES ($1,$2, $3) RETURNING *';
-      const values: any[] = [email, password, account_type];
-      const response: any = await query(request, values);
-      res.locals.user = response.rows;
-      return next();
-    } catch (err) {
-      return next({
-        log: 'Error occured in userController.postUser Middleware',
-        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
-      });
-    }
-  },
-  putUser: async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<unknown> => {
-    try {
-      const user_id = req.params.user_id;
-      const { email, password, account_type } = req.body;
-      const request =
-        'UPDATE users SET email= $1, password = $2, account_type = $3 WHERE user_id= $4 RETURNING *';
-      const values: any[] = [email, password, account_type, user_id];
-      const response: any = await query(request, values);
-      res.locals.user = response.rows;
-      return next();
-    } catch (err) {
-      return next({
-        log: 'Error occured in userController.putUser Middleware',
-        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
-      });
-    }
-  },
   deleteUser: async (
     req: Request,
     res: Response,

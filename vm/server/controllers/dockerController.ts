@@ -74,12 +74,14 @@ const dockerController = {
   ): Promise<void> => {
     const { clusterDir, user_network } = res.locals;
     try {
-      const promConfig = promContainerOpts(user_network, clusterDir);
-      const { image, cmd, createOpts, startOpts } = promConfig;
+      const args = promContainerOpts(user_network, clusterDir);
+      const { image, cmd, createOpts, startOpts } = args;
       // run prom
       await docker.pull('prom/prometheus:latest');
       // https://www.npmjs.com/package/@types/dockerode?activeTab=code
       // https://docs.docker.com/engine/api/v1.37/#tag/Container/operation/ContainerCreate
+
+      // refactor to await
       docker.run(image, cmd, process.stdout, createOpts, startOpts)
         .then((data) => {
           const output = data[0];

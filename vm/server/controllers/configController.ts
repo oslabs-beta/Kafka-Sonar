@@ -11,7 +11,6 @@ const configController = {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    console.log('HERE IS THE DATA --->', req.body.userData);
     const { userData: { jmxPorts } } = req.body;
     const { userData: { clientData: { client_id } } } = req.body;
     const clusterDir = client_id;

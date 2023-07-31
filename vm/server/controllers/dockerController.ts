@@ -74,36 +74,37 @@ const dockerController = {
     try {
       // run prom
       await docker.pull('prom/prometheus:latest');
-      await docker.run(
+      // https://www.npmjs.com/package/@types/dockerode?activeTab=code
+      // https://docs.docker.com/engine/api/v1.37/#tag/Container/operation/ContainerCreate
+      docker.run(
         'prom/prometheus:latest', 
-        [`--config.file=/user/${clusterDir}/configs/prometheus/prometheus.yml`],
+        [`--config.file=/backend/user/${clusterDir}/configs/prometheus/prometheus.yml`],
         process.stdout,
         // createOptions
         {
-          ExposedPorts: { ['9090']: {}},
-          Volumes: {
-            ['user'] : {}
-          },
+          ExposedPorts: { ['9090/tcp']: {}},
           HostConfig: {
-            VolumesFrom: ['kafka-sonar'],
-            // Mounts: [ 
-            //   {
-            //     Target: '/var/lib/docker/volumes/kafkasonar_kafkasonar-desktop-extension_user/_data',
-            //     Source: 'user',
-            //     Type: 'volume',
-            //   }
-            // ]
+            VolumesFrom: ['kafka-sonar:ro'],
+            PortBindings: {
+              "9090/tcp": [ { HostPort: "9090"} ]
+            }
           },
+          // connect prometheus to the user's network to scrape JMX
           NetworkingConfig: {
             EndpointsConfig: {
-              ['kafka-sonar']: { Aliases: ['kafka-sonar', `${user_network}`] },
+              [user_network]: { Aliases: [`${user_network}`] },
             }
-          }
-
+          },
         },
         // startOptions
         {}
-        )
+        ).then((data) => {
+          const output = data[0];
+          const container = data[1];
+          console.log(output.statusCode);
+          return container.remove();
+        }).then((data) => console.log('container removed'))
+        .catch(err => console.log(err));
       // run graf
       return next();
 

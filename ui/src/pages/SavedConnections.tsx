@@ -9,7 +9,7 @@ import { DataGrid } from '@mui/x-data-grid/DataGrid';
 // MUI types
 import { GridColDef, GridRowParams } from '@mui/x-data-grid';
 // TS types
-import { GridRowDef, KafkajsClientInfo } from './../types/types';
+import { GridRowDef, UserConnection } from './../types/types';
 // Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 
@@ -55,41 +55,33 @@ export default function SavedConnectionsDataGrid() {
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   // instantiate DD client object
-  //   const ddClient = createDockerDesktopClient();
-  //   // GET all connections associated with logged-in user
-  //   ddClient.extension.vm.service
-  //     .get('/api/clusters/userclusters/:user_id')
-  //     // .then((data: { clusters: KafkajsClientInfo[] }) => data.json().clusters)
-  //     .then((clusters: KafkajsClientInfo[]) => {
-  //       // map over clusters array to get only the data expected for the grid
-  //       const gridRows = clusters.map(
-  //         // destructure 6 properties from each KafkajsClientInfo object
-  //         (
-  //           {
-  //             client_id,
-  //             bootstrap_hostname,
-  //             port_number,
-  //             auth_mechanism,
-  //             username,
-  //             password,
-  //           },
-  //           i
-  //         ) => {
-  //           // keep only 4 rendered in DataGrid
-  //           return {
-  //             id: i + 1,
-  //             clientId: client_id,
-  //             host: bootstrap_hostname,
-  //             port: port_number,
-  //             auth: auth_mechanism,
-  //           };
-  //         }
-  //       );
-  //       setRows(gridRows);
-  //     });
-  // }, [rows]); // called once on component mount and whenever rows updates
+  const getUserConnections = async () => {
+    // instantiate DD client object
+    const ddClient = createDockerDesktopClient();
+    // GET all connections associated with logged-in user
+    // Issue with type UserConnection[]
+    const allUserConnections: any = await ddClient.extension.vm.service.get(
+      `/api/clusters/userclusters/${localStorage.getItem('id')}`
+    );
+    // map over allUserConnections to get only the data expected for the grid
+    const gridRows = allUserConnections.map(
+      // destructure and keep only the properties needed for the DataGrid
+      ({ client_id, bootstrap_hostname, port_number, auth_mechanism }, i) => {
+        return {
+          id: i + 1,
+          clientId: client_id,
+          host: bootstrap_hostname,
+          port: port_number,
+          auth: auth_mechanism,
+        };
+      }
+    );
+    setRows(gridRows);
+  };
+
+  useEffect(() => {
+    getUserConnections();
+  }, []); // called once on component mount and whenever rows updates
 
   return (
     <Grid container gap={5}>

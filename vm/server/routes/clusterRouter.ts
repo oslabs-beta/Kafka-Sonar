@@ -4,6 +4,27 @@ import clusterController from '../controllers/clusterController';
 
 const clusterRouter = express.Router();
 
+// SAVE NEW CONNECTION handleFinish
+
+clusterRouter.post(
+  '/',
+  clusterController.postCluster,
+  clusterController.postUserCluster,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200);
+  }
+);
+
+// SAVED CONNECTIONS useEffect
+
+clusterRouter.get(
+  '/userclusters/:user_id',
+  clusterController.getUserClusters,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.clusters);
+  }
+);
+
 // General clusters routes
 
 clusterRouter.get(
@@ -17,14 +38,6 @@ clusterRouter.get(
 clusterRouter.get(
   '/:cluster_id',
   clusterController.getCluster,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
-  }
-);
-
-clusterRouter.post(
-  '/',
-  clusterController.postCluster,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.cluster);
   }
@@ -47,14 +60,6 @@ clusterRouter.delete(
 );
 
 // User clusters routes
-
-clusterRouter.get(
-  '/userclusters/:user_id',
-  clusterController.getUserClusters,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.clusters);
-  }
-);
 
 clusterRouter.post(
   '/userclusters/:user_id/:cluster_id',

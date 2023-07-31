@@ -125,11 +125,11 @@ export default function SaveNewConnectionStepper(): JSX.Element {
   };
 
   // Needed checks:
-  // 1) Do we need a catch block for when cluster authentication fails?
+  // 1) Account for cluster authentication failures?
   // 2) Navigate to /saved works.
   // 3) Check toast works after going to SavedConnections page.
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     // if any user-input field is an empty string, alert user and exit handler
     if (!network) {
       alert('Network is required.');
@@ -152,30 +152,29 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     const ddClient = createDockerDesktopClient();
 
     const body: Connection = {
-      client: {
-        client_id: client,
-        bootstrap_hostname: host,
-        port_number: port,
-        auth_mechanism: auth,
-        username,
-        password,
-      },
-      user_network: network,
-      jmxPorts: brokerInfo,
+      id: localStorage.getItem('id'),
+      client,
+      host,
+      port,
+      auth,
+      username,
+      password,
+      network,
+      brokerInfo,
     };
 
     // POST new connection
-    ddClient.extension.vm.service
-      .post('/api/clusters', body)
-      // BE returns the newly created cluster connection (unused on FE)
-      .then((newConnection: Connection) => {
-        // redirect to SavedConnections page
-        navigate('/saved');
-        // toast success message
-        ddClient.desktopUI.toast.success(
-          'Your new cluster connection was added successfully.'
-        );
-      });
+    const connectionResult = await ddClient.extension.vm.service.post(
+      '/api/clusters',
+      body
+    );
+
+    // redirect to SavedConnections page
+    navigate('/saved');
+    // toast success message
+    ddClient.desktopUI.toast.success(
+      'Your new cluster connection was added successfully.'
+    );
   };
 
   return (

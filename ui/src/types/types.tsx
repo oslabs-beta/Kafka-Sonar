@@ -91,21 +91,30 @@ export interface GridRowDef {
   auth: string;
 }
 
-// SaveNewConnection component, KafkaJS client info
-// Corresponds to backend interface clientData
-export interface KafkajsClientInfo {
+// SaveNewConnection component, returned UserConnection objects
+export interface UserConnection {
+  cluster_id: number;
   client_id: string;
   bootstrap_hostname: string;
   port_number: string;
   auth_mechanism: string;
-  username: string; // will pass empty string if auth_mechanism is not N/A
-  password: string; // will pass empty string if auth_mechanism is not N/A
+  username: string;
+  password: string;
+  app_cluster_id: string;
+  user_network: string;
+  _id: number;
+  user_id: number;
 }
 
 // SaveNewConnection component, Connection type for handleFinish handler
-// Corresponds to backend interface userData
 export interface Connection {
-  client: KafkajsClientInfo;
-  user_network: string;
-  jmxPorts: BrokerInfo[];
+  id: string;
+  client: string;
+  host: string;
+  port: string;
+  auth: string;
+  username: string;
+  password: string;
+  network: string;
+  brokerInfo: BrokerInfo[];
 }

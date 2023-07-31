@@ -2,6 +2,83 @@ import { query } from '../models/appModel';
 import { Request, Response, NextFunction } from 'express';
 
 const clusterController = {
+  // SAVE NEW CONNECTION handleFinish
+  postCluster: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { client, host, port, auth, username, password, network } =
+        req.body;
+      const values: any[] = [
+        client,
+        host,
+        port,
+        auth,
+        username,
+        password,
+        '',
+        network,
+      ];
+      const request =
+        'INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, app_cluster_id, user_network) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *';
+      // const request =
+      //   'WITH new_cluster AS (INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, app_cluster_id, user_network) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING * ) INSERT INTO users_in_clusters (user_id, cluster_id) SELECT $9 AS user_id, new_cluster.cluster_id FROM new_cluster;';
+      const response: any = await query(request, values);
+      res.locals.cluster_id = response.rows[0].cluster_id;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.postCluster Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+  postUserCluster: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { id } = req.body;
+      const request =
+        'INSERT INTO users_in_clusters (user_id, cluster_id) VALUES ($1,$2) RETURNING *';
+      const values: any[] = [id, res.locals.cluster_id];
+      const response: any = await query(request, values);
+      // console.log('response', response.rows[0]);
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.postUserCluster Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+  // SAVED CONNECTIONS useEffect
+  getUserClusters: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<unknown> => {
+    try {
+      const { user_id } = req.params;
+      const request =
+        'SELECT * FROM clusters JOIN users_in_clusters ON clusters.cluster_id = users_in_clusters.cluster_id WHERE users_in_clusters.user_id = $1';
+      const values: any = [user_id];
+      const response: any = await query(request, values);
+      res.locals.clusters = response.rows;
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in clusterController.getUserClusters Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
+  },
+
+  // Everything else
+
   getAllClusters: async (
     _req: Request,
     res: Response,
@@ -35,47 +112,6 @@ const clusterController = {
     } catch (err) {
       return next({
         log: 'Error occured in clusterController.getCluster Middleware',
-        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
-      });
-    }
-  },
-  postCluster: async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<unknown> => {
-    try {
-      const { user_id } = req.params;
-      const {
-        client_id,
-        bootstrap_hostname,
-        port_number,
-        auth_mechanism,
-        username,
-        password,
-        app_cluster_id,
-        user_network,
-      } = req.body;
-      const request =
-        'INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, app_cluster_id, user_network) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *';
-      // const request =
-      //   'WITH new_cluster AS (INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, app_cluster_id, user_network) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING * ) INSERT INTO users_in_clusters (user_id, cluster_id) SELECT $9 AS user_id, new_cluster.cluster_id FROM new_cluster;';
-      const values: any[] = [
-        client_id,
-        bootstrap_hostname,
-        port_number,
-        auth_mechanism,
-        username,
-        password,
-        app_cluster_id,
-        user_network,
-      ];
-      const response: any = await query(request, values);
-      res.locals.cluster = response.rows;
-      return next();
-    } catch (err) {
-      return next({
-        log: 'Error occured in clusterController.postCluster Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
@@ -135,47 +171,6 @@ const clusterController = {
     } catch (err) {
       return next({
         log: 'Error occured in clusterController.deleteCluster Middleware',
-        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
-      });
-    }
-  },
-  getUserClusters: async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<unknown> => {
-    try {
-      const { user_id } = req.params;
-      const request =
-        'SELECT * FROM clusters JOIN users_in_clusters ON clusters.cluster_id = users_in_clusters.cluster_id WHERE users_in_clusters.user_id = $1';
-      const values: any = [user_id];
-      const response: any = await query(request, values);
-      res.locals.clusters = response.rows;
-      return next();
-    } catch (err) {
-      return next({
-        log: 'Error occured in clusterController.getUserClusters Middleware',
-        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
-      });
-    }
-  },
-  postUserCluster: async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<unknown> => {
-    try {
-      const { user_id, cluster_id } = req.params;
-
-      const request =
-        'INSERT INTO users_in_clusters (user_id, cluster_id) VALUES ($1,$2) RETURNING *';
-      const values: any[] = [user_id, cluster_id];
-      const response: any = await query(request, values);
-      res.locals.cluster = response.rows;
-      return next();
-    } catch (err) {
-      return next({
-        log: 'Error occured in clusterController.postUserCluster Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }

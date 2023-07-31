@@ -7,7 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 // Referenced guide for migration from MUI v5 to v6 in order to get import Data Grid from MUI X v6: https://mui.com/x/migration/migration-data-grid-v5/
 import { DataGrid } from '@mui/x-data-grid/DataGrid';
 // MUI types
-import { GridColDef, GridRowParams } from '@mui/x-data-grid';
+import { GridColDef, GridRowParams, useGridApiRef } from '@mui/x-data-grid';
 // TS types
 import { GridRowDef, UserConnection } from './../types/types';
 // Docker client library
@@ -83,6 +83,8 @@ export default function SavedConnectionsDataGrid() {
     getUserConnections();
   }, []); // called once on component mount and whenever rows updates
 
+  const apiRef = useGridApiRef();
+
   return (
     <Grid container gap={5}>
       {/* The following Grids are both items AND containers. 
@@ -118,6 +120,7 @@ export default function SavedConnectionsDataGrid() {
           ADD NEW CONNECTION
         </Button>
         <DataGrid
+          apiRef={apiRef}
           showCellVerticalBorder
           showColumnVerticalBorder
           columns={columns}

@@ -18,7 +18,7 @@ import {
   BrokerInfo,
   ConnectProps,
   ConfigureProps,
-  Connection,
+  NewConnection,
 } from './../types/types';
 
 import { createDockerDesktopClient } from '@docker/extension-api-client';
@@ -151,8 +151,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     // instantiate DD client object
     const ddClient = createDockerDesktopClient();
 
-    const body: Connection = {
-      id: localStorage.getItem('id'),
+    const body: NewConnection = {
       client,
       host,
       port,
@@ -165,7 +164,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
 
     // POST new connection
     const connectionResult = await ddClient.extension.vm.service.post(
-      '/api/clusters',
+      `/api/clusters/${localStorage.getItem('id')}`,
       body
     );
 

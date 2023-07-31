@@ -4,18 +4,20 @@ import clusterController from '../controllers/clusterController';
 
 const clusterRouter = express.Router();
 
-// SAVE NEW CONNECTION handleFinish
+// SAVE NEW CONNECTION handleFinish - WIP. No need to send anything to FE.
 
 clusterRouter.post(
-  '/',
+  '/:user_id',
   clusterController.postCluster,
   clusterController.postUserCluster,
+  // TASK: Following controller will need to be refactored to add all ports associated with a cluster_id in one operation.
+  // clusterController.postJmxPort,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200);
   }
 );
 
-// SAVED CONNECTIONS useEffect
+// SAVED CONNECTIONS getUserConnections - DONE. Working fullstack.
 
 clusterRouter.get(
   '/userclusters/:user_id',
@@ -25,15 +27,21 @@ clusterRouter.get(
   }
 );
 
-// General clusters routes
+// SAVED CONNECTIONS deleteUserConnection - WIP. No need to send anything to FE.
 
-clusterRouter.get(
-  '/allclusters',
-  clusterController.getAllClusters,
+clusterRouter.delete(
+  '/:user_id/:cluster_id',
+  clusterController.deleteCluster,
+  clusterController.deleteUserCluster,
+  // TASK: Following controller will need to be refactored to add all ports associated with a cluster_id in one operation.
+  // clusterController.deleteJmxPort,
   (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.clusters);
+    res.status(200);
   }
 );
+
+// SAVED CONNECTIONS connectToSelected - WIP, will likly involve getting a specific cluster's data to spin up containers, posting metrics continuously, and posting errors continuously.
+// TASK: Add controllers for spinning up and posting metrics. All controllers will need to be consolidated into one route.
 
 clusterRouter.get(
   '/:cluster_id',
@@ -43,45 +51,10 @@ clusterRouter.get(
   }
 );
 
-clusterRouter.put(
-  '/:cluster_id',
-  clusterController.putCluster,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
-  }
-);
-
-clusterRouter.delete(
-  '/:cluster_id',
-  clusterController.deleteCluster,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
-  }
-);
-
-// User clusters routes
-
-clusterRouter.post(
-  '/userclusters/:user_id/:cluster_id',
-  clusterController.postUserCluster,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
-  }
-);
-
-clusterRouter.delete(
-  '/userclusters/:user_id/:cluster_id',
-  clusterController.deleteUserCluster,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
-  }
-);
-
-// Error logs routes
-
+// following controller seems fine, gets all ports associated with a cluster_id.
 clusterRouter.get(
-  '/clustererrors/:cluster_id',
-  clusterController.getClusterErrors,
+  '/jmxports/:cluster_id',
+  clusterController.getJmxPorts,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.clusters);
   }
@@ -95,8 +68,18 @@ clusterRouter.post(
   }
 );
 
-// jmx ports routes
+// SAVED CONNECTIONS disconnectFromCurrent - WIP, will likely involve getting a specific cluster's data to spin down containers, stopping metrics posts, and stopping errors posts.
+// TASK: Add controllers for spinning down, stopping metrics, and stopping logging. All controllers will need to be consolidated into one route.
 
+clusterRouter.get(
+  '/:cluster_id',
+  clusterController.getCluster,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json(res.locals.cluster);
+  }
+);
+
+// following controller seems fine, gets all ports associated with a cluster_id.
 clusterRouter.get(
   '/jmxports/:cluster_id',
   clusterController.getJmxPorts,
@@ -105,27 +88,27 @@ clusterRouter.get(
   }
 );
 
-clusterRouter.post(
-  '/jmxports/:cluster_id',
-  clusterController.postJmxPort,
+// SAVED CONNECTIONS downloadMetrics - Must for launch.
+// TASK: Decide and implement download format on FE.
+
+// SAVED CONNECTIONS downloadLogs - Nice-to-have. TBD download format on FE.
+
+clusterRouter.get(
+  '/clustererrors/:cluster_id',
+  clusterController.getClusterErrors,
   (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
+    res.status(200).json(res.locals.clusters);
   }
 );
 
-clusterRouter.put(
-  '/jmxports/:cluster_id/:port_id',
-  clusterController.putJmxPort,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
-  }
-);
+// For testing purposes
+// Not used in app - getting all clusters for all users
 
-clusterRouter.delete(
-  '/jmxports/:cluster_id/:port_id',
-  clusterController.deleteJmxPort,
+clusterRouter.get(
+  '/allclusters',
+  clusterController.getAllClusters,
   (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
+    res.status(200).json(res.locals.clusters);
   }
 );
 

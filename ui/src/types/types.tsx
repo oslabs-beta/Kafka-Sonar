@@ -107,8 +107,7 @@ export interface UserConnection {
 }
 
 // SaveNewConnection component, Connection type for handleFinish handler
-export interface Connection {
-  id: string;
+export interface NewConnection {
   client: string;
   host: string;
   port: string;

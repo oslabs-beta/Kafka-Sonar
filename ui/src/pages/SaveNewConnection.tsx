@@ -125,9 +125,8 @@ export default function SaveNewConnectionStepper(): JSX.Element {
   };
 
   // Needed checks:
-  // 1) Account for cluster authentication failures?
-  // 2) Navigate to /saved works.
-  // 3) Check toast works after going to SavedConnections page.
+  // Account for cluster authentication failures?
+  // BUG: Post works, nothing happens after.
 
   const handleFinish = async () => {
     // if any user-input field is an empty string, alert user and exit handler

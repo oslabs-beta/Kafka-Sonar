@@ -4,7 +4,7 @@ import clusterController from '../controllers/clusterController';
 
 const clusterRouter = express.Router();
 
-// SAVE NEW CONNECTION handleFinish - WIP. No need to send anything to FE.
+// SAVE NEW CONNECTION handleFinish - WIP.
 
 clusterRouter.post(
   '/:user_id',
@@ -27,7 +27,7 @@ clusterRouter.get(
   }
 );
 
-// SAVED CONNECTIONS deleteUserConnection - WIP. No need to send anything to FE.
+// SAVED CONNECTIONS deleteUserConnection - WIP.
 
 clusterRouter.delete(
   '/:user_id/:cluster_id',

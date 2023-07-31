@@ -89,6 +89,7 @@ const clusterController = {
         'SELECT * FROM clusters JOIN users_in_clusters ON clusters.cluster_id = users_in_clusters.cluster_id WHERE users_in_clusters.user_id = $1';
       const values: any = [user_id];
       const response: any = await query(request, values);
+      console.log('getUserClusters --->', response.rows);
       res.locals.clusters = response.rows;
       return next();
     } catch (err) {
@@ -108,7 +109,7 @@ const clusterController = {
       const request = 'DELETE FROM clusters WHERE cluster_id = $1 RETURNING *';
       const values: any[] = [cluster_id];
       const response: any = await query(request, values);
-      // console.log('response', response.rows[0]);
+      console.log('deleteCluster response-->', response.rows);
       return next();
     } catch (err) {
       return next({
@@ -128,7 +129,7 @@ const clusterController = {
         'DELETE FROM users_in_clusters WHERE user_id = $1 AND cluster_id = $2 RETURNING *';
       const values: any[] = [user_id, cluster_id];
       const response: any = await query(request, values);
-      // console.log('response', response.rows[0]);
+      console.log('deleteUserCluster response-->', response.rows);
       return next();
     } catch (err) {
       return next({

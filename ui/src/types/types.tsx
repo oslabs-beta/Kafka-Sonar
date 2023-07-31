@@ -14,7 +14,7 @@ export interface Props {
 
 // App component navTabOption type
 export interface NavTabOption {
-  route: string;
+  onClick: () => void;
   icon: ReactNode;
   text: string;
 }
@@ -60,8 +60,27 @@ export interface BrokerInfo {
 export interface User {
   email: string;
   password: string;
-  role?: string;
+  role?: string; // required for Signup since creating a user record in DB necessitates a role / account_type; not reqd for Login
 }
+
+// Login and Signup components, result type for verifyUser and postNewUser handlers
+export interface AuthSuccess {
+  message: string;
+  id: number;
+  token: unknown;
+}
+
+export interface AuthError {
+  message: string;
+  error: string;
+}
+
+// for Login only, 400 response message
+export interface AuthInvalid {
+  message: string;
+}
+
+export type AuthResult = AuthSuccess | AuthError | AuthInvalid;
 
 // SavedConnections component, GridRowDef type for each row obj in rows array in state
 export interface GridRowDef {

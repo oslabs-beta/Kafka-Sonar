@@ -8,8 +8,7 @@ const userController = {
     next: NextFunction
   ): Promise<unknown> => {
     try {
-      // const request = 'SELECT * FROM users';
-      const request = `SELECT * FROM users WHERE email = 'upnata@gmail.com'`;
+      const request = 'SELECT * FROM users';
       // const values: any = [];
       const response: any = await query(request);
       console.log(response);
@@ -60,6 +59,7 @@ const userController = {
       });
     }
   },
+  // following are potentially for Google OAuth 2.0
   getUserByGoogleId: async (
     req: Request,
     res: Response,

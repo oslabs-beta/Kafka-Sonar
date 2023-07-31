@@ -14,7 +14,7 @@ import '../assets/kafka-sonar-orange-logo.svg';
 // custom hook
 import useInput from '../hooks/useInput';
 // TS types
-import { User } from './../types/types';
+import { User, AuthResult } from './../types/types';
 // Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 
@@ -23,8 +23,8 @@ export default function Signup(): JSX.Element {
   const [email, emailOnChange] = useInput('');
   const [password, passwordOnChange] = useInput('');
 
-  // // useState
-  // const [role, setRole] = useState<string>('User');
+  // following uses useState
+  const [role, setRole] = useState<string>('User');
 
   // // role select handler to update state
   // const roleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,12 +34,7 @@ export default function Signup(): JSX.Element {
 
   const navigate = useNavigate();
 
-  // Needed checks:
-  // 1) Navigate to /saved works.
-  // 2) Check toast works after going to SavedConnections page.
-  // 3) Do we want to verify the user's entered email exists by sending some token to their email?
-
-  const postNewUser = (): Promise<void> => {
+  const postNewUser = async (): Promise<void> => {
     // if email or password are empty strings
     if (!email || !password) {
       // alert user and exit handler
@@ -60,17 +55,29 @@ export default function Signup(): JSX.Element {
     const body: User = {
       email,
       password,
+      role,
     };
+
     // POST new user
-    ddClient.extension.vm.service
-      .post('/api/users', body)
-      // BE returns the newly created user object (unused on FE)
-      .then((newUser: User) => {
-        // redirect to SavedConnections page
-        navigate('/saved');
-        // toast success message
-        ddClient.desktopUI.toast.success('Account creation successful!');
-      });
+    // TS issue to resolve: AuthResult type not working
+    const signupResult: any = await ddClient.extension.vm.service.post(
+      '/api/auth/signup',
+      body
+    );
+
+    if (signupResult.error) {
+      alert(signupResult.message);
+      return;
+    } else {
+      const { id, token } = signupResult;
+      // store returned user_id and token in localStorage
+      localStorage.setItem('id', id);
+      localStorage.setItem('token', token);
+    }
+    // redirect to SavedConnections page
+    navigate('/saved');
+    // toast success message
+    ddClient.desktopUI.toast.success('Account creation successful!');
   };
 
   return (

@@ -17,6 +17,6 @@ metricsServer.listen(METRICS_PORT, () => {
   console.log(`🚀 Server listening on Port ${METRICS_PORT}`);
 });
 
-// socketServer.listen(SOCKET_PATH, () => {
-//   console.log(`🚀 Server listening on Socket ${SOCKET_PATH}`);
-// });
+socketServer.listen(SOCKET_PATH, () => {
+  console.log(`🚀 Server listening on Socket ${SOCKET_PATH}`);
+});

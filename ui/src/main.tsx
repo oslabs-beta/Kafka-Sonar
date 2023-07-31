@@ -64,10 +64,10 @@ createRoot(root as HTMLElement).render(
       <ThemeProvider theme={fontTheme}>
         <HashRouter>
           <Routes>
-            <Route path="/saved" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route
-              path="/"
+              path="/saved"
               element={<App saved={<SavedConnectionsDataGrid />} />}
             />
             <Route

@@ -5,16 +5,26 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const signUp = async (req: Request, res: Response) => {
-  const { email, password, account_type } = req.body;
+  const { email, password } = req.body;
+  const account_type = req.body.role;
 
   try {
     // Hash and salt needed
-    const result = await query(`INSERT INTO users (email, password, account_type) VALUES ($1, $2, $3) RETURNING *`, [email, password, account_type]);
+    const result = await query(
+      `INSERT INTO users (email, password, account_type) VALUES ($1, $2, $3) RETURNING *`,
+      [email, password, account_type]
+    );
 
     const user = result.rows[0];
-    const token = jwt.sign({ email: user.email, id: user.user_id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+    const token = jwt.sign(
+      { email: user.email, id: user.user_id },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '1h' }
+    );
 
-    res.status(200).json({ message: 'User signed up', email: user.email, token });
+    res
+      .status(200)
+      .json({ message: 'User signed up', id: user.user_id, token });
   } catch (err) {
     if (err instanceof Error) {
       res.status(500).json({ message: 'Error signing up', error: err.message });
@@ -26,12 +36,21 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    const result = await query(`SELECT * FROM users WHERE email = $1 AND password = $2`, [email, password]);
-    
+    const result = await query(
+      `SELECT * FROM users WHERE email = $1 AND password = $2`,
+      [email, password]
+    );
+
     const user = result.rows[0];
     if (user) {
-      const token = jwt.sign({ email: user.email, id: user.user_id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
-      res.status(200).json({ message: 'User logged in', email: user.email, token });
+      const token = jwt.sign(
+        { email: user.email, id: user.user_id },
+        process.env.JWT_SECRET as string,
+        { expiresIn: '1h' }
+      );
+      res
+        .status(200)
+        .json({ message: 'User logged in', id: user.user_id, token });
     } else {
       res.status(400).json({ message: 'Invalid email or password' });
     }
@@ -42,7 +61,11 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+export const verifyToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -55,6 +78,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
       return res.status(403).json({ message: 'Invalid token' });
     }
 
+    // @ts-ignore
     req.user = user;
     next();
   });

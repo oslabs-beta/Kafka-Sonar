@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "frontend": "vite"
+    "frontend": "vite",
+    "ui-source": "docker extension dev ui-source kafkasonar/kafkasonar:latest http://localhost:5175",
+    "debug": "docker extension dev debug kafkasonar/kafkasonar:latest"
   },
   "dependencies": {
     "@docker/docker-mui-theme": "^0.0.11",

@@ -5,6 +5,8 @@ import writeMetricsCompose from '../utils/writeMetricsCompose';
 import writeBuffer from '../utils/writeBuffer';
 import Dockerode from 'dockerode';
 import DockerodeCompose from 'dockerode-compose';
+import promContainerOpts from '../utils/promContainerOpts';
+import cluster from 'cluster';
 
 const docker = new Dockerode({ socketPath: '/var/run/docker.sock'});
 
@@ -72,38 +74,20 @@ const dockerController = {
   ): Promise<void> => {
     const { clusterDir, user_network } = res.locals;
     try {
+      const promConfig = promContainerOpts(user_network, clusterDir);
+      const { image, cmd, createOpts, startOpts } = promConfig;
       // run prom
       await docker.pull('prom/prometheus:latest');
       // https://www.npmjs.com/package/@types/dockerode?activeTab=code
       // https://docs.docker.com/engine/api/v1.37/#tag/Container/operation/ContainerCreate
-      docker.run(
-        'prom/prometheus:latest', 
-        [`--config.file=/backend/user/${clusterDir}/configs/prometheus/prometheus.yml`],
-        process.stdout,
-        // createOptions
-        {
-          ExposedPorts: { ['9090/tcp']: {}},
-          HostConfig: {
-            VolumesFrom: ['kafka-sonar:ro'],
-            PortBindings: {
-              "9090/tcp": [ { HostPort: "9090"} ]
-            }
-          },
-          // connect prometheus to the user's network to scrape JMX
-          NetworkingConfig: {
-            EndpointsConfig: {
-              [user_network]: { Aliases: [`${user_network}`] },
-            }
-          },
-        },
-        // startOptions
-        {}
-        ).then((data) => {
+      docker.run(image, cmd, process.stdout, createOpts, startOpts)
+        .then((data) => {
           const output = data[0];
           const container = data[1];
           console.log(output.statusCode);
           return container.remove();
-        }).then((data) => console.log('container removed'))
+        })
+        .then((data) => console.log('container removed'))
         .catch(err => console.log(err));
       // run graf
       return next();

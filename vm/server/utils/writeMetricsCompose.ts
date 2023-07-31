@@ -37,13 +37,13 @@ services:
     ports:
       - '9090:9090'
     volumes:
-      - user:/user
+      - /var/lib/docker/volumes/kafka-test-kafkasonar-metrics_user/_data:/user
     command: '--config.file=/user/${clusterDir}/configs/prometheus/prometheus.yml'
 
 volumes:
-    user:
-      external:
-        name: kafkasonar_kafkasonar-desktop-extension_user
+  user:
+    external:
+      name: kafkasonar_kafkasonar-desktop-extension_user
 `);
 };
 

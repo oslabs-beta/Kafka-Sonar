@@ -18,6 +18,9 @@ const dockerController = {
     const { userData: { user_network } } = req.body;
     res.locals.user_network = user_network;
     const { clusterDir } = res.locals;
+    // get volume
+    const volumes = await docker.listVolumes();
+    console.log('VOLUMES --->', volumes);
     // write custom prometheus/grafana docker-compose and convert to buffer
     const customCompose = writeMetricsCompose(user_network, clusterDir);
     const composeBuffer = writeBuffer(customCompose);
@@ -61,7 +64,53 @@ const dockerController = {
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }
-  }
+  },
+  metricsRun: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const { clusterDir, user_network } = res.locals;
+    try {
+      // run prom
+      await docker.pull('prom/prometheus:latest');
+      await docker.run(
+        'prom/prometheus:latest', 
+        [`--config.file=/user/${clusterDir}/configs/prometheus/prometheus.yml`],
+        process.stdout,
+        // createOptions
+        {
+          ExposedPorts: { ['9090']: {}},
+          Volumes: {
+            ['user'] : {}
+          },
+          HostConfig: {
+            VolumesFrom: ['kafka-sonar'],
+            // Mounts: [ 
+            //   {
+            //     Target: '/var/lib/docker/volumes/kafkasonar_kafkasonar-desktop-extension_user/_data',
+            //     Source: 'user',
+            //     Type: 'volume',
+            //   }
+            // ]
+          },
+          NetworkingConfig: {
+            EndpointsConfig: {
+              ['kafka-sonar']: { Aliases: ['kafka-sonar', `${user_network}`] },
+            }
+          }
+
+        },
+        // startOptions
+        {}
+        )
+      // run graf
+      return next();
+
+    } catch (err) {
+      console.log(err);
+    }
+  } 
 }
 
 export default dockerController;

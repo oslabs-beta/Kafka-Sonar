@@ -6,7 +6,7 @@ import writeBuffer from '../utils/writeBuffer';
 import Dockerode from 'dockerode';
 import DockerodeCompose from 'dockerode-compose';
 import promContainerOpts from '../utils/promContainerOpts';
-import cluster from 'cluster';
+import grafContainerOpts from '../utils/grafContainerOpts';
 
 const docker = new Dockerode({ socketPath: '/var/run/docker.sock'});
 
@@ -31,7 +31,7 @@ const dockerController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in configController.writeMetricsCompose Middleware',
+        log: 'Error occured in dockerController.writeMetricsCompose Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }
@@ -62,13 +62,13 @@ const dockerController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in configController.metricsComposeUp Middleware',
+        log: 'Error occured in dockerController.metricsComposeUp Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }
   },
-  metricsRun: async (
-    req: Request,
+  runPrometheus: async (
+    _req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -77,7 +77,7 @@ const dockerController = {
       const args = promContainerOpts(user_network, clusterDir);
       const { image, cmd, createOpts, startOpts } = args;
       // run prom
-      await docker.pull('prom/prometheus:latest');
+      await docker.pull(image);
       // https://www.npmjs.com/package/@types/dockerode?activeTab=code
       // https://docs.docker.com/engine/api/v1.37/#tag/Container/operation/ContainerCreate
 
@@ -91,11 +91,39 @@ const dockerController = {
         })
         .then((data) => console.log('container removed'))
         .catch(err => console.log(err));
-      // run graf
       return next();
-
     } catch (err) {
-      console.log(err);
+      return next({
+        log: 'Error occured in dockerController.runPrometheus Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+      });
+    }
+  },
+  runGrafana: async (
+    _req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const { clusterDir, user_network } = res.locals;
+    try {
+      const args = grafContainerOpts(user_network, clusterDir);
+      const { image, cmd, createOpts, startOpts } = args;
+      await docker.pull(image);
+      docker.run(image, cmd, process.stdout, createOpts, startOpts)
+      .then((data) => {
+        const output = data[0];
+        const container = data[1];
+        console.log(output.statusCode);
+        return container.remove();
+      })
+      .then((data) => console.log('container removed'))
+      .catch(err => console.log(err));
+    return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in dockerController.runGrafana Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+      });
     }
   } 
 }

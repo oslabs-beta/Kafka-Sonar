@@ -11,7 +11,8 @@ initRouter.post(
   configController.configPrometheus,
   configController.writeGrafanaDashboard,
   dockerController.writeMetricsCompose,
-  dockerController.metricsRun,
+  dockerController.runPrometheus,
+  dockerController.runGrafana,
   //dockerController.metricsComposeUp,
 
   // clusterController.postCluster,

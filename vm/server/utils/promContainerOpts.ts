@@ -3,6 +3,7 @@ export default (network: string, clusterDir: string) => {
     image: 'prom/prometheus:latest',
     cmd: [`--config.file=/backend/user/${clusterDir}/configs/prometheus/prometheus.yml`],
     createOpts: {
+      name: `${clusterDir}-kafkasonar-prometheus`,
       ExposedPorts: { ['9090/tcp']: {} },
       HostConfig: {
         VolumesFrom: ['kafka-sonar:ro'],
@@ -20,4 +21,4 @@ export default (network: string, clusterDir: string) => {
     startOpts: {} 
   };
   return promRunOpts;
-}
+};

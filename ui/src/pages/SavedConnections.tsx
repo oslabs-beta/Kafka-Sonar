@@ -5,11 +5,11 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
 // Referenced guide for migration from MUI v5 to v6 in order to get import Data Grid from MUI X v6: https://mui.com/x/migration/migration-data-grid-v5/
-import { DataGrid } from '@mui/x-data-grid/DataGrid';
+import { DataGrid, GridEventListener } from '@mui/x-data-grid';
 // MUI types
-import { GridColDef, GridRowParams } from '@mui/x-data-grid';
+import { GridColDef } from '@mui/x-data-grid';
 // TS types
-import { GridRowDef, KafkajsClientInfo } from './../types/types';
+import { GridRowDef, UserConnection } from './../types/types';
 // Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 
@@ -52,44 +52,62 @@ const columns: GridColDef[] = [
 
 export default function SavedConnectionsDataGrid() {
   const [rows, setRows] = useState<GridRowDef[]>([]);
-
+  // on BE, cluster_id is a number type; assuming there will never be a cluster with an id of 0
+  const [selectedRow, setSelectedRow] = useState<number>(0);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   // instantiate DD client object
-  //   const ddClient = createDockerDesktopClient();
-  //   // GET all connections associated with logged-in user
-  //   ddClient.extension.vm.service
-  //     .get('/api/clusters/userclusters/:user_id')
-  //     // .then((data: { clusters: KafkajsClientInfo[] }) => data.json().clusters)
-  //     .then((clusters: KafkajsClientInfo[]) => {
-  //       // map over clusters array to get only the data expected for the grid
-  //       const gridRows = clusters.map(
-  //         // destructure 6 properties from each KafkajsClientInfo object
-  //         (
-  //           {
-  //             client_id,
-  //             bootstrap_hostname,
-  //             port_number,
-  //             auth_mechanism,
-  //             username,
-  //             password,
-  //           },
-  //           i
-  //         ) => {
-  //           // keep only 4 rendered in DataGrid
-  //           return {
-  //             id: i + 1,
-  //             clientId: client_id,
-  //             host: bootstrap_hostname,
-  //             port: port_number,
-  //             auth: auth_mechanism,
-  //           };
-  //         }
-  //       );
-  //       setRows(gridRows);
-  //     });
-  // }, [rows]); // called once on component mount and whenever rows updates
+  // handles updating selectedRow with cluster_id / id of the selected row in the DataGrid
+  const handleRowClick: GridEventListener<'rowClick'> = (params) => {
+    setSelectedRow(params.row.id);
+  };
+
+  // instantiate DD client object
+  const ddClient = createDockerDesktopClient();
+
+  const getUserConnections = async () => {
+    // GET all connections associated with logged-in user
+    // Issue with type UserConnection[]
+    const allUserConnections: any = await ddClient.extension.vm.service.get(
+      `/api/clusters/userclusters/${localStorage.getItem('id')}`
+    );
+    // map over allUserConnections to get only the data expected for the grid
+    const gridRows = allUserConnections.map(
+      // destructure and keep only the properties needed for the DataGrid
+      ({
+        cluster_id,
+        client_id,
+        bootstrap_hostname,
+        port_number,
+        auth_mechanism,
+      }) => {
+        return {
+          // See references: https://mui.com/x/react-data-grid/row-definition/#row-identifier, https://mui.com/x/react-data-grid/getting-started/#define-rows
+          id: cluster_id, // all cluster_ids should be unique
+          clientId: client_id,
+          host: bootstrap_hostname,
+          port: port_number,
+          auth: auth_mechanism,
+        };
+      }
+    );
+    setRows(gridRows);
+  };
+
+  // useEffect is called 2x on component mount as of React v18 (need to fact check version)
+  useEffect(() => {
+    getUserConnections();
+  }, []); // called once on component mount and whenever rows updates
+
+  // Needed checks:
+  // BUG: Delete works, nothing happens after.
+  const deleteUserConnection = async () => {
+    // DELETE selected connection
+    const deletedConnection: any = await ddClient.extension.vm.service.delete(
+      `/api/clusters/${localStorage.getItem('id')}/${selectedRow}`
+    );
+    // refresh page, should trigger useEffect / getUserConnections, which will update state
+    location.reload();
+  };
 
   return (
     <Grid container gap={5}>
@@ -126,6 +144,7 @@ export default function SavedConnectionsDataGrid() {
           ADD NEW CONNECTION
         </Button>
         <DataGrid
+          onRowClick={handleRowClick}
           showCellVerticalBorder
           showColumnVerticalBorder
           columns={columns}
@@ -139,7 +158,6 @@ export default function SavedConnectionsDataGrid() {
           }}
           pageSizeOptions={[10]}
           autoHeight
-          getRowClassName={(params: GridRowParams) => 'rowWidth'}
         />
       </Grid>
       <Grid container flexDirection={'column'} gap={1} item xs sm md>
@@ -177,7 +195,12 @@ export default function SavedConnectionsDataGrid() {
           title="Delete this cluster connection from your saved connections. This action cannot be undone!"
           placement="top"
         >
-          <Button variant="contained" color="error" size="medium">
+          <Button
+            onClick={deleteUserConnection}
+            variant="contained"
+            color="error"
+            size="medium"
+          >
             DELETE SELECTED CONNECTION
           </Button>
         </Tooltip>

@@ -22,6 +22,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import HubIcon from '@mui/icons-material/Hub';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import PolylineIcon from '@mui/icons-material/Polyline';
+import LogoutIcon from '@mui/icons-material/Logout';
 import SvgIcon from '@mui/material/SvgIcon';
 import { ReactComponent as OrangeLogo } from './assets/kafka-sonar-orange-logo.svg';
 
@@ -38,29 +39,6 @@ import { Props, NavTabOption } from './types/types';
 // function useDockerDesktopClient() {
 //   return client;
 // }
-
-const navTabOptions: NavTabOption[] = [
-  {
-    route: '/saved',
-    icon: <BookmarkIcon />,
-    text: 'Saved Connections',
-  },
-  {
-    route: '/resources',
-    icon: <HubIcon />,
-    text: 'Resource Usage',
-  },
-  {
-    route: '/cluster',
-    icon: <DeviceHubIcon />,
-    text: 'Cluster View',
-  },
-  {
-    route: '/partition',
-    icon: <PolylineIcon />,
-    text: 'Partition View',
-  },
-];
 
 export default function App(props: Props) {
   const drawerWidth = 240;
@@ -119,6 +97,48 @@ export default function App(props: Props) {
 
   const navigate = useNavigate();
 
+  const navTabOptions: NavTabOption[] = [
+    {
+      onClick: () => {
+        navigate('/saved');
+      },
+      icon: <BookmarkIcon />,
+      text: 'Saved Connections',
+    },
+    {
+      onClick: () => {
+        navigate('/resources');
+      },
+      icon: <HubIcon />,
+      text: 'Resource Usage',
+    },
+    {
+      onClick: () => {
+        navigate('/cluster');
+      },
+      icon: <DeviceHubIcon />,
+      text: 'Cluster View',
+    },
+    {
+      onClick: () => {
+        navigate('/partition');
+      },
+      icon: <PolylineIcon />,
+      text: 'Partition View',
+    },
+    {
+      onClick: () => {
+        // on log out, clear user's id and token from localStorage, ending their session
+        localStorage.removeItem('id');
+        localStorage.removeItem('token');
+        // navigate to login page
+        navigate('/');
+      },
+      icon: <LogoutIcon />,
+      text: 'Log Out',
+    },
+  ];
+
   // Socket connection test;
   // const [response, setResponse] = React.useState<string>();
   // const ddClient = useDockerDesktopClient();
@@ -171,9 +191,7 @@ export default function App(props: Props) {
             <ListItem
               key={navTabInfo.text}
               disablePadding
-              onClick={() => {
-                navigate(navTabInfo.route);
-              }}
+              onClick={navTabInfo.onClick}
               sx={{
                 display: 'block',
               }}

@@ -28,4 +28,18 @@ userRouter.delete(
   }
 );
 
+userRouter.get(
+  '/getUserByGoogleId',
+  userController.getUserByGoogleId,
+  (req, res) => {
+    console.log('end of /getUserByGoogleId route');
+    res.status(200).json(res.locals.user);
+  }
+);
+
+userRouter.delete('/logoutUser', userController.logOut, (req, res) => {
+  console.log('end of user/logout route');
+  res.status(200).json({ message: 'logged out' });
+});
+
 export default userRouter;

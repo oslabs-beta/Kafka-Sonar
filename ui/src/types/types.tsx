@@ -14,7 +14,7 @@ export interface Props {
 
 // App component navTabOption type
 export interface NavTabOption {
-  route: string;
+  onClick: () => void;
   icon: ReactNode;
   text: string;
 }
@@ -60,8 +60,27 @@ export interface BrokerInfo {
 export interface User {
   email: string;
   password: string;
-  role?: string;
+  role?: string; // required for Signup since creating a user record in DB necessitates a role / account_type; not reqd for Login
 }
+
+// Login and Signup components, result type for verifyUser and postNewUser handlers
+export interface AuthSuccess {
+  message: string;
+  id: number;
+  token: unknown;
+}
+
+export interface AuthError {
+  message: string;
+  error: string;
+}
+
+// for Login only, 400 response message
+export interface AuthInvalid {
+  message: string;
+}
+
+export type AuthResult = AuthSuccess | AuthError | AuthInvalid;
 
 // SavedConnections component, GridRowDef type for each row obj in rows array in state
 export interface GridRowDef {
@@ -72,21 +91,29 @@ export interface GridRowDef {
   auth: string;
 }
 
-// SaveNewConnection component, KafkaJS client info
-// Corresponds to backend interface clientData
-export interface KafkajsClientInfo {
+// SaveNewConnection component, returned UserConnection objects
+export interface UserConnection {
+  cluster_id: number;
   client_id: string;
   bootstrap_hostname: string;
   port_number: string;
   auth_mechanism: string;
-  username: string; // will pass empty string if auth_mechanism is not N/A
-  password: string; // will pass empty string if auth_mechanism is not N/A
+  username: string;
+  password: string;
+  app_cluster_id: string;
+  user_network: string;
+  _id: number;
+  user_id: number;
 }
 
 // SaveNewConnection component, Connection type for handleFinish handler
-// Corresponds to backend interface userData
-export interface Connection {
-  client: KafkajsClientInfo;
-  user_network: string;
-  jmxPorts: BrokerInfo[];
+export interface NewConnection {
+  client: string;
+  host: string;
+  port: string;
+  auth: string;
+  username: string;
+  password: string;
+  network: string;
+  brokerInfo: BrokerInfo[];
 }

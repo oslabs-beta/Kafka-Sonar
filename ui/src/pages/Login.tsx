@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Paper from '@mui/material/Paper';
@@ -10,7 +10,7 @@ import '../assets/kafka-sonar-orange-logo.svg';
 // custom hook
 import useInput from '../hooks/useInput';
 // TS types
-import { User } from './../types/types';
+import { User, AuthResult } from './../types/types';
 // Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 
@@ -21,46 +21,20 @@ export default function Login(): JSX.Element {
 
   const navigate = useNavigate();
 
+  // a user's id and session token are only removed from localStorage on Log Out from the app's left side nav bar
+  // if the user switches extensions, Kafka Sonar's localStorage persists their id and token, but the user lands on Login when they return to the extension
+  // this useEffect checks if id and token are present; if so, it navigates to SavedConnections
+  useEffect(() => {
+    if (localStorage.getItem('id') && localStorage.getItem('token')) {
+      navigate('/saved');
+    }
+  }, []); // runs once on component mount
+
   // Needed checks:
-  // 1) Finish writing functionality checking 3 cases when BE route for login is written. (inc any needed catch blocks)
-  // 2) Navigate to /saved works.
-  // 3) Check toast works after going to SavedConnections page.
-
-  const verifyUser = (): Promise<void> => {
-    // if email or password are empty strings
-    if (!email || !password) {
-      // alert user and exit handler
-      alert('Email and password are required.');
-      return;
-    }
-
-    // Validate email input (reference: https://bobbyhadz.com/blog/react-check-if-email-is-valid)
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      // alert user and exit handler
-      alert('Provide a valid email.');
-      return;
-    }
-
-    // instantiate DD client object
-    const ddClient = createDockerDesktopClient();
-
-    const body: User = {
-      email,
-      password,
-    };
-    // POST new user
-    ddClient.extension.vm.service
-      .post('', body)
-      // .then((res: { user: User }) => res.json().user)
-      .then((user: User) => {
-        // CASE 1: user doesn't exist in DB, redirect to Signup page
-        // CASE 2: user exists in DB AND password not a match, stay on Login
-        // CASE 3: user exists AND password matches, redirect to SavedConnections page
-        navigate('/saved');
-        // toast success message
-        ddClient.desktopUI.toast.success('Login successful!');
-      });
-  };
+  // 1) Finish writing functionality checking 3 cases when BE route for login is written.
+  // CASE 1: user doesn't exist in DB, redirect to Signup page
+  // CASE 2: user exists in DB AND password not a match, stay on Login
+  // CASE 3: user exists AND password matches, redirect to SavedConnections page
 
   //     .then((data) => {
   //       console.log('login data', data); // res.locals object
@@ -85,6 +59,51 @@ export default function Login(): JSX.Element {
   //       }
   //     });
   // };
+
+  const verifyUser = async (): Promise<void> => {
+    // if email or password are empty strings
+    if (!email || !password) {
+      // alert user and exit handler
+      alert('Email and password are required.');
+      return;
+    }
+
+    // Validate email input (reference: https://bobbyhadz.com/blog/react-check-if-email-is-valid)
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      // alert user and exit handler
+      alert('Provide a valid email.');
+      return;
+    }
+
+    // instantiate DD client object
+    const ddClient = createDockerDesktopClient();
+
+    const body: User = {
+      email,
+      password,
+    };
+
+    // POST user
+    // TS issue to resolve: AuthResult type not working
+    const loginResult: any = await ddClient.extension.vm.service.post(
+      '/api/auth/login',
+      body
+    );
+
+    if (!loginResult.id) {
+      alert(loginResult.message);
+      return;
+    } else {
+      const { id, token } = loginResult;
+      // store returned user_id and token in localStorage
+      localStorage.setItem('id', id);
+      localStorage.setItem('token', token);
+    }
+    // redirect to SavedConnections page
+    navigate('/saved');
+    // toast success message
+    ddClient.desktopUI.toast.success('Login successful');
+  };
 
   return (
     <Paper
@@ -144,6 +163,9 @@ export default function Login(): JSX.Element {
       </Button>
       <Typography align="center">
         <Link to="/signup">No account yet? Sign up</Link>
+      </Typography>
+      <Typography align="center">
+        <a href="/login/google">Google OAuth</a>
       </Typography>
     </Paper>
   );

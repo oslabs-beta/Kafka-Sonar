@@ -10,6 +10,7 @@ initRouter.post(
   '/test',
   configController.configPrometheus,
   configController.writeGrafanaDashboard,
+  configController.writeGrafanaDashboardConfig,
   dockerController.writeMetricsCompose,
   dockerController.runPrometheus,
   dockerController.runGrafana,

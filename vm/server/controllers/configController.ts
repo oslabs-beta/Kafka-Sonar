@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import writePrometheusConfig from '../utils/writePrometheusConfig';
 import writeBuffer from '../utils/writeBuffer';
 import writeGrafanaDashboard from '../utils/writeGrafanaDashboard';
+import writeGrafanaDashboardConfig from '../utils/writeGrafanaDashboardConfig';
 
 const configController = {
   configPrometheus: async (
@@ -63,7 +64,7 @@ const configController = {
         copySync(`./static/configs/grafana/dashboards/brokers_jvm_os.json`, `./user/${clusterDir}/configs/grafana/dashboards/brokers_jvm_os.json`);
         copySync(`./static/configs/grafana/dashboards/performance.json`, `./user/${clusterDir}/configs/grafana/dashboards/performance.json`);
         // then copy over all provisioning files
-        copySync(`./static/configs/grafana/provisioning`, `./user/${clusterDir}/configs/grafana/provisioning/`)
+        copySync(`./static/configs/grafana/provisioning/datasources`, `./user/${clusterDir}/configs/grafana/provisioning/datasources/`)
         return next();
       } catch (err) {
         return next({
@@ -71,7 +72,27 @@ const configController = {
           message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
         });
       }
+  },
+
+  writeGrafanaDashboardConfig: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const { clusterDir } = res.locals;
+    const grafDashboardConfigYml = writeGrafanaDashboardConfig(clusterDir);
+    const grafDashboardConfigBuffer = writeBuffer(grafDashboardConfigYml);
+    try {
+      // write to ./user/clusterDir/configs/grafana/provisioning/dashboards/kafka-sonar.yml
+      outputFileSync(`./user/${clusterDir}/configs/grafana/provisioning/dashboards/kafka-sonar.yml`, grafDashboardConfigBuffer);
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in configController.writeGrafanaDashboardConfig Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+      });
     }
+  }
 };
 
 export default configController;

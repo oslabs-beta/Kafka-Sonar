@@ -18,7 +18,7 @@ export default (network: string, clusterDir: string) => {
         }
       },
       Env: [
-        'GF_PATHS_DATA=/var/lib/grafana',
+        `GF_PATHS_DATA=/backend/user/${clusterDir}/configs/grafana/dashboards`,
         'CORS_ALLOW_ORIGIN=*',
         'GF_AUTH_ANONYMOUS_ENABLED=true',
         'GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer'

@@ -15,6 +15,8 @@ const configController = {
   ): Promise<void> => {
     const { userData: { jmxPorts } } = req.body;
     const { userData: { clientData: { client_id } } } = req.body;
+    const { userData: { user_network } } = req.body;
+    res.locals.user_network = user_network;
     const clusterDir = client_id;
     res.locals.clusterDir = clusterDir;
     // get number of brokers from user request and add to res.locals

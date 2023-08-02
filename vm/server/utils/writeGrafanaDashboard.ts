@@ -220,7 +220,7 @@ export default (numberOfBrokers: String) => {
               "type": "prometheus",
               "uid": "PBFA97CFB590B2093"
             },
-            "expr": "count((kafka_server_brokerstate{env=\\"$env\\"}) == ${numberOfBrokers})",
+            "expr": "count((kafka_server_brokerstate{env=\\"$env\\"}) == 3 or (kafka_server_brokerstate{env=\\"$env\\"}) == 4)",
             "format": "time_series",
             "intervalFactor": 1,
             "refId": "A"
@@ -304,7 +304,7 @@ export default (numberOfBrokers: String) => {
               "uid": "PBFA97CFB590B2093"
             },
             "editorMode": "code",
-            "expr": "${numberOfBrokers}-count((kafka_server_brokerstate{env=\\"$env\\"}) == ${numberOfBrokers})",
+            "expr": "${numberOfBrokers}-count((kafka_server_brokerstate{env=\\"$env\\"}) == 3 or (kafka_server_brokerstate{env=\\"$env\\"}) == 4)",
             "format": "time_series",
             "intervalFactor": 1,
             "range": true,

@@ -66,9 +66,7 @@ const configController = {
         // first copy over static dashboards
         copySync(`./static/configs/grafana/dashboards/brokers_jvm_os.json`, `./user/${clusterDir}/configs/grafana/dashboards/brokers_jvm_os.json`);
         copySync(`./static/configs/grafana/dashboards/performance.json`, `./user/${clusterDir}/configs/grafana/dashboards/performance.json`);
-        // then copy over all provisioning files
-        // copySync(`./static/configs/grafana/provisioning/datasources`, `./user/${clusterDir}/configs/grafana/provisioning/datasources/`)
-        // copy over the grafana.ini
+        // copy over the grafana.ini to allow for the embedding of iframs on ui
         copySync(`./static/configs/grafana/grafana.ini`, `./user/${clusterDir}/configs/grafana/grafana.ini`)
         return next();
       } catch (err) {

@@ -5,6 +5,7 @@ import writePrometheusConfig from '../utils/writePrometheusConfig';
 import writeBuffer from '../utils/writeBuffer';
 import writeGrafanaDashboard from '../utils/writeGrafanaDashboard';
 import writeGrafanaDashboardConfig from '../utils/writeGrafanaDashboardConfig';
+import writeGrafanaDatasource from '../utils/writeGrafanaDatasource';
 
 const configController = {
   configPrometheus: async (
@@ -64,7 +65,9 @@ const configController = {
         copySync(`./static/configs/grafana/dashboards/brokers_jvm_os.json`, `./user/${clusterDir}/configs/grafana/dashboards/brokers_jvm_os.json`);
         copySync(`./static/configs/grafana/dashboards/performance.json`, `./user/${clusterDir}/configs/grafana/dashboards/performance.json`);
         // then copy over all provisioning files
-        copySync(`./static/configs/grafana/provisioning/datasources`, `./user/${clusterDir}/configs/grafana/provisioning/datasources/`)
+        // copySync(`./static/configs/grafana/provisioning/datasources`, `./user/${clusterDir}/configs/grafana/provisioning/datasources/`)
+        // copy over the grafana.ini
+        copySync(`./static/configs/grafana/grafana.ini`, `./user/${clusterDir}/configs/grafana/grafana.ini`)
         return next();
       } catch (err) {
         return next({
@@ -89,6 +92,24 @@ const configController = {
     } catch (err) {
       return next({
         log: 'Error occured in configController.writeGrafanaDashboardConfig Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+      });
+    }
+  },
+  writeGrafanaDatasource: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const { clusterDir } = res.locals;
+    const grafDatasourceYml = writeGrafanaDatasource(clusterDir);
+    const grafDatasourceBuffer = writeBuffer(grafDatasourceYml);
+    try {
+      outputFileSync(`./user/${clusterDir}/configs/grafana/provisioning/datasources/datasource.yml`, grafDatasourceBuffer);
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in configController.writeGrafanaDatasource Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }

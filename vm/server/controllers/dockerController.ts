@@ -108,7 +108,8 @@ const dockerController = {
           console.log('CONTAINER TO DELETE in remove', container.Names[0]);
           console.log('CONTAINER TO DELETE ID in remove', container.Id);
           const containerId = container.Id;
-          await daemon.delete(`v1.43/${containerId}\?force\=true`)
+          // curl command: curl -X DELETE --unix-socket /var/run/docker.sock http:/v1.43/containers/<container id>\?force\=true
+          await daemon.delete(`v1.43/${containerId}?force=true`)
         }
       }
       return next();

@@ -6,6 +6,7 @@ import session from 'express-session';
 import passport from 'passport';
 import googleOAuth from './auth/google';
 import 'dotenv/config';
+import { storeMetrics } from './metricService';
 
 const app: Express = express();
 
@@ -47,6 +48,18 @@ app.get('/test', (req, res) => {
 });
 
 app.use('/api', api);
+
+// run storeMetrics every minute
+setInterval(async () => {
+  try {
+    await storeMetrics();
+    console.log(`Metrics stored successfully at ${new Date()}`);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}, 60 * 1000); // 60 seconds * 1000 ms/second
 
 // catch-all route handler
 app.use((_req: Request, res: Response): unknown =>

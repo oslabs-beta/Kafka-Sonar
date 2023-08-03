@@ -6,10 +6,9 @@ interface Targets {
 
 export default (targets: Targets) => {
   const targetsString = JSON.stringify(targets);
-  console.log('TARGETS', targetsString)
   return (`
     global:
-      scrape_interval: 15s
+      scrape_interval: 3s
     
     rule_files:
     

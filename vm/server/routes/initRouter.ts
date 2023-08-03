@@ -28,8 +28,8 @@ initRouter.post(
   });
 
 initRouter.delete('/disconnect/:clusterDir', 
-  dockerController.killMetricsContainers,
-  // dockerController.removeMetricsContainers,
+  // dockerController.killMetricsContainers,
+  dockerController.removeMetricsContainers,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json('disconnected from cluster');
   });

@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [svgr(), react()],
   base: './',
   build: {
-    outDir: 'build'
+    outDir: 'build',
   },
   server: {
     // See https://dev.to/ysmnikhil/how-to-build-with-react-or-vue-with-vite-and-docker-1a3l, Step 2: Update Vite Config
@@ -19,6 +19,7 @@ export default defineConfig({
     // },
     proxy: {
       '/test': 'http://localhost:3333',
+      '/login/google': 'http://localhost:3333',
     },
   },
 });

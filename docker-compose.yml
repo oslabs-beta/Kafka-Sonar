@@ -16,10 +16,34 @@ services:
       - user:/backend/user
       - /var/run/docker.sock.raw:/var/run/docker.sock
 
+  # timescaledb:
+  #   image: timescale/timescaledb:latest-pg13
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=mysecretpassword
+  #     - POSTGRES_DB=kafka_sonar_db
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - timescaledb-data:/var/lib/postgresql/data
+  #     - data.sql:/docker-entrypoint-initdb.d/data.sql
+
+  timescaledb:
+    image: firenaysh/kafka-sonar-tsdb:latest
+    container_name: timescaledb
+    networks:
+      - kafka-sonar
+    ports:
+      - 5432:5432
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
+
+volumes:
+  user:
+  timescaledb-data:
+  # data.sql:
+
 networks:
   kafka-sonar:
     driver: bridge
     name: kafka-sonar
-
-volumes:
-  user:

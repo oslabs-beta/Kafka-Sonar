@@ -20,22 +20,6 @@ userRouter.get(
   }
 );
 
-userRouter.post(
-  '/',
-  userController.postUser,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.user);
-  }
-);
-
-userRouter.put(
-  '/:user_id',
-  userController.putUser,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.user);
-  }
-);
-
 userRouter.delete(
   '/:user_id',
   userController.deleteUser,
@@ -43,5 +27,19 @@ userRouter.delete(
     res.status(200).json(res.locals.user);
   }
 );
+
+userRouter.get(
+  '/getUserByGoogleId',
+  userController.getUserByGoogleId,
+  (req, res) => {
+    console.log('end of /getUserByGoogleId route');
+    res.status(200).json(res.locals.user);
+  }
+);
+
+userRouter.delete('/logoutUser', userController.logOut, (req, res) => {
+  console.log('end of user/logout route');
+  res.status(200).json({ message: 'logged out' });
+});
 
 export default userRouter;

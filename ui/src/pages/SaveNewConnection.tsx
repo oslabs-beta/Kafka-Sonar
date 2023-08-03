@@ -18,7 +18,7 @@ import {
   BrokerInfo,
   ConnectProps,
   ConfigureProps,
-  Connection,
+  NewConnection,
 } from './../types/types';
 
 import { createDockerDesktopClient } from '@docker/extension-api-client';
@@ -125,9 +125,9 @@ export default function SaveNewConnectionStepper(): JSX.Element {
   };
 
   // Needed checks:
-  // 1) Do we need a catch block for when cluster authentication fails?
-  // 2) Navigate to /saved works.
-  // 3) Check toast works after going to SavedConnections page.
+  // Account for cluster authentication failures?
+  // BUG: Post works, nothing happens after.
+
   const handleFinish = async () => {
     // if any user-input field is an empty string, alert user and exit handler
     if (!network) {
@@ -150,31 +150,29 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     // instantiate DD client object
     const ddClient = createDockerDesktopClient();
 
-    const body: Connection = {
-      client: {
-        client_id: client,
-        bootstrap_hostname: host,
-        port_number: port,
-        auth_mechanism: auth,
-        username,
-        password,
-      },
-      user_network: network,
-      jmxPorts: brokerInfo,
+    const body: NewConnection = {
+      client,
+      host,
+      port,
+      auth,
+      username,
+      password,
+      network,
+      brokerInfo,
     };
 
     // POST new connection
-    ddClient.extension.vm.service
-      .post('/api/clusters', body)
-      // BE returns the newly created cluster connection (unused on FE)
-      .then((newConnection: Connection) => {
-        // redirect to SavedConnections page
-        navigate('/saved');
-        // toast success message
-        ddClient.desktopUI.toast.success(
-          'Your new cluster connection was added successfully.'
-        );
-      });
+    const connectionResult = await ddClient.extension.vm.service.post(
+      `/api/clusters/${localStorage.getItem('id')}`,
+      body
+    );
+
+    // redirect to SavedConnections page
+    navigate('/saved');
+    // toast success message
+    ddClient.desktopUI.toast.success(
+      'Your new cluster connection was added successfully.'
+    );
   };
 
   return (

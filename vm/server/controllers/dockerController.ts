@@ -3,7 +3,6 @@ import Dockerode from 'dockerode';
 import createPromContainerCreateOpts from '../utils/promContainerCreateOptions';
 import createGrafContainerCreateOpts from '../utils/grafContainerCreateOptions'
 
-// instantiate the dockerode client, this works the same as the axios instance instantiate above, but should simplify the container creation process
 const docker = new Dockerode({ socketPath: '/var/run/docker.sock'});
 
 /* TO-DO: 
@@ -62,15 +61,14 @@ const dockerController = {
     try {
       for (const containerInfo of containers) {
         if (containerInfo.Names[0].match(regex)) {
-          console.log(containerInfo.Names[0], containerInfo.Id);
           metricsContainersFound += 1;
           const container = docker.getContainer(containerInfo.Id);
           await container.stop();
           await container.remove({ v: true });
           // if we have removed both metrics containers, break out of this loop
           if (metricsContainersFound === 2) break;
-        }
-      }
+        };
+      };
       return next();
     } catch (err) {
       return next({
@@ -79,24 +77,6 @@ const dockerController = {
       });
     }
   },
-  // killMetricsContainers: async (
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ): Promise<void> => {
-  //   const { clusterDir } = req.params;
-  //   const containers = await docker.listContainers();
-  //   const regex = new RegExp(clusterDir + '-kafkasonar-', 'g')
-  //   for (const container of containers) {
-  //     if (container.Names[0].match(regex)) {
-  //       console.log('CONTAINER TO DELETE in kill', container.Names[0]);
-  //       console.log('CONTAINER TO DELETE ID in kill', container.Id);
-  //       const containerId = container.Id;
-  //       await daemon.post(`v1.43/containers/${containerId}/kill`)
-  //     }
-  //   }
-  //   return next();
-  // },
 }
 
 export default dockerController;

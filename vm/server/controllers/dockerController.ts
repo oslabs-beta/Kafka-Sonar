@@ -7,11 +7,17 @@ import Dockerode from 'dockerode';
 // import DockerodeCompose from 'dockerode-compose';
 import promContainerOpts from '../utils/promContainerOpts';
 import grafContainerOpts from '../utils/grafContainerOpts';
+import axios from 'axios';
+
+// create an axios instance send requests the docker daemon
+const instance = axios.create({
+  baseURL: 'http://unix:/',
+  socketPath: '/var/run/docker.sock'
+})
 
 const docker = new Dockerode({ socketPath: '/var/run/docker.sock'});
 
 /* TO-DO: 
-- MERGE DEV !!!!
 - write killPrometheus & killGrafana middleware 
 - refactor routes and refactor destructuring of req.body to match clientside request shape
 */
@@ -131,7 +137,36 @@ const dockerController = {
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }
-  } 
+  },
+  killMetricsContainers: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const { clusterDir } = req.params;
+    const containers = await docker.listContainers();
+    // console.log('HERE ARE THE CONTAINERS --->', containers)
+    const regex = new RegExp(clusterDir + '-kafkasonar-', 'g')
+    
+    const metricsContainersToKill = containers.filter((container) => {
+      return container.Names[0].match(regex);
+    })
+
+    for (const container of containers) {
+      if (container.Names[0].match(regex)) {
+        console.log('CONTAINER TO DELETE', container.Names[0]);
+        // curl --unix-socket /var/run/docker.sock http:/v1.43/containers/json
+        const containerId = container.Id;
+        // kill
+        const message = await instance.post(`v1.43/containers/${containerId}/kill`)
+        console.log(message.data);
+        // remove
+        // await instance.delete(`v1.43/containers/${containerId}/?force=true`)
+      }
+      // container.kill(container.Names[0])
+    }
+    return next();
+  }
 }
 
 export default dockerController;

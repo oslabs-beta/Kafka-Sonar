@@ -94,33 +94,33 @@ const dockerController = {
     }
     return next();
   },
-  removeMetricsContainers: async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    const { clusterDir } = req.params;
-    const containers = await docker.listContainers();
-    const regex = new RegExp('/' + clusterDir + '-kafkasonar-', 'g')
-    try {
-      for (const container of containers) {
-        if (container.Names[0].match(regex)) {
-          console.log('CONTAINER TO DELETE in remove', container.Names[0]);
-          console.log('CONTAINER TO DELETE ID in remove', container.Id);
-          const containerId = container.Id;
-          // curl command: curl -X DELETE --unix-socket /var/run/docker.sock http:/v1.43/containers/<container id>\?force\=true
-          await daemon.delete(`v1.43/${containerId}?force=true`)
-        }
-      }
-      return next();
-    } catch (err) {
-      return next({
-        log: 'Error occured in dockerController.removeMetricsContainers Middleware',
-        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
-      });
-    }
-    return next();
-  }
+  // removeMetricsContainers: async (
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<void> => {
+  //   const { clusterDir } = req.params;
+  //   const containers = await docker.listContainers();
+  //   const regex = new RegExp('/' + clusterDir + '-kafkasonar-', 'g')
+  //   try {
+  //     for (const container of containers) {
+  //       if (container.Names[0].match(regex)) {
+  //         console.log('CONTAINER TO DELETE in remove', container.Names[0]);
+  //         console.log('CONTAINER TO DELETE ID in remove', container.Id);
+  //         const containerId = container.Id;
+  //         // curl command: curl -X DELETE --unix-socket /var/run/docker.sock http:/v1.43/containers/<container id>\?force\=true
+  //         await daemon.delete(`v1.43/${containerId}?force=true&v=true`)
+  //       }
+  //     }
+  //     return next();
+  //   } catch (err) {
+  //     return next({
+  //       log: 'Error occured in dockerController.removeMetricsContainers Middleware',
+  //       message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+  //     });
+  //   }
+  //   return next();
+  // }
 }
 
 export default dockerController;

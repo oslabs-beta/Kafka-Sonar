@@ -15,9 +15,9 @@ const dockerController = {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const { clusterDir, user_network } = res.locals;
+    const { clusterDir, network } = res.locals;
     try {
-      const promCreateOpts = createPromContainerCreateOpts(user_network, clusterDir);
+      const promCreateOpts = createPromContainerCreateOpts(network, clusterDir);
       await docker.pull(promCreateOpts.Image!);
       const promContainer = await docker.createContainer(promCreateOpts);
       await promContainer.start();
@@ -34,9 +34,9 @@ const dockerController = {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const { clusterDir, user_network } = res.locals;
+    const { clusterDir, network } = res.locals;
     try {
-      const grafCreateOpts = createGrafContainerCreateOpts(user_network, clusterDir);
+      const grafCreateOpts = createGrafContainerCreateOpts(network, clusterDir);
       await docker.pull(grafCreateOpts.Image!);
       const grafContainer = await docker.createContainer(grafCreateOpts);
       await grafContainer.start();

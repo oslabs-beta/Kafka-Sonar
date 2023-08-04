@@ -1,19 +1,28 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import clusterController from '../controllers/clusterController';
+import configController from '../controllers/configController';
 
 const clusterRouter = express.Router();
 
 // SAVE NEW CONNECTION handleFinish - WIP.
 
+
+// This is the add new connection route, which needs to write all custom configs
+// and then post the user's cluster to the DB,
+// and then handle the JMX aspect
 clusterRouter.post(
-  '/:user_id',
+  '/newconnection/:user_id',
+  configController.configPrometheus,
+  configController.writeGrafanaDashboard,
+  configController.writeGrafanaDashboardConfig,
+  configController.writeGrafanaDatasource,
   clusterController.postCluster,
   clusterController.postUserCluster,
   // TASK: Following controller will need to be refactored to add all ports associated with a cluster_id in one operation.
-  // clusterController.postJmxPort,
+  clusterController.postJmxPort,
   (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200);
+    res.sendStatus(200);
   }
 );
 

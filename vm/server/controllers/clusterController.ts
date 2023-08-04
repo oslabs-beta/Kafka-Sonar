@@ -60,16 +60,21 @@ const clusterController = {
     next: NextFunction
   ): Promise<unknown> => {
     try {
-      const { jmx_hostname, jmx_port_number } = req.body;
-      const request =
-        'INSERT INTO jmx_ports (cluster_id, jmx_hostname, jmx_port_number) VALUES ($1,$2,$3) RETURNING *';
-      const values: any[] = [
-        res.locals.cluster_id,
-        jmx_hostname,
-        jmx_port_number,
-      ];
-      const response: any = await query(request, values);
-      res.locals.cluster = response.rows;
+      const { brokerInfo } = req.body;
+      const { cluster_id } = res.locals;
+      console.log('BROKER INFO in postJMXPorts', brokerInfo);
+      // iterate through brokers to generate an array o
+      // iterate through brokerInfo and make a query for each broker
+      for (const broker of brokerInfo) {
+        const request = 'INSERT INTO jmx_ports (cluster_id, jmx_hostname, jmx_port_number) VALUES ($1,$2,$3) RETURNING *';
+        const values: string[] = [
+          cluster_id,
+          broker.host,
+          broker.port,
+        ];
+        await query(request, values);
+      }
+      //res.locals.cluster = response.rows;
       return next();
     } catch (err) {
       return next({

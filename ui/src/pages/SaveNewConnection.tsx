@@ -124,10 +124,6 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     }
   };
 
-  // Needed checks:
-  // Account for cluster authentication failures?
-  // BUG: Post works, nothing happens after.
-
   const handleFinish = async () => {
     // if any user-input field is an empty string, alert user and exit handler
     if (!network) {
@@ -163,7 +159,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
 
     // POST new connection
     const connectionResult = await ddClient.extension.vm.service.post(
-      `/api/clusters/${localStorage.getItem('id')}`,
+      `/api/clusters/newconnection/${localStorage.getItem('id')}`,
       body
     );
 

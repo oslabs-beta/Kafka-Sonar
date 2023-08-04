@@ -13,14 +13,23 @@ const configController = {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    const { userData: { jmxPorts } } = req.body;
-    const { userData: { clientData: { client_id } } } = req.body;
-    const { userData: { user_network } } = req.body;
-    res.locals.user_network = user_network;
-    const clusterDir = client_id;
+    const { 
+      client, 
+      host, 
+      port, 
+      auth, 
+      username, 
+      password, 
+      network, 
+      brokerInfo } = req.body;
+    // const { userData: { jmxPorts } } = req.body;
+    // const { userData: { clientData: { client_id } } } = req.body;
+    // const { userData: { user_network } } = req.body;
+    res.locals.network = network;
+    const clusterDir = client;
     res.locals.clusterDir = clusterDir;
     // get number of brokers from user request and add to res.locals
-    const numberOfBrokers = jmxPorts.length;
+    const numberOfBrokers = brokerInfo.length;
     if (numberOfBrokers <= 0) throw Error();
     res.locals.numberOfBrokers = numberOfBrokers;
     /* 
@@ -28,7 +37,7 @@ const configController = {
       [ { broker: number, port: string, host: string }, ...]
     */
     // create prometheus targets based on jmxPorts
-    const targets = jmxPorts.map(jmxObj => {
+    const targets = brokerInfo.map(jmxObj => {
       const { host, port } = jmxObj;
       return `${host}:${port}`;
     });

@@ -2,8 +2,8 @@ import { ContainerCreateOptions } from "dockerode";
 export default (network: string, clusterDir: string) => {
   const grafContainerCreateOpts: ContainerCreateOptions = {
     name: `${clusterDir}-kafkasonar-grafana`,
-    // run as root user to grant write permissions in GF_PATHS_DATA, need to find better approach but this works for now
     Image: 'grafana/grafana:latest',
+    // run as root user to grant write permissions in GF_PATHS_DATA, need to find better approach but this works for now
     User: 'root',
     Cmd: [''],
     ExposedPorts: { ['3000/tcp']: {} },

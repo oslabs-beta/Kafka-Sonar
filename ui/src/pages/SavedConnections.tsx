@@ -50,6 +50,20 @@ const columns: GridColDef[] = [
   },
 ];
 
+const DownloadPastMetrics = async () => {
+  fetch('http://localhost:3333/download')
+  .then(response => response.blob())
+  .then(blob => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'metrics_table.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+  })
+}
+
 export default function SavedConnectionsDataGrid() {
   const [rows, setRows] = useState<GridRowDef[]>([]);
   // on BE, cluster_id is a number type; assuming there will never be a cluster with an id of 0
@@ -179,7 +193,7 @@ export default function SavedConnectionsDataGrid() {
           title="Get a CSV of metrics from all previous runs of this cluster connection"
           placement="top"
         >
-          <Button variant="contained" color="success" size="medium">
+          <Button variant="contained" color="success" size="medium" onClick={DownloadPastMetrics}>
             DOWNLOAD PAST METRICS
           </Button>
         </Tooltip>

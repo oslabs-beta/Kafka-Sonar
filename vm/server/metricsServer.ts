@@ -7,6 +7,8 @@ import passport from 'passport';
 import googleOAuth from './auth/google';
 import 'dotenv/config';
 import { storeMetrics } from './metricService';
+import fs from 'fs';
+import { query } from './models/appModel';
 
 const app: Express = express();
 
@@ -42,10 +44,10 @@ app.get(
 
 app.use(bodyParser.json());
 
-// tested with postman
-app.get('/test', (req, res) => {
-  res.send(`Hello from the backend (port 3333)`);
-});
+// // tested with postman
+// app.get('/test', (req, res) => {
+//   res.send(`Hello from the backend (port 3333)`);
+// });
 
 app.use('/api', api);
 
@@ -60,6 +62,20 @@ setInterval(async () => {
     }
   }
 }, 60 * 1000); // 60 seconds * 1000 ms/second
+
+app.get('/download', async (req, res) => {
+  const result = await query('SELECT * FROM metrics_table');
+
+  const csv = result.rows.map(row => Object.values(row).join(',')).join('\n');
+  
+  // need to update file path below into persistent user volume
+  // currently writing to backend/dist/server/metrics_table.csv which is gone when image is removed
+  fs.writeFile('metrics_table.csv', csv, function (err) { 
+    if (err) throw err;
+    console.log(`File is created successfully at ${new Date()}`);
+    res.download('./metrics_table.csv');
+  });  
+});
 
 // catch-all route handler
 app.use((_req: Request, res: Response): unknown =>

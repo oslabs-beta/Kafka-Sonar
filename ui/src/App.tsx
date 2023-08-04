@@ -87,7 +87,7 @@ export default function App(props: Props) {
 
   const { saved, connect, resourceUsage, clusterView, partitionView } = props;
 
-  const [open, setOpen] = React.useState(false); // switch to false to change drawer to be closed on App load
+  const [open, setOpen] = React.useState(true); // switch to false to change drawer to be closed on App load
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -107,13 +107,6 @@ export default function App(props: Props) {
     },
     {
       onClick: () => {
-        navigate('/resources');
-      },
-      icon: <HubIcon />,
-      text: 'Resource Usage',
-    },
-    {
-      onClick: () => {
         navigate('/cluster');
       },
       icon: <DeviceHubIcon />,
@@ -125,6 +118,13 @@ export default function App(props: Props) {
       },
       icon: <PolylineIcon />,
       text: 'Partition View',
+    },
+    {
+      onClick: () => {
+        navigate('/resources');
+      },
+      icon: <HubIcon />,
+      text: 'Resource Usage',
     },
     {
       onClick: () => {

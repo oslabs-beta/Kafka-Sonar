@@ -13,7 +13,7 @@ clusterRouter.post(
   // TASK: Following controller will need to be refactored to add all ports associated with a cluster_id in one operation.
   // clusterController.postJmxPort,
   (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200);
+    res.sendStatus(200);
   }
 );
 
@@ -36,7 +36,7 @@ clusterRouter.delete(
   // TASK: Following controller will need to be refactored to add all ports associated with a cluster_id in one operation.
   // clusterController.deleteJmxPort,
   (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200);
+    res.sendStatus(200);
   }
 );
 

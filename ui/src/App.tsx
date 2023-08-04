@@ -85,7 +85,7 @@ export default function App(props: Props) {
     }),
   }));
 
-  const { saved, connect, resourceUsage, clusterView, partitionView } = props;
+  const { saved, connect, clusterView, partitionView, resourceUsage } = props;
 
   const [open, setOpen] = React.useState(true); // switch to false to change drawer to be closed on App load
   const handleDrawerOpen = () => {
@@ -227,9 +227,9 @@ export default function App(props: Props) {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {saved}
         {connect}
-        {resourceUsage}
         {clusterView}
         {partitionView}
+        {resourceUsage}
       </Box>
       {/* <Stack direction="row" alignItems="start" spacing={2} sx={{ mt: 4 }}>
         <Button variant="contained" onClick={fetchAndDisplayResponse}>

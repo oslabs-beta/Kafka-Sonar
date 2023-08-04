@@ -75,16 +75,16 @@ createRoot(root as HTMLElement).render(
               element={<App connect={<SaveNewConnectionStepper />} />}
             />
             <Route
-              path="/resources"
-              element={<App resourceUsage={<ResourceUsage />} />}
-            />
-            <Route
               path="/cluster"
               element={<App clusterView={<ClusterView />} />}
             />
             <Route
               path="/partition"
               element={<App partitionView={<PartitionView />} />}
+            />
+            <Route
+              path="/resources"
+              element={<App resourceUsage={<ResourceUsage />} />}
             />
           </Routes>
         </HashRouter>

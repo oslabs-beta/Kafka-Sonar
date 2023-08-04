@@ -7,9 +7,9 @@ import { SelectChangeEvent } from '@mui/material/Select';
 export interface Props {
   saved?: JSX.Element;
   connect?: JSX.Element;
-  resourceUsage?: JSX.Element;
   clusterView?: JSX.Element;
   partitionView?: JSX.Element;
+  resourceUsage?: JSX.Element;
 }
 
 // App component navTabOption type

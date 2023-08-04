@@ -2,6 +2,7 @@ import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import clusterController from '../controllers/clusterController';
 import configController from '../controllers/configController';
+import dockerController from '../controllers/dockerController';
 
 const clusterRouter = express.Router();
 
@@ -26,6 +27,15 @@ clusterRouter.post(
   }
 );
 
+clusterRouter.get(
+  '/connect/:client_id/:network',
+  dockerController.runPrometheus,
+  dockerController.runGrafana,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.sendStatus(200);
+  }
+)
+
 // SAVED CONNECTIONS getUserConnections - DONE. Working fullstack.
 
 clusterRouter.get(
@@ -43,9 +53,9 @@ clusterRouter.delete(
   clusterController.deleteCluster,
   clusterController.deleteUserCluster,
   // TASK: Following controller will need to be refactored to add all ports associated with a cluster_id in one operation.
-  // clusterController.deleteJmxPort,
+  clusterController.deleteJmxPort,
   (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200);
+    res.sendStatus(200);
   }
 );
 

@@ -23,7 +23,7 @@ const columns: GridColDef[] = [
     description: 'Kafka application name',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 160,
+    width: 130,
   },
   {
     field: 'host',
@@ -31,7 +31,7 @@ const columns: GridColDef[] = [
     description: 'Your cluster is found at this host.',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 190,
+    width: 140,
   },
   {
     field: 'port',
@@ -39,7 +39,7 @@ const columns: GridColDef[] = [
     description: 'Your cluster is found at this port.',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 110,
+    width: 100,
   },
   {
     field: 'auth',
@@ -48,7 +48,15 @@ const columns: GridColDef[] = [
       'SASL method to authenticate to the cluster (or not applicable)',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 190,
+    width: 170,
+  },
+  {
+    field: 'network',
+    headerName: 'Docker Network',
+    description: 'Your cluster is in this network.',
+    headerClassName: 'header',
+    headerAlign: 'center',
+    width: 180,
   },
 ];
 
@@ -61,7 +69,7 @@ export default function SavedConnectionsDataGrid() {
   // handles updating selectedRow with cluster_id / id of the selected row in the DataGrid
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
     console.log('PARAMS --> ', params);
-    console.log('EVENT --> ', event);
+    // console.log('EVENT --> ', event);
     setSelectedRow(params.row.id);
   };
 
@@ -77,6 +85,7 @@ export default function SavedConnectionsDataGrid() {
     const allUserConnections: any = await ddClient.extension.vm.service.get(
       `/api/clusters/userclusters/${localStorage.getItem('id')}`
     );
+    console.log('allUserConnections --> ', allUserConnections);
     // map over allUserConnections to get only the data expected for the grid
     const gridRows = allUserConnections.map(
       // destructure and keep only the properties needed for the DataGrid
@@ -86,6 +95,7 @@ export default function SavedConnectionsDataGrid() {
         bootstrap_hostname,
         port_number,
         auth_mechanism,
+        user_network,
       }) => {
         return {
           // See references: https://mui.com/x/react-data-grid/row-definition/#row-identifier, https://mui.com/x/react-data-grid/getting-started/#define-rows
@@ -94,6 +104,7 @@ export default function SavedConnectionsDataGrid() {
           host: bootstrap_hostname,
           port: port_number,
           auth: auth_mechanism,
+          network: user_network,
         };
       }
     );
@@ -115,24 +126,28 @@ export default function SavedConnectionsDataGrid() {
       // exit function
       return;
     }
-    // must pass clientId of the selected row to BE
+    // must pass clientId and network of the selected row to BE
     const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
       .clientId;
+    const selectedNetwork = rows.filter((row) => row.id === selectedRow)[0]
+      .network;
     // store selectedClientId as connectedClientId (this will be used to disconnect later on)
     setConnectedClientId(selectedClientId);
     // request to connect to the selected cluster
     const connected: any = await ddClient.extension.vm.service.get(
-      `/api/clusters/connect/${selectedClientId}`
+      `/api/clusters/connect/${selectedClientId}/${selectedNetwork}`
     );
     // error handling
     // if (connected instanceof Error)
     // else
     // toast success message
     ddClient.desktopUI.toast.success(
-      `You have connected to ${connectedClientId}.`
+      `You have connected to ${selectedClientId}. Please wait a moment for Grafana metrics to render.`
     );
     // redirect to ClusterView
     navigate('/cluster');
+    // reload
+    setTimeout(() => location.reload(), 2000);
   };
 
   const disconnectFromCurrent = async () => {
@@ -234,7 +249,7 @@ export default function SavedConnectionsDataGrid() {
       </Grid>
       <Grid container flexDirection={'column'} gap={1} item xs sm md>
         <Typography component="h1" variant="h6" margin={'-20px auto 0'}>
-          HOW THE GRID AND ACTIONS WORK
+          HOW THE ACTIONS WORK
         </Typography>
         <List>
           <ListItemText primary="1. Except for Disconnect, select a row to take an action. Cmd+click to deselect a selected row." />

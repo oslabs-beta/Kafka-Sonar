@@ -89,6 +89,7 @@ export interface GridRowDef {
   host: string;
   port: string;
   auth: string;
+  network: string;
 }
 
 // SaveNewConnection component, returned UserConnection objects

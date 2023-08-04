@@ -5,19 +5,19 @@ import createGrafContainerCreateOpts from '../utils/grafContainerCreateOptions'
 
 const docker = new Dockerode({ socketPath: '/var/run/docker.sock'});
 
-/* TO-DO: 
-- refactor routes and refactor destructuring of req.body to match clientside request shape
-*/
-
 const dockerController = {
   runPrometheus: async (
-    _req: Request,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const { clusterDir, network } = res.locals;
+    console.log('REQ.PARAMS', req.params);
+    const { client_id, network } = req.params
+    const clusterDir = client_id;
+    res.locals.clusterDir = clusterDir
     try {
       const promCreateOpts = createPromContainerCreateOpts(network, clusterDir);
+      console.log('PROM CREATE OPTS', promCreateOpts);
       await docker.pull(promCreateOpts.Image!);
       const promContainer = await docker.createContainer(promCreateOpts);
       await promContainer.start();
@@ -30,13 +30,15 @@ const dockerController = {
     }
   },
   runGrafana: async (
-    _req: Request,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const { clusterDir, network } = res.locals;
+    const { network } = req.params;
+    const { clusterDir } = res.locals;
     try {
       const grafCreateOpts = createGrafContainerCreateOpts(network, clusterDir);
+      console.log('GRAF CREATE OPTS', grafCreateOpts);
       await docker.pull(grafCreateOpts.Image!);
       const grafContainer = await docker.createContainer(grafCreateOpts);
       await grafContainer.start();
@@ -50,10 +52,11 @@ const dockerController = {
   },
   removeMetricsContainers: async (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const { clusterDir } = req.params;
+    const { client_id} = req.params;
+    const clusterDir = client_id
     const containers = await docker.listContainers();
     const regex = new RegExp('/' + clusterDir + '-kafkasonar-', 'g')
     // instantiate a counter to track how many metrics containers have been removed

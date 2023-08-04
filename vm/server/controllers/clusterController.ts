@@ -94,7 +94,7 @@ const clusterController = {
         'SELECT * FROM clusters JOIN users_in_clusters ON clusters.cluster_id = users_in_clusters.cluster_id WHERE users_in_clusters.user_id = $1';
       const values: any = [user_id];
       const response: any = await query(request, values);
-      console.log('getUserClusters --->', response.rows);
+      // console.log('getUserClusters --->', response.rows);
       res.locals.clusters = response.rows;
       return next();
     } catch (err) {
@@ -149,10 +149,10 @@ const clusterController = {
     next: NextFunction
   ): Promise<unknown> => {
     try {
-      const { cluster_id, port_id } = req.params;
+      const { user_id, cluster_id } = req.params;
       const request =
-        'DELETE FROM jmx_ports WHERE cluster_id = $1 AND port_id = $2 RETURNING *';
-      const values: any[] = [cluster_id, port_id];
+        'DELETE FROM jmx_ports WHERE cluster_id = $1 RETURNING *';
+      const values: string[] = [cluster_id];
       const response: any = await query(request, values);
       res.locals.cluster = response.rows;
       return next();

@@ -12,6 +12,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { GridRowDef, UserConnection } from './../types/types';
 // Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
+import { format } from 'date-fns';
 
 const columns: GridColDef[] = [
   // Reference https://mui.com/x/react-data-grid/row-definition/#row-identifier: It is not necessary to create a column to display the unique identifier data. The data grid pulls this information directly from the data set itself, not from anything that is displayed on the screen.
@@ -51,13 +52,15 @@ const columns: GridColDef[] = [
 ];
 
 const DownloadPastMetrics = async () => {
-  fetch('http://localhost:3333/download')
+  fetch(`http://localhost:3333/download`)
   .then(response => response.blob())
   .then(blob => {
       const url = window.URL.createObjectURL(new Blob([blob]));
       const link = document.createElement('a');
+      const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+      const filename = `metrics_table_${currentDateTime}.csv`;
       link.href = url;
-      link.setAttribute('download', 'metrics_table.csv');
+      link.setAttribute('download', `${filename}`);
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);

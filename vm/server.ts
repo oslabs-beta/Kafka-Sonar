@@ -1,8 +1,8 @@
 import fs from 'fs';
 import metricsServer from './server/metricsServer';
 import socketServer from './server/socketServer';
-import { SOCKET_PATH } from './server/constants';
-import { METRICS_PORT } from './server/constants';
+import { SOCKET_PATH } from './constants';
+import { METRICS_PORT } from './constants';
 
 // If a socket file exists, delete it for reusability.
 try {

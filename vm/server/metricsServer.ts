@@ -9,6 +9,7 @@ import 'dotenv/config';
 import { storeMetrics } from './metricService';
 import fs from 'fs';
 import { query } from './models/appModel';
+import { format } from 'date-fns';
 
 const app: Express = express();
 
@@ -44,11 +45,6 @@ app.get(
 
 app.use(bodyParser.json());
 
-// // tested with postman
-// app.get('/test', (req, res) => {
-//   res.send(`Hello from the backend (port 3333)`);
-// });
-
 app.use('/api', api);
 
 // run storeMetrics every minute
@@ -66,14 +62,22 @@ setInterval(async () => {
 app.get('/download', async (req, res) => {
   const result = await query('SELECT * FROM metrics_table');
 
-  const csv = result.rows.map(row => Object.values(row).join(',')).join('\n');
-  
+  const csv = result.rows.map(row => {
+    const date = new Date(row['timestamp']);
+    // converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
+    row['timestamp'] = format(date, 'yyyy-MM-dd HH:mm:ss');
+    return Object.values(row).join(',');
+  }).join('\n');
+
+  const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+  const filename = `metrics_table_${currentDateTime}.csv`;
+
   // need to update file path below into persistent user volume
   // currently writing to backend/dist/server/metrics_table.csv which is gone when image is removed
-  fs.writeFile('metrics_table.csv', csv, function (err) { 
+  fs.writeFile(filename, csv, function (err) { 
     if (err) throw err;
     console.log(`File is created successfully at ${new Date()}`);
-    res.download('./metrics_table.csv');
+    res.download(`./${filename}`);
   });  
 });
 

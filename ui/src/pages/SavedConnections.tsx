@@ -146,18 +146,24 @@ export default function SavedConnectionsDataGrid() {
     );
     // redirect to ClusterView
     navigate('/cluster');
-    // reload
+    // reload after 2 seconds to allow Grafana panels a moment to appear
     setTimeout(() => location.reload(), 2000);
   };
 
   const disconnectFromCurrent = async () => {
+    const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
+    .clientId;
+    setConnectedClientId(selectedClientId);
+    console.log('selectedClientId', selectedClientId)
+    console.log('connectedClientId', connectedClientId)
     // if there is NO running connection, don't do the API call!
-    if (!connectedClientId) {
+    if (!connectedClientId || !selectedClientId) {
       // alert user there's no currently running cluster connection
       alert('You are not connected to any client.');
       // exit function
       return;
     }
+    console.log('connectedClientId after alert', connectedClientId)
     // must pass connectedClientId to BE
     // request to disconnect from the connected cluster
     const disconnected: any = await ddClient.extension.vm.service.get(

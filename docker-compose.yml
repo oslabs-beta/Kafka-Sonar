@@ -1,14 +1,19 @@
 # Use the Docker socket from the extension backend:
 # https://docs.docker.com/desktop/extensions-sdk/guides/use-docker-socket-from-backend/
 services:
-  KafkaSonar:
+  kafka-sonar:
     image: ${DESKTOP_PLUGIN_IMAGE}
-    container_name: kafkasonar
+    container_name: kafka-sonar
+    networks:
+      - kafka-sonar
     ports:
       # Expose port 3333 to the host so that you can see metrics on localhost:3333
       # - 5175:5175
       - 3333:3333
     volumes:
+    # create named volume which is mapped to the /user directory in the extension container
+    # this /user directory is copied into the extension container in the Dockerfile 
+      - user:/backend/user
       - /var/run/docker.sock.raw:/var/run/docker.sock
 
   # timescaledb:
@@ -25,11 +30,20 @@ services:
 
   timescaledb:
     image: firenaysh/kafka-sonar-tsdb:latest
+    container_name: timescaledb
+    networks:
+      - kafka-sonar
     ports:
       - 5432:5432
     volumes:
       - timescaledb-data:/var/lib/postgresql/data
 
 volumes:
+  user:
   timescaledb-data:
   # data.sql:
+
+networks:
+  kafka-sonar:
+    driver: bridge
+    name: kafka-sonar

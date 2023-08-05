@@ -60,16 +60,21 @@ const clusterController = {
     next: NextFunction
   ): Promise<unknown> => {
     try {
-      const { jmx_hostname, jmx_port_number } = req.body;
-      const request =
-        'INSERT INTO jmx_ports (cluster_id, jmx_hostname, jmx_port_number) VALUES ($1,$2,$3) RETURNING *';
-      const values: any[] = [
-        res.locals.cluster_id,
-        jmx_hostname,
-        jmx_port_number,
-      ];
-      const response: any = await query(request, values);
-      res.locals.cluster = response.rows;
+      const { brokerInfo } = req.body;
+      const { cluster_id } = res.locals;
+      console.log('BROKER INFO in postJMXPorts', brokerInfo);
+      // iterate through brokers to generate an array o
+      // iterate through brokerInfo and make a query for each broker
+      for (const broker of brokerInfo) {
+        const request = 'INSERT INTO jmx_ports (cluster_id, jmx_hostname, jmx_port_number) VALUES ($1,$2,$3) RETURNING *';
+        const values: string[] = [
+          cluster_id,
+          broker.host,
+          broker.port,
+        ];
+        await query(request, values);
+      }
+      //res.locals.cluster = response.rows;
       return next();
     } catch (err) {
       return next({
@@ -89,7 +94,7 @@ const clusterController = {
         'SELECT * FROM clusters JOIN users_in_clusters ON clusters.cluster_id = users_in_clusters.cluster_id WHERE users_in_clusters.user_id = $1';
       const values: any = [user_id];
       const response: any = await query(request, values);
-      console.log('getUserClusters --->', response.rows);
+      // console.log('getUserClusters --->', response.rows);
       res.locals.clusters = response.rows;
       return next();
     } catch (err) {
@@ -144,10 +149,10 @@ const clusterController = {
     next: NextFunction
   ): Promise<unknown> => {
     try {
-      const { cluster_id, port_id } = req.params;
+      const { user_id, cluster_id } = req.params;
       const request =
-        'DELETE FROM jmx_ports WHERE cluster_id = $1 AND port_id = $2 RETURNING *';
-      const values: any[] = [cluster_id, port_id];
+        'DELETE FROM jmx_ports WHERE cluster_id = $1 RETURNING *';
+      const values: string[] = [cluster_id];
       const response: any = await query(request, values);
       res.locals.cluster = response.rows;
       return next();

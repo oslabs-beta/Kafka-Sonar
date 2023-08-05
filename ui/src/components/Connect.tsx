@@ -54,6 +54,7 @@ export default function Connect({
         type="text"
         id="text"
         value={host}
+        placeholder='localhost'
         onChange={hostOnChange}
         label="Hostname"
         fullWidth

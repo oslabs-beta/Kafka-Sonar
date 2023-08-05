@@ -1,24 +1,50 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import clusterController from '../controllers/clusterController';
+import configController from '../controllers/configController';
+import dockerController from '../controllers/dockerController';
 
 const clusterRouter = express.Router();
 
-// SAVE NEW CONNECTION handleFinish - WIP.
-
+// SAVE NEW CONNECTION - DONE. Working fullstack.
+// This route handles all logic for writing custom configs for Prometheus / Grafana
+// As well as adding the cluster information to the database
 clusterRouter.post(
-  '/:user_id',
+  '/newconnection/:user_id',
+  configController.configPrometheus,
+  configController.writeGrafanaDashboard,
+  configController.writeGrafanaDashboardConfig,
+  configController.writeGrafanaDatasource,
   clusterController.postCluster,
   clusterController.postUserCluster,
-  // TASK: Following controller will need to be refactored to add all ports associated with a cluster_id in one operation.
-  // clusterController.postJmxPort,
+  clusterController.postJmxPort,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.sendStatus(200);
   }
 );
 
-// SAVED CONNECTIONS getUserConnections - DONE. Working fullstack.
+// CONNECT TO A CLUSTER ROUTE - DONE. Working fullstack.
+// Connect to a running cluster that has already been added
+// This route spins up a Prometheus and Grafana container configured to scrape metrics from your cluster
+clusterRouter.get(
+  '/connect/:client_id/:network',
+  dockerController.runPrometheus,
+  dockerController.runGrafana,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.sendStatus(200);
+  }
+);
 
+// DISCONNECT FROM A RUNNING CLUSTER ROUTE
+clusterRouter.get(
+  '/disconnect/:client_id',
+  dockerController.removeMetricsContainers,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.sendStatus(200);
+  }
+)
+
+// SAVED CONNECTIONS getUserConnections - DONE. Working fullstack.
 clusterRouter.get(
   '/userclusters/:user_id',
   clusterController.getUserClusters,
@@ -27,14 +53,12 @@ clusterRouter.get(
   }
 );
 
-// SAVED CONNECTIONS deleteUserConnection - WIP.
-
+// SAVED CONNECTIONS deleteUserConnection - DONE. Working fullstack.
 clusterRouter.delete(
   '/:user_id/:cluster_id',
   clusterController.deleteCluster,
   clusterController.deleteUserCluster,
-  // TASK: Following controller will need to be refactored to add all ports associated with a cluster_id in one operation.
-  // clusterController.deleteJmxPort,
+  clusterController.deleteJmxPort,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.sendStatus(200);
   }

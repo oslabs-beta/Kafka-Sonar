@@ -1,3 +1,5 @@
+export default (clusterDir: string) => {
+  return (`
 # config file version
 apiVersion: 1
 
@@ -18,7 +20,7 @@ datasources:
     # <int> org id. will default to orgId 1 if not specified
     orgId: 1
     # <string> url
-    url: http://prometheus:9090
+    url: http://${clusterDir}-kafkasonar-prometheus:9090
     # <string> database password, if used
     password:
     # <string> database user, if used
@@ -48,3 +50,5 @@ datasources:
     version: 1
     # <bool> allow users to edit datasources from the UI.
     editable: true
+  `)
+}

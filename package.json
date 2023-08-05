@@ -14,6 +14,8 @@
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
+    "@types/node": "^20.4.2",
+    "ts-node": "^10.9.1",
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4"

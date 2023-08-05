@@ -39,7 +39,7 @@ const columns: GridColDef[] = [
     description: 'Your cluster is found at this port.',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 100,
+    width: 110,
   },
   {
     field: 'auth',
@@ -185,9 +185,16 @@ export default function SavedConnectionsDataGrid() {
     setConnectedClientId(selectedClientId);
     // redirect to ClusterView
     navigate('/cluster');
+    // reload after 2 seconds to allow Grafana panels a moment to appear
+    setTimeout(() => location.reload(), 2000);
   };
 
   const disconnectFromCurrent = async () => {
+    const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
+      .clientId;
+    setConnectedClientId(selectedClientId);
+    console.log('selectedClientId', selectedClientId);
+    console.log('connectedClientId', connectedClientId);
     // if there is NO running connection, don't do the API call!
     if (!connectedClientId) {
       // alert user there's no currently running connection

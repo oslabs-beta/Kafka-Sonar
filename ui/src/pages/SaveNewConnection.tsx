@@ -158,7 +158,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
       brokerInfo,
     };
     const connectionResult = await ddClient.extension.vm.service.post(
-      `/api/clusters/${localStorage.getItem('id')}`,
+      `/api/clusters/newconnection/${localStorage.getItem('id')}`,
       body
     );
 

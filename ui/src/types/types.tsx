@@ -2,16 +2,6 @@ import { ReactNode, ChangeEvent } from 'react';
 // MUI types
 import { SelectChangeEvent } from '@mui/material/Select';
 
-// App component Props type
-// Login and Signup don't need to be passed as props to App b/c they display outside the app
-export interface Props {
-  saved?: JSX.Element;
-  connect?: JSX.Element;
-  clusterView?: JSX.Element;
-  partitionView?: JSX.Element;
-  resourceUsage?: JSX.Element;
-}
-
 // App component navTabOption type
 export interface NavTabOption {
   onClick: () => void;
@@ -82,6 +72,12 @@ export interface AuthInvalid {
 
 export type AuthResult = AuthSuccess | AuthError | AuthInvalid;
 
+// SavedConnections component Props type
+export interface SavedConnectionsProps {
+  connectedClientId: string;
+  setConnectedClientId: (clientId: string) => void;
+}
+
 // SavedConnections component, GridRowDef type for each row obj in rows array in state
 export interface GridRowDef {
   id: number;
@@ -151,7 +147,7 @@ export interface KafkajsClientInfo {
 // SaveNewConnection component, Connection type for handleFinish handler
 // Corresponds to backend interface userData
 export interface Connection {
-    client: KafkajsClientInfo;
-    user_network: string;
-    jmxPorts: BrokerInfo[];
+  client: KafkajsClientInfo;
+  user_network: string;
+  jmxPorts: BrokerInfo[];
 }

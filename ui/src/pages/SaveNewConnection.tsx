@@ -162,13 +162,13 @@ export default function SaveNewConnectionStepper(): JSX.Element {
       body
     );
 
-    // error handling
-    if (connectionResult instanceof Error) {
-      // toast error message
-      ddClient.desktopUI.toast.error('ERROR saving your new connection.');
-      // exit handler
-      return;
-    }
+    // // error handling
+    // if (connectionResult instanceof Error) {
+    //   // toast error message
+    //   ddClient.desktopUI.toast.error('ERROR saving your new connection.');
+    //   // exit handler
+    //   return;
+    // }
 
     // redirect to SavedConnections page
     navigate('/saved');

@@ -11,7 +11,11 @@ import { DataGrid, GridEventListener, useGridApiRef } from '@mui/x-data-grid';
 // MUI types
 import { GridColDef } from '@mui/x-data-grid';
 // TS types
-import { GridRowDef, UserConnection } from './../types/types';
+import {
+  GridRowDef,
+  SavedConnectionsProps,
+  UserConnection,
+} from './../types/types';
 // Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 
@@ -60,10 +64,12 @@ const columns: GridColDef[] = [
   },
 ];
 
-export default function SavedConnectionsDataGrid() {
+export default function SavedConnectionsDataGrid({
+  connectedClientId,
+  setConnectedClientId,
+}: SavedConnectionsProps) {
   const [rows, setRows] = useState<GridRowDef[]>([]);
   const [selectedRow, setSelectedRow] = useState<number>(0); // selectedRow = cluster_id on BE
-  const [connectedClientId, setConnectedClientId] = useState<string>('');
 
   const navigate = useNavigate();
 
@@ -177,24 +183,26 @@ export default function SavedConnectionsDataGrid() {
       return;
     }
 
+    // store selectedClientId as connectedClientId (this will be used to disconnect later on)
+    setConnectedClientId(selectedClientId);
+    // in case user leaves extension while cluster is running, store connectedClientId in localStorage
+    localStorage.setItem('connectedClientId', selectedClientId); // we're using selectedClientId instead of connectedClientId since the latter does not set in time!
+
     // toast success message
     ddClient.desktopUI.toast.success(
       `SUCCESS! You are connected to ${selectedClientId}.`
     );
-    // store selectedClientId as connectedClientId (this will be used to disconnect later on)
-    setConnectedClientId(selectedClientId);
-    // redirect to ClusterView
-    navigate('/cluster');
+
+    // redirect to Metrics
+    navigate('/metrics');
+
     // reload after 2 seconds to allow Grafana panels a moment to appear
-    setTimeout(() => location.reload(), 2000);
+    setTimeout(() => {
+      location.reload();
+    }, 2000);
   };
 
   const disconnectFromCurrent = async () => {
-    const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
-      .clientId;
-    setConnectedClientId(selectedClientId);
-    console.log('selectedClientId', selectedClientId);
-    console.log('connectedClientId', connectedClientId);
     // if there is NO running connection, don't do the API call!
     if (!connectedClientId) {
       // alert user there's no currently running connection
@@ -225,6 +233,8 @@ export default function SavedConnectionsDataGrid() {
     );
     // reset connectedClientId to empty string
     setConnectedClientId('');
+    // in case user leaves extension while cluster is running, set connectedClientId in localStorage to be ''
+    localStorage.setItem('connectedClientId', '');
   };
 
   const deleteUserConnection = async () => {

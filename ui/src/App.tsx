@@ -1,6 +1,14 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, Theme, CSSObject } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+
+// inside App
+import SavedConnectionsDataGrid from './pages/SavedConnections';
+import SaveNewConnectionStepper from './pages/SaveNewConnection';
+import Metrics from './pages/Metrics';
+import ResourceUsage from './components/ResourceUsage';
+import ClusterView from './components/ClusterView';
+import PartitionView from './components/PartitionView';
 
 // MUI component reference: https://mui.com/material-ui/react-drawer/#mini-variant-drawer
 import Box from '@mui/material/Box';
@@ -27,20 +35,12 @@ import SvgIcon from '@mui/material/SvgIcon';
 import { ReactComponent as OrangeLogo } from './assets/kafka-sonar-orange-logo.svg';
 
 // TS types
-import { Props, NavTabOption } from './types/types';
+import { NavTabOption } from './types/types';
 
-// Socket connection test
-// import Button from '@mui/material/Button';
-// import { Stack, TextField } from '@mui/material';
-// import { createDockerDesktopClient } from '@docker/extension-api-client';
-// Note: This line relies on Docker Desktop's presence as a host application.
-// If you're running this React app in a browser, it won't work properly.
-// const client = createDockerDesktopClient();
-// function useDockerDesktopClient() {
-//   return client;
-// }
+// Docker client library
+import { createDockerDesktopClient } from '@docker/extension-api-client';
 
-export default function App(props: Props) {
+export default function App() {
   const drawerWidth = 240;
 
   const openedMixin = (theme: Theme): CSSObject => ({
@@ -85,9 +85,7 @@ export default function App(props: Props) {
     }),
   }));
 
-  const { saved, connect, clusterView, partitionView, resourceUsage } = props;
-
-  const [open, setOpen] = React.useState(true); // switch to false to change drawer to be closed on App load
+  const [open, setOpen] = useState(true); // switch to false to change drawer to be closed on App load
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -107,31 +105,33 @@ export default function App(props: Props) {
     },
     {
       onClick: () => {
-        navigate('/cluster');
+        navigate('/metrics');
       },
       icon: <DeviceHubIcon />,
-      text: 'Cluster View',
+      text: 'Metrics',
     },
     {
-      onClick: () => {
-        navigate('/partition');
-      },
-      icon: <PolylineIcon />,
-      text: 'Partition View',
-    },
-    {
-      onClick: () => {
-        navigate('/resources');
-      },
-      icon: <HubIcon />,
-      text: 'Resource Usage',
-    },
-    {
-      onClick: () => {
+      onClick: async () => {
         // on log out, clear user's id and token from localStorage, ending their session
         localStorage.removeItem('id');
         localStorage.removeItem('token');
-        // navigate to login page
+
+        // TO DO: add request to BE to disconnect a running cluster; /api/clusters/disconnect/
+        const ddClient = createDockerDesktopClient();
+        const logoutDisconnect = await ddClient.extension.vm.service.get(
+          `/api/clusters/disconnect/${localStorage.connectedClientId}`
+        );
+        // error handling
+        if (logoutDisconnect instanceof Error) {
+          // toast error message
+          ddClient.desktopUI.toast.error(
+            'ERROR disconnecting running client before you logged out.'
+          );
+          // exit handler
+          return;
+        }
+        localStorage.removeItem('connectedClientId');
+        // navigate to Login page
         navigate('/');
       },
       icon: <LogoutIcon />,
@@ -139,13 +139,13 @@ export default function App(props: Props) {
     },
   ];
 
-  // Socket connection test;
-  // const [response, setResponse] = React.useState<string>();
-  // const ddClient = useDockerDesktopClient();
-  // const fetchAndDisplayResponse = async () => {
-  //   const result = await ddClient.extension.vm?.service?.get('/hello');
-  //   setResponse(JSON.stringify(result));
-  // };
+  // The following hook was lifted from SavedConnections component
+  const [connectedClientId, setConnectedClientId] = useState<string>('');
+  useEffect(() => {
+    if (localStorage.getItem('connectedClientId')) {
+      setConnectedClientId(localStorage.getItem('connectedClientId'));
+    }
+  });
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -225,27 +225,25 @@ export default function App(props: Props) {
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        {saved}
-        {connect}
-        {clusterView}
-        {partitionView}
-        {resourceUsage}
+        <Routes>
+          <Route
+            path="saved"
+            element={
+              <SavedConnectionsDataGrid
+                connectedClientId={connectedClientId}
+                setConnectedClientId={setConnectedClientId}
+              />
+            }
+          />
+          <Route path="connect" element={<SaveNewConnectionStepper />} />
+          <Route path="metrics" element={<Metrics />}>
+            <Route index element={<ClusterView />} />
+            <Route path="cluster" element={<ClusterView />} />
+            <Route path="partition" element={<PartitionView />} />
+            <Route path="resources" element={<ResourceUsage />} />
+          </Route>
+        </Routes>
       </Box>
-      {/* <Stack direction="row" alignItems="start" spacing={2} sx={{ mt: 4 }}>
-        <Button variant="contained" onClick={fetchAndDisplayResponse}>
-          Call backend
-        </Button>
-
-        <TextField
-          label="Backend response"
-          sx={{ width: 480 }}
-          disabled
-          multiline
-          variant="outlined"
-          minRows={5}
-          value={response ?? ''}
-        />
-      </Stack> */}
     </Box>
   );
 }

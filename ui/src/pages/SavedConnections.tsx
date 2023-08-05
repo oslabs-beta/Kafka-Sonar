@@ -61,8 +61,11 @@ const columns: GridColDef[] = [
   },
 ];
 
+// 1) need to send connectedClientId (for download file path in metricsServer.ts)
+// 2) need to send the database ClusterId (for numOfBrokers in ID 6 in promController.ts)
+// 3) need to convert to use ddClient.extension.vm.service
 const DownloadPastMetrics = async () => {
-  fetch(`http://localhost:3333/download`)
+  fetch(`http://localhost:3333/download/`)
   .then(response => response.blob())
   .then(blob => {
       const url = window.URL.createObjectURL(new Blob([blob]));

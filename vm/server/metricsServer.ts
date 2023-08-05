@@ -59,7 +59,10 @@ setInterval(async () => {
   }
 }, 60 * 1000); // 60 seconds * 1000 ms/second
 
-app.get('/download', async (req, res) => {
+app.get(`/download/:clientId`, async (req, res) => {
+  const { clientId } = req.params;
+  const clusterDir = clientId;
+
   const result = await query('SELECT * FROM metrics_table');
 
   const csv = result.rows.map(row => {
@@ -72,12 +75,10 @@ app.get('/download', async (req, res) => {
   const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
   const filename = `metrics_table_${currentDateTime}.csv`;
 
-  // need to update file path below into persistent user volume
-  // currently writing to backend/dist/server/metrics_table.csv which is gone when image is removed
   fs.writeFile(filename, csv, function (err) { 
     if (err) throw err;
     console.log(`File is created successfully at ${new Date()}`);
-    res.download(`./${filename}`);
+    res.download(`../../user/${clusterDir}/${filename}`);
   });  
 });
 

@@ -84,7 +84,7 @@ const dockerController = {
   },
   deleteClusterDirFromVolume: async (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction
   ): Promise<void> => {
     const { clientId } = req.params;

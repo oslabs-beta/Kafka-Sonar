@@ -54,7 +54,7 @@ const dockerController = {
   },
   removeMetricsContainers: async (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction
   ): Promise<void> => {
     const { client_id} = req.params;

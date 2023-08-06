@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Dockerode from 'dockerode';
+import pkg from 'fs-extra';
+const { removeSync } = pkg;
 import createPromContainerCreateOpts from '../utils/promContainerCreateOptions';
 import createGrafContainerCreateOpts from '../utils/grafContainerCreateOptions'
 
@@ -52,11 +54,11 @@ const dockerController = {
   },
   removeMetricsContainers: async (
     req: Request,
-    _res: Response,
+    res: Response,
     next: NextFunction
   ): Promise<void> => {
     const { client_id} = req.params;
-    const clusterDir = client_id
+    const clusterDir = client_id;
     const containers = await docker.listContainers();
     const regex = new RegExp('/' + clusterDir + '-kafkasonar-', 'g')
     // instantiate a counter to track how many metrics containers have been removed
@@ -80,6 +82,25 @@ const dockerController = {
       });
     }
   },
+  deleteClusterDirFromVolume: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const { clientId } = req.params;
+    const clusterDir = clientId;
+    // remove the directory that matches ./user/${clusterDir}
+    try {
+      removeSync(`./user/${clusterDir}`);
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occured in dockerController.deleteClusterDir Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+      });
+    }
+
+  }
 }
 
 export default dockerController;

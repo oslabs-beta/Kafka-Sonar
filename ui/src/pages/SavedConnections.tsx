@@ -195,7 +195,7 @@ export default function SavedConnectionsDataGrid() {
     // must pass user_id and cluster_id to BE
     // DELETE selected connection
     const deletedConnection: any = await ddClient.extension.vm.service.delete(
-      `/api/clusters/${localStorage.getItem('id')}/${selectedRow}`
+      `/api/clusters/${localStorage.getItem('id')}/${selectedRow}/${selectedClientId}`
     );
     // error handling
     // refresh page, should trigger useEffect / getUserConnections, which will update state

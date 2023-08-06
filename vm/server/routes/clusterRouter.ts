@@ -55,10 +55,11 @@ clusterRouter.get(
 
 // SAVED CONNECTIONS deleteUserConnection - DONE. Working fullstack.
 clusterRouter.delete(
-  '/:user_id/:cluster_id',
+  '/:user_id/:cluster_id/:clientId',
   clusterController.deleteCluster,
   clusterController.deleteUserCluster,
   clusterController.deleteJmxPort,
+  dockerController.deleteClusterDirFromVolume,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.sendStatus(200);
   }

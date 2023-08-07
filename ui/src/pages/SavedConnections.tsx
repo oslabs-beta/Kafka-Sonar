@@ -65,25 +65,6 @@ const columns: GridColDef[] = [
   },
 ];
 
-// 1) need to send connectedClientId (for download file path in metricsServer.ts)
-// 2) need to send the database ClusterId (for numOfBrokers in ID 6 in promController.ts)
-// 3) need to convert to use ddClient.extension.vm.service
-const DownloadPastMetrics = async () => {
-  fetch(`http://localhost:3333/download/`)
-    .then((response) => response.blob())
-    .then((blob) => {
-      const url = window.URL.createObjectURL(new Blob([blob]));
-      const link = document.createElement('a');
-      const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-      const filename = `metrics_table_${currentDateTime}.csv`;
-      link.href = url;
-      link.setAttribute('download', `${filename}`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-    });
-};
-
 export default function SavedConnectionsDataGrid({
   connectedClientId,
   setConnectedClientId,
@@ -255,6 +236,51 @@ export default function SavedConnectionsDataGrid({
     setConnectedClientId('');
     // in case user leaves extension while cluster is running, set connectedClientId in localStorage to be ''
     localStorage.setItem('connectedClientId', '');
+  };
+
+  const DownloadPastMetrics = async () => {
+    // if selectedRow is 0, don't do the API call!
+    if (selectedRow === 0) {
+      // alert user that no grid row is selected
+      alert('Select a row / client to download metrics.');
+      // exit handler
+      return;
+    }
+
+    // must pass clientId AND clusterId of the selected row to BE
+    const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
+      .clientId;
+
+    // request to download metrics for selected cluster
+    const downloadResult: any = await ddClient.extension.vm.service.get(
+      `/download/${selectedClientId}/${selectedRow}`
+    );
+
+    // error handling
+    if (downloadResult instanceof Error) {
+      // toast error message
+      ddClient.desktopUI.toast.error(
+        `ERROR downloading metrics for ${selectedClientId}.`
+      );
+      // exit handler
+      return;
+    }
+
+    const blob = downloadResult.blob();
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement('a');
+    const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+    const filename = `metrics_table_${currentDateTime}.csv`;
+    link.href = url;
+    link.setAttribute('download', `${filename}`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+
+    // toast success message
+    ddClient.desktopUI.toast.success(
+      `SUCCESS! Downloaded metrics for ${selectedClientId}.`
+    );
   };
 
   const deleteUserConnection = async () => {

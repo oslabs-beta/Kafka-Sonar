@@ -14,6 +14,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { GridRowDef, UserConnection } from './../types/types';
 // Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
+import { format } from 'date-fns';
 
 const columns: GridColDef[] = [
   // Reference https://mui.com/x/react-data-grid/row-definition/#row-identifier: It is not necessary to create a column to display the unique identifier data. The data grid pulls this information directly from the data set itself, not from anything that is displayed on the screen.
@@ -59,6 +60,25 @@ const columns: GridColDef[] = [
     width: 180,
   },
 ];
+
+// 1) need to send connectedClientId (for download file path in metricsServer.ts)
+// 2) need to send the database ClusterId (for numOfBrokers in ID 6 in promController.ts)
+// 3) need to convert to use ddClient.extension.vm.service
+const DownloadPastMetrics = async () => {
+  fetch(`http://localhost:3333/download/`)
+  .then(response => response.blob())
+  .then(blob => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+      const filename = `metrics_table_${currentDateTime}.csv`;
+      link.href = url;
+      link.setAttribute('download', `${filename}`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+  })
+}
 
 export default function SavedConnectionsDataGrid() {
   const [rows, setRows] = useState<GridRowDef[]>([]);
@@ -283,7 +303,7 @@ export default function SavedConnectionsDataGrid() {
           title="Get a CSV of metrics from all previous runs of this cluster connection"
           placement="top"
         >
-          <Button variant="contained" color="success" size="medium">
+          <Button variant="contained" color="success" size="medium" onClick={DownloadPastMetrics}>
             DOWNLOAD PAST METRICS
           </Button>
         </Tooltip>

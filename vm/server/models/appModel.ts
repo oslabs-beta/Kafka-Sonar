@@ -1,4 +1,5 @@
 import pkg from 'pg';
+
 const { Pool } = pkg;
 
 const pool = new Pool({
@@ -8,8 +9,6 @@ const pool = new Pool({
   port: 5432,
   database: 'kafka_sonar_db',
 });
-
-//Schema for database found in data.sql
 
 const query = (
   text: string,

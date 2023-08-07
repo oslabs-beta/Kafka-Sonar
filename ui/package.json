@@ -22,6 +22,7 @@
     "@mui/material": "^5.13.4",
     "@mui/x-data-grid": "^6.10.0",
     "axios": "^1.4.0",
+    "date-fns": "^2.30.0",
     "kafkajs": "^2.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

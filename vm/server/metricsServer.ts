@@ -6,6 +6,10 @@ import session from 'express-session';
 import passport from 'passport';
 import googleOAuth from './auth/google';
 import 'dotenv/config';
+import { storeMetrics } from './metricService';
+import fs from 'fs';
+import { query } from './models/appModel';
+import { format } from 'date-fns';
 
 const app: Express = express();
 
@@ -41,12 +45,44 @@ app.get(
 
 app.use(bodyParser.json());
 
-// tested with postman
-app.get('/test', (req, res) => {
-  res.send(`Hello from the backend (port 3333)`);
-});
-
 app.use('/api', api);
+
+// run storeMetrics every minute
+setInterval(async () => {
+  try {
+    await storeMetrics();
+    console.log(`Metrics stored successfully at ${new Date()}`);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}, 60 * 1000); // 60 seconds * 1000 ms/second
+
+// :clientId needed for number of brokers
+app.get(`/download/`, async (req, res) => {
+  // const { clientId } = req.params;
+  // const clusterDir = clientId;
+
+  const result = await query('SELECT * FROM metrics_table');
+
+  const csv = result.rows.map(row => {
+    const date = new Date(row['timestamp']);
+    // converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
+    row['timestamp'] = format(date, 'yyyy-MM-dd HH:mm:ss');
+    return Object.values(row).join(',');
+  }).join('\n');
+
+  const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+  const filename = `metrics_table_${currentDateTime}.csv`;
+
+  fs.writeFile(filename, csv, function (err) { 
+    if (err) throw err;
+    console.log(`File is created successfully at ${new Date()}`);
+    // res.download(`../../user/${clusterDir}/${filename}`);
+    res.download(`${filename}`);
+  });  
+});
 
 // catch-all route handler
 app.use((_req: Request, res: Response): unknown =>

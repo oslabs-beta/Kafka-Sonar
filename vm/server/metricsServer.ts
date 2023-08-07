@@ -60,7 +60,7 @@ setInterval(async () => {
 }, 60 * 1000); // 60 seconds * 1000 ms/second
 
 // :clientId needed for number of brokers
-app.get(`/download/:clientId`, async (req, res) => {
+app.get(`/download/`, async (req, res) => {
   // const { clientId } = req.params;
   // const clusterDir = clientId;
 

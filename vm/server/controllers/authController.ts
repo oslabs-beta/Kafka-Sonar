@@ -3,16 +3,19 @@ import { query } from '../models/appModel';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
+import bcrypt from 'bcrypt';
 
 export const signUp = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const account_type = req.body.role;
 
   try {
-    // Hash and salt needed
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const result = await query(
       `INSERT INTO users (email, password, account_type) VALUES ($1, $2, $3) RETURNING *`,
-      [email, password, account_type]
+      [email, hashedPassword, account_type]
     );
 
     const user = result.rows[0];
@@ -37,12 +40,12 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     const result = await query(
-      `SELECT * FROM users WHERE email = $1 AND password = $2`,
-      [email, password]
+      `SELECT * FROM users WHERE email = $1`,
+      [email]
     );
 
     const user = result.rows[0];
-    if (user) {
+    if (user && await bcrypt.compare(password, user.password)) {
       const token = jwt.sign(
         { email: user.email, id: user.user_id },
         process.env.JWT_SECRET as string,

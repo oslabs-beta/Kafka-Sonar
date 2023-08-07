@@ -51,6 +51,26 @@ CREATE TABLE error_logs (
   OIDS=FALSE
 );
 
+CREATE TABLE metrics_table (
+	"_id" serial NOT NULL UNIQUE,
+	"endpoint" varchar(255) NOT NULL,
+	"metric_name" varchar(255) NOT NULL,
+	"env" varchar(255) NOT NULL,
+	"instance" varchar(255) NOT NULL,
+	"job" varchar(255) NOT NULL,
+	"service" varchar(255) NOT NULL,
+	"request" varchar(255),
+	"aggregate" varchar(255),
+	"scope" varchar(255),
+	"value" DOUBLE PRECISION NOT NULL,
+	"timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	CONSTRAINT "metrics_table_pk" PRIMARY KEY ("_id")
+) WITH (
+  OIDS=FALSE
+);
+
+SELECT create_hypertable('metrics_table', 'timestamp');
+
 ALTER TABLE "jmx_ports" ADD CONSTRAINT "jmx_ports_fk0" FOREIGN KEY ("cluster_id") REFERENCES "clusters"("cluster_id") ON DELETE CASCADE;
 
 ALTER TABLE "users_in_clusters" ADD CONSTRAINT "users_in_clusters_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE;

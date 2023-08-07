@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled, Theme, CSSObject } from '@mui/material/styles';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ import Metrics from './pages/Metrics';
 import ResourceUsage from './components/ResourceUsage';
 import ClusterView from './components/ClusterView';
 import PartitionView from './components/PartitionView';
+import NoMetrics from './components/NoMetrics';
 
 // MUI component reference: https://mui.com/material-ui/react-drawer/#mini-variant-drawer
 import Box from '@mui/material/Box';
@@ -27,9 +28,7 @@ import Typography from '@mui/material/Typography';
 
 // MUI or created icons
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import HubIcon from '@mui/icons-material/Hub';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
-import PolylineIcon from '@mui/icons-material/Polyline';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SvgIcon from '@mui/material/SvgIcon';
 import { ReactComponent as OrangeLogo } from './assets/kafka-sonar-orange-logo.svg';
@@ -93,6 +92,16 @@ export default function App() {
     setOpen(false);
   };
 
+  // The following hook was lifted from SavedConnections component
+  const [connectedClientId, setConnectedClientId] = useState<string | null>('');
+
+  // if the user navigates out of the extension to DD, a running client continues to run but state empties; when user returns, sync state with localStorage
+  useEffect(() => {
+    if (localStorage.getItem('connectedClientId')) {
+      setConnectedClientId(localStorage.getItem('connectedClientId'));
+    }
+  });
+
   const navigate = useNavigate();
 
   const navTabOptions: NavTabOption[] = [
@@ -108,28 +117,30 @@ export default function App() {
         navigate('/metrics');
       },
       icon: <DeviceHubIcon />,
-      text: 'Metrics',
+      text: 'Current Run Metrics',
     },
     {
       onClick: async () => {
-        // on log out, clear user's id and token from localStorage, ending their session
+        // if a client is running when user clicks to log out, request to disconnect
+        if (connectedClientId) {
+          const ddClient = createDockerDesktopClient();
+          // @ts-ignore
+          const logoutDisconnection = await ddClient.extension.vm.service.get(
+            `/api/clusters/disconnect/${connectedClientId}`
+          );
+          // error handling
+          if (logoutDisconnection instanceof Error) {
+            // toast error message
+            ddClient.desktopUI.toast.error(
+              'ERROR disconnecting running client before you logged out.'
+            );
+            // exit handler
+            return;
+          }
+        }
+        // on log out, clear user's localStorage, ending their session
         localStorage.removeItem('id');
         localStorage.removeItem('token');
-
-        // TO DO: add request to BE to disconnect a running cluster; /api/clusters/disconnect/
-        const ddClient = createDockerDesktopClient();
-        const logoutDisconnect = await ddClient.extension.vm.service.get(
-          `/api/clusters/disconnect/${localStorage.connectedClientId}`
-        );
-        // error handling
-        if (logoutDisconnect instanceof Error) {
-          // toast error message
-          ddClient.desktopUI.toast.error(
-            'ERROR disconnecting running client before you logged out.'
-          );
-          // exit handler
-          return;
-        }
         localStorage.removeItem('connectedClientId');
         // navigate to Login page
         navigate('/');
@@ -138,14 +149,6 @@ export default function App() {
       text: 'Log Out',
     },
   ];
-
-  // The following hook was lifted from SavedConnections component
-  const [connectedClientId, setConnectedClientId] = useState<string>('');
-  useEffect(() => {
-    if (localStorage.getItem('connectedClientId')) {
-      setConnectedClientId(localStorage.getItem('connectedClientId'));
-    }
-  });
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -237,10 +240,18 @@ export default function App() {
           />
           <Route path="connect" element={<SaveNewConnectionStepper />} />
           <Route path="metrics" element={<Metrics />}>
-            <Route index element={<ClusterView />} />
-            <Route path="cluster" element={<ClusterView />} />
-            <Route path="partition" element={<PartitionView />} />
-            <Route path="resources" element={<ResourceUsage />} />
+            <Route
+              index
+              element={connectedClientId ? <ClusterView /> : <NoMetrics />}
+            />
+            <Route
+              path="partition"
+              element={connectedClientId ? <PartitionView /> : <NoMetrics />}
+            />
+            <Route
+              path="resources"
+              element={connectedClientId ? <ResourceUsage /> : <NoMetrics />}
+            />
           </Route>
         </Routes>
       </Box>

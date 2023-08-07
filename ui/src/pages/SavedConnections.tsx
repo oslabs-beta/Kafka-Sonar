@@ -302,7 +302,7 @@ export default function SavedConnectionsDataGrid({
         }}
       >
         <Typography component="h1" variant="h5" margin={'-20px auto 0'}>
-          SAVED CLUSTER CONNECTIONS
+          SAVED CONNECTIONS
         </Typography>
         <Button
           variant="contained"
@@ -335,11 +335,10 @@ export default function SavedConnectionsDataGrid({
           AVAILABLE ACTIONS
         </Typography>
         <List>
-          <ListItemText primary="1. Except for Disconnect, select 1 row to take any other action. (Multi-row selection is not available.)" />
-          <ListItemText primary="2. To de-select a row, CMD+click the same row or select another row." />
-          <ListItemText primary="3. You can run only 1 client at a time." />
-          <ListItemText primary="4. You must disconnect a running client before connecting to another client or deleting the running client from your saved connections." />
-          <ListItemText primary="5. If you download metrics or logs for a running client, you will get the most up-to-date data." />
+          <ListItemText primary="1. Select 1 row to take an action. To de-select a row, CMD+click on it or select another row. You cannot select multiple rows." />
+          <ListItemText primary="2. You can run only 1 client at a time. You must disconnect a running client before connecting to another client or deleting the running client from your saved connections." />
+          <ListItemText primary="3. You can navigate outside the extension while a client is running. However, if you log out, the client will be disconnected." />
+          <ListItemText primary="4. Downloading metrics or logs will get you up-to-the-minute data, including for a running client." />
         </List>
         <Button onClick={connectToSelected} variant="outlined" size="medium">
           CONNECT TO SELECTED CLUSTER

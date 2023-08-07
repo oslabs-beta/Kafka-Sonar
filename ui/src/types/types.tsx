@@ -73,9 +73,10 @@ export interface AuthInvalid {
 export type AuthResult = AuthSuccess | AuthError | AuthInvalid;
 
 // SavedConnections component Props type
+// added "| null" b/c of a make update-extension TS error in App
 export interface SavedConnectionsProps {
-  connectedClientId: string;
-  setConnectedClientId: (clientId: string) => void;
+  connectedClientId: string | null;
+  setConnectedClientId: (clientId: string | null) => void;
 }
 
 // SavedConnections component, GridRowDef type for each row obj in rows array in state

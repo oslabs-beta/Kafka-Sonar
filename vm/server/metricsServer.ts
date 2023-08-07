@@ -59,9 +59,10 @@ setInterval(async () => {
   }
 }, 60 * 1000); // 60 seconds * 1000 ms/second
 
+// :clientId needed for number of brokers
 app.get(`/download/:clientId`, async (req, res) => {
-  const { clientId } = req.params;
-  const clusterDir = clientId;
+  // const { clientId } = req.params;
+  // const clusterDir = clientId;
 
   const result = await query('SELECT * FROM metrics_table');
 
@@ -78,7 +79,8 @@ app.get(`/download/:clientId`, async (req, res) => {
   fs.writeFile(filename, csv, function (err) { 
     if (err) throw err;
     console.log(`File is created successfully at ${new Date()}`);
-    res.download(`../../user/${clusterDir}/${filename}`);
+    // res.download(`../../user/${clusterDir}/${filename}`);
+    res.download(`${filename}`);
   });  
 });
 

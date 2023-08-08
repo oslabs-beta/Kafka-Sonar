@@ -72,30 +72,37 @@ setInterval(async () => {
   }
 }, 60 * 1000); // 60 seconds * 1000 ms/second
 
-// :clientId needed for number of brokers
 app.get('/download/:clientId/:clusterId', async (req, res) => {
-  const { clientId, clusterId } = req.params;
-  const clusterDir = clientId;
-  const values = [ clusterId ];
+  try {
+    const { clientId, clusterId } = req.params;
+    const clusterDir = clientId;
+    const values = [ clusterId ];
 
-  const result = await query('SELECT * FROM metrics_table WHERE cluster_id = $1', values);
+    const result = await query('SELECT * FROM metrics_table WHERE cluster_id = $1', values);
 
-  const csv = result.rows.map(row => {
-    const date = new Date(row['timestamp']);
-    // converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
-    row['timestamp'] = format(date, 'yyyy-MM-dd HH:mm:ss');
-    return Object.values(row).join(',');
-  }).join('\n');
+    const csv = result.rows.map(row => {
+      const date = new Date(row['timestamp']);
+      // converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
+      row['timestamp'] = format(date, 'yyyy-MM-dd HH:mm:ss');
+      return Object.values(row).join(',');
+    }).join('\n');
 
-  const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-  const filename = `metrics_table_${currentDateTime}.csv`;
+    const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+    const filename = `${clusterDir}_metrics_table_${currentDateTime}.csv`;
 
-  fs.writeFile(filename, csv, function (err) { 
-    if (err) throw err;
-    console.log(`File is created successfully at ${new Date()}`);
-    res.download(`../../user/${clusterDir}/${filename}`);
-    // res.download(`${filename}`);
-  });  
+    fs.writeFile(filename, csv, function (err) { 
+      if (err) {
+        console.error(`Error writing file: ${err}`);
+        return res.status(500).send("Error writing the file.");
+      }
+      console.log(`File is created successfully at ${new Date()}`);
+      // res.download(`../../user/${clusterDir}/${filename}`);
+      res.download(`${filename}`);
+    });  
+  } catch (err) {
+    console.error(`Error processing download: ${err}`);
+    res.status(500).send("Error processing download.");
+  }
 });
 
 // catch-all route handler

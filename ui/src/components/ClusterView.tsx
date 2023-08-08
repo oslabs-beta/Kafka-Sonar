@@ -51,6 +51,15 @@ export default function ClusterView() {
         <Grid item flexBasis={'43vh'}>
           <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=11"></iframe>
         </Grid>
+        <Grid item flexBasis={'43vh'}>
+          <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=12"></iframe>
+        </Grid>
+        <Grid item flexBasis={'43vh'}>
+          <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=13"></iframe>
+        </Grid>
+        <Grid item flexBasis={'43vh'}>
+          <iframe src="http://localhost:3000/d-solo/aRNaJwOmk/kafka-broker-performance-and-latency?orgId=1&refresh=5s&panelId=14"></iframe>
+        </Grid>
       </Grid>
     </Fragment>
   );

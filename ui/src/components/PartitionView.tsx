@@ -22,23 +22,23 @@ export default function PartitionView() {
         {/* Direct child-items of this grid flex row-wise, enabling use of breakpoint props */}
         <Grid container item gap={1} flexBasis={'21vh'}>
           <Grid item xs sm md>
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=12"></iframe>
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=15"></iframe>
           </Grid>
           <Grid item xs sm md>
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=13"></iframe>
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=16"></iframe>
           </Grid>
           <Grid item xs sm md>
-            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=14"></iframe>
+            <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=17"></iframe>
           </Grid>
         </Grid>
         <Grid item flexBasis={'32vh'}>
-          <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=15"></iframe>
+          <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=18"></iframe>
         </Grid>
         <Grid item flexBasis={'32vh'}>
-          <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=16"></iframe>
+          <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=19"></iframe>
         </Grid>
         <Grid item flexBasis={'32vh'}>
-          <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=17"></iframe>
+          <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=20"></iframe>
         </Grid>
       </Grid>
     </Fragment>

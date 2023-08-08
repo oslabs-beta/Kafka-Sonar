@@ -77,10 +77,10 @@ app.get('/download/:clientId/:clusterId', async (req, res) => {
   try {
     const { clientId, clusterId } = req.params;
     console.log(`Processing download for clientId: ${clientId}, clusterId: ${clusterId}`);
-    const values = [clientId];
+    const values = [clusterId];
 
     const result = await query('SELECT * FROM metrics_table WHERE cluster_id = $1', values);
-
+    
     const csv = result.rows.map(row => {
       const date = new Date(row['timestamp']);
       // converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
@@ -93,13 +93,13 @@ app.get('/download/:clientId/:clusterId', async (req, res) => {
 
     console.log(`Writing to file: ${filename} with content size: ${csv.length}`);
     
-    const directory = `/backend/user/${clusterId}/`;
-    const fullPath = path.join(directory, filename);
+    // const directory = `/backend/user/${clusterId}/`;
+    // const fullPath = path.join(directory, filename);
 
-    fs.writeFile(fullPath, csv, function (err) { 
+    fs.writeFile(filename, csv, function (err) { 
       if (err) throw err;
-      console.log(`File is created successfully at ${new Date()} with path ${fullPath}`);
-      res.download(fullPath);
+      console.log(`File is created successfully at ${new Date()} with path ${filename}`);
+      res.download(filename);
     });
   } catch (err) {
     console.error(`Error processing download: ${err}`);

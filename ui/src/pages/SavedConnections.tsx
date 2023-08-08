@@ -239,9 +239,6 @@ export default function SavedConnectionsDataGrid({
   };
 
   const DownloadPastMetrics = async () => {
-    // Log selected row for initial debugging
-    console.log(`Selected row: ${selectedRow}`);
-
     // if selectedRow is 0, don't do the API call!
     if (selectedRow === 0) {
       // alert user that no grid row is selected
@@ -251,32 +248,26 @@ export default function SavedConnectionsDataGrid({
     }
 
     // must pass clientId AND clusterId of the selected row to BE
-    // const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
-    //   .clientId;
-    const selectedClient = rows.find((row) => row.id === selectedRow);
-    if (!selectedClient) {
-      console.error("No client found for the selected row.");
-      return;
-    }
-    const selectedClientId = selectedClient.clientId;
-    // Log the extracted clientId for debugging
-    console.log(`Selected clientId: ${selectedClientId}`);
+    const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
+      .clientId;
 
-    // Request to download metrics for the selected cluster
-    let downloadResult;
+    // request to download metrics for the selected cluster
+    let downloadResult: any;
     try {
-      // downloadResult = await ddClient.extension.vm.service.get(`http://localhost:3333/download/${selectedClientId}/${selectedRow}`);
+      // request to download metrics for selected cluster
+      // must use fetch to receive res.download
+      // downloadResult = await ddClient.extension.vm.service.get(`/download/${selectedClientId}/${selectedRow}`);
       downloadResult = await fetch(`http://localhost:3333/download/${selectedClientId}/${selectedRow}`);
-      // Log the raw download result for debugging
+      // log the raw download result for debugging
       console.log("Download result:", downloadResult);
     } catch (error) {
       console.error("Error fetching data:", error);
-      // Toast error message
+      // toast error message
       ddClient.desktopUI.toast.error(`ERROR downloading metrics for ${selectedClientId}.`);
       return;
     }
 
-    // Convert the response into a blob and log possible issues
+    // convert the response into a blob and log possible issues
     let blob;
     try {
       blob = await downloadResult.blob();
@@ -287,21 +278,33 @@ export default function SavedConnectionsDataGrid({
     }
 
     const url = window.URL.createObjectURL(blob);
-    // const url = window.URL.createObjectURL(new Blob([blob]));
     const link = document.createElement('a');
-    const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-    const filename = `metrics_table_${currentDateTime}.csv`;
+
+    // get the filename from the Content-Disposition header
+    const contentDisposition = downloadResult.headers.get("content-disposition");
+    let filename = "";
+    if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?(.+?)"?(?:;|$)/);
+        if (match) {
+            filename = match[1];
+        }
+    }
+    // if filename wasn't found in the header or wasn't set, set a default name
+    if (!filename) {
+        const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+        filename = `metrics_table_${currentDateTime}.csv`;
+    }
+
     link.href = url;
-    link.setAttribute('download', `${filename}`);
+    link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();
-    // link.parentNode.removeChild(link);
     document.body.removeChild(link);
 
-    // Log the successful download for debugging
+    // log the successful download for debugging
     console.log(`Metrics downloaded for clientId: ${selectedClientId}`);
 
-    // Toast success message
+    // toast success message
     ddClient.desktopUI.toast.success(
       `SUCCESS! Downloaded metrics for ${selectedClientId}.`
     );

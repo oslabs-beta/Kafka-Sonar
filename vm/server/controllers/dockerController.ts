@@ -26,7 +26,7 @@ const dockerController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in dockerController.runPrometheus Middleware',
+        log: 'Error occurred in dockerController.runPrometheus Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }

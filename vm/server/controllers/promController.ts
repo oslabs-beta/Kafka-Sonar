@@ -41,8 +41,8 @@ const promController = {
     const { currentClusterId } = req.params;
     // And then we query for the number of brokers
     const portsArr: any = await axios.get(`http://localhost:3333/api/clusters/jmxports/${currentClusterId}`);
-    console.log('Ports Array ----> ', portsArr);
-    const numberOfBrokers = portsArr.length;
+    console.log('Ports Array ----> ', portsArr.data);
+    const numberOfBrokers = portsArr.data.length;
     console.log('numb brokers ----> ', numberOfBrokers);
     
     const query = `${numberOfBrokers}-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;

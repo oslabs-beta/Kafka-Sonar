@@ -8,6 +8,7 @@ import googleOAuth from './auth/google';
 import 'dotenv/config';
 import { storeMetrics } from './metricService';
 import fs from 'fs';
+import path from 'path';
 import { query } from './models/appModel';
 import { format } from 'date-fns';
 import cache from 'memory-cache'
@@ -75,8 +76,8 @@ setInterval(async () => {
 app.get('/download/:clientId/:clusterId', async (req, res) => {
   try {
     const { clientId, clusterId } = req.params;
-    const clusterDir = clientId;
-    const values = [ clusterId ];
+    console.log(`Processing download for clientId: ${clientId}, clusterId: ${clusterId}`);
+    const values = [clientId];
 
     const result = await query('SELECT * FROM metrics_table WHERE cluster_id = $1', values);
 
@@ -88,17 +89,18 @@ app.get('/download/:clientId/:clusterId', async (req, res) => {
     }).join('\n');
 
     const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-    const filename = `${clusterDir}_metrics_table_${currentDateTime}.csv`;
+    const filename = `${clusterId}_metrics_table_${currentDateTime}.csv`;
 
-    fs.writeFile(filename, csv, function (err) { 
-      if (err) {
-        console.error(`Error writing file: ${err}`);
-        return res.status(500).send("Error writing the file.");
-      }
-      console.log(`File is created successfully at ${new Date()}`);
-      // res.download(`../../user/${clusterDir}/${filename}`);
-      res.download(`${filename}`);
-    });  
+    console.log(`Writing to file: ${filename} with content size: ${csv.length}`);
+    
+    const directory = `/backend/user/${clusterId}/`;
+    const fullPath = path.join(directory, filename);
+
+    fs.writeFile(fullPath, csv, function (err) { 
+      if (err) throw err;
+      console.log(`File is created successfully at ${new Date()} with path ${fullPath}`);
+      res.download(fullPath);
+    });
   } catch (err) {
     console.error(`Error processing download: ${err}`);
     res.status(500).send("Error processing download.");

@@ -251,10 +251,9 @@ export default function SavedConnectionsDataGrid({
     const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
       .clientId;
 
-    // request to download metrics for the selected cluster
+    // request to download metrics for selected cluster
     let downloadResult: any;
     try {
-      // request to download metrics for selected cluster
       // must use fetch to receive res.download
       // downloadResult = await ddClient.extension.vm.service.get(`/download/${selectedClientId}/${selectedRow}`);
       downloadResult = await fetch(`http://localhost:3333/download/${selectedClientId}/${selectedRow}`);
@@ -285,9 +284,7 @@ export default function SavedConnectionsDataGrid({
     let filename = "";
     if (contentDisposition) {
         const match = contentDisposition.match(/filename="?(.+?)"?(?:;|$)/);
-        if (match) {
-            filename = match[1];
-        }
+        if (match) filename = match[1];
     }
     // if filename wasn't found in the header or wasn't set, set a default name
     if (!filename) {

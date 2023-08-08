@@ -49,13 +49,6 @@ app.use(bodyParser.json());
 
 app.use('/api', api);
 
-// // server state to track the cluster_id PK of the currently connected cluster
-// let currentClusterId: string|null = null;
-
-// app.get('/connection/:clusterId', async (req, res) => {
-//   currentClusterId = req.params.clusterId;
-// });
-
 // run storeMetrics every minute
 setInterval(async () => {
   const currentClusterId = cache.get('connectedClusterId'); 
@@ -93,13 +86,12 @@ app.get('/download/:clientId/:clusterId', async (req, res) => {
 
     console.log(`Writing to file: ${filename} with content size: ${csv.length}`);
     
-    // const directory = `/backend/user/${clusterId}/`;
-    // const fullPath = path.join(directory, filename);
-
-    fs.writeFile(filename, csv, function (err) { 
+    const fullPath = `./user/${clientId}/${filename}`;
+    // writes to /backend/user/<clientId>/
+    fs.writeFile(fullPath, csv, function (err) { 
       if (err) throw err;
-      console.log(`File is created successfully at ${new Date()} with path ${filename}`);
-      res.download(filename);
+      console.log(`File is created successfully at ${new Date()} with path ${fullPath}`);
+      res.download(fullPath);
     });
   } catch (err) {
     console.error(`Error processing download: ${err}`);

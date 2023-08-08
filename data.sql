@@ -16,7 +16,6 @@ CREATE TABLE clusters (
 	"auth_mechanism" varchar (255) NOT NULL,
 	"username" varchar (255) NOT NULL,
 	"password" varchar (255) NOT NULL,
-	"app_cluster_id" varchar (255) NOT NULL,
 	"user_network" varchar (255) NOT NULL,
 	CONSTRAINT "cluster_pk" PRIMARY KEY ("cluster_id")
 ) WITH (
@@ -42,15 +41,6 @@ CREATE TABLE users_in_clusters (
   OIDS=FALSE
 );
 
-CREATE TABLE error_logs (
-	"_id" serial NOT NULL,
-	"cluster_id" integer NOT NULL,
-	"message" TEXT NOT NULL,
-	CONSTRAINT "error_logs_pk" PRIMARY KEY ("_id")
-) WITH (
-  OIDS=FALSE
-);
-
 CREATE TABLE metrics_table (
 	"_id" serial NOT NULL UNIQUE,
 	"endpoint" varchar(255) NOT NULL,
@@ -64,6 +54,7 @@ CREATE TABLE metrics_table (
 	"scope" varchar(255),
 	"value" DOUBLE PRECISION NOT NULL,
 	"timestamp" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	"cluster_id" integer NOT NULL,
 	CONSTRAINT "metrics_table_pk" PRIMARY KEY ("_id")
 ) WITH (
   OIDS=FALSE
@@ -76,4 +67,4 @@ ALTER TABLE "jmx_ports" ADD CONSTRAINT "jmx_ports_fk0" FOREIGN KEY ("cluster_id"
 ALTER TABLE "users_in_clusters" ADD CONSTRAINT "users_in_clusters_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE;
 ALTER TABLE "users_in_clusters" ADD CONSTRAINT "users_in_clusters_fk1" FOREIGN KEY ("cluster_id") REFERENCES "clusters"("cluster_id") ON DELETE CASCADE;
 
-ALTER TABLE "error_logs" ADD CONSTRAINT "error_logs_fk0" FOREIGN KEY ("cluster_id") REFERENCES "clusters"("cluster_id") ON DELETE CASCADE;
+ALTER TABLE "metrics_table" ADD CONSTRAINT "metrics_table_fk0" FOREIGN KEY ("cluster_id") REFERENCES "clusters"("cluster_id") ON DELETE CASCADE;

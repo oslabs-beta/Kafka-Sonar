@@ -17,10 +17,11 @@
     "dockerode-compose": "^1.3.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "fs-extra": "^11.1.1",
     "express-session": "^1.17.3",
+    "fs-extra": "^11.1.1",
     "jsonwebtoken": "^9.0.1",
     "kafkajs": "^2.2.4",
+    "memory-cache": "^0.2.0",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.11.1"

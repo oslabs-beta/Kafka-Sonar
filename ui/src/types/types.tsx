@@ -98,7 +98,6 @@ export interface UserConnection {
   auth_mechanism: string;
   username: string;
   password: string;
-  app_cluster_id: string;
   user_network: string;
   _id: number;
   user_id: number;

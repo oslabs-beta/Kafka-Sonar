@@ -36,10 +36,17 @@ const promController = {
     return fetchData(query, 'onlineBrokersCount', res, next);
   },
   // "ID": 6
-  getOfflineBrokersCount: async (_req: Request, res: Response, next: NextFunction): Promise<unknown> => {
+  getOfflineBrokersCount: async (req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     // Frontend sends clusterId and we use it to query the database
-    // const query = `${numberOfBrokers}-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
-    const query = `3-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
+    const { currentClusterId } = req.params;
+    // And then we query for the number of brokers
+    const portsArr: any = await axios.get(`http://localhost:3333/api/clusters/jmxports/${currentClusterId}`);
+    console.log('Ports Array ----> ', portsArr);
+    const numberOfBrokers = portsArr.length;
+    console.log('numb brokers ----> ', numberOfBrokers);
+    
+    const query = `${numberOfBrokers}-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
+    // const query = `3-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
     return fetchData(query, 'offlineBrokersCount', res, next);
   },
   // "ID": 7

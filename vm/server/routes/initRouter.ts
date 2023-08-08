@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import configController from '../controllers/configController';
 import dockerController from '../controllers/dockerController';
 import clusterController from '../controllers/clusterController';
+import cacheController from '../controllers/cacheController'
 
 const initRouter = express.Router();
 
@@ -34,4 +35,13 @@ initRouter.delete('/disconnect/:clusterDir',
     res.status(200).json('disconnected from cluster');
   });
 
+initRouter.get('/cachetest',
+  cacheController.testCache,
+  (_req: Request, res: Response, _next: NextFunction): void => {
+    res.status(200).json('cache test complete');
+  }
+);
+
+
 export default initRouter;
+

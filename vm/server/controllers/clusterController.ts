@@ -11,7 +11,7 @@ const clusterController = {
       const { client, host, port, auth, username, password, network } =
         req.body;
       const request =
-        'INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, app_cluster_id, user_network) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *';
+        'INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, user_network) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *';
       // const request =
       //   'WITH new_cluster AS (INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, app_cluster_id, user_network) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING * ) INSERT INTO users_in_clusters (user_id, cluster_id) SELECT $9 AS user_id, new_cluster.cluster_id FROM new_cluster;';
       const values: any[] = [
@@ -21,7 +21,6 @@ const clusterController = {
         auth,
         username,
         password,
-        '',
         network,
       ];
       const response: any = await query(request, values);

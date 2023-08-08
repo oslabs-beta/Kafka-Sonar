@@ -10,6 +10,7 @@ import { storeMetrics } from './metricService';
 import fs from 'fs';
 import { query } from './models/appModel';
 import { format } from 'date-fns';
+import cache from 'memory-cache'
 
 const app: Express = express();
 
@@ -47,8 +48,20 @@ app.use(bodyParser.json());
 
 app.use('/api', api);
 
+// // server state to track the cluster_id PK of the currently connected cluster
+// let currentClusterId: string|null = null;
+
+// app.get('/connection/:clusterId', async (req, res) => {
+//   currentClusterId = req.params.clusterId;
+// });
+
 // run storeMetrics every minute
 setInterval(async () => {
+  const currentClusterId = cache.get('connectedClusterId'); 
+  console.log('here is the cached cluster_id ---->', currentClusterId)
+  // If currentClusterId is null i.e. there is no active connection, do not scrape
+  if (!currentClusterId) return;
+
   try {
     await storeMetrics();
     console.log(`Metrics stored successfully at ${new Date()}`);
@@ -60,11 +73,12 @@ setInterval(async () => {
 }, 60 * 1000); // 60 seconds * 1000 ms/second
 
 // :clientId needed for number of brokers
-app.get(`/download/`, async (req, res) => {
-  // const { clientId } = req.params;
-  // const clusterDir = clientId;
+app.get('/download/:clientId/:clusterId', async (req, res) => {
+  const { clientId, clusterId } = req.params;
+  const clusterDir = clientId;
+  const values = [ clusterId ];
 
-  const result = await query('SELECT * FROM metrics_table');
+  const result = await query('SELECT * FROM metrics_table WHERE cluster_id = $1', values);
 
   const csv = result.rows.map(row => {
     const date = new Date(row['timestamp']);
@@ -79,8 +93,8 @@ app.get(`/download/`, async (req, res) => {
   fs.writeFile(filename, csv, function (err) { 
     if (err) throw err;
     console.log(`File is created successfully at ${new Date()}`);
-    // res.download(`../../user/${clusterDir}/${filename}`);
-    res.download(`${filename}`);
+    res.download(`../../user/${clusterDir}/${filename}`);
+    // res.download(`${filename}`);
   });  
 });
 

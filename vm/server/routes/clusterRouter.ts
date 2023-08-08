@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import clusterController from '../controllers/clusterController';
 import configController from '../controllers/configController';
 import dockerController from '../controllers/dockerController';
+import cacheController from '../controllers/cacheController';
 
 const clusterRouter = express.Router();
 
@@ -27,7 +28,8 @@ clusterRouter.post(
 // Connect to a running cluster that has already been added
 // This route spins up a Prometheus and Grafana container configured to scrape metrics from your cluster
 clusterRouter.get(
-  '/connect/:client_id/:network',
+  '/connect/:client_id/:network/:cluster_id',
+  cacheController.cacheClusterId,
   dockerController.runPrometheus,
   dockerController.runGrafana,
   (_req: Request, res: Response, _next: NextFunction): void => {
@@ -38,6 +40,7 @@ clusterRouter.get(
 // DISCONNECT FROM A RUNNING CLUSTER ROUTE
 clusterRouter.get(
   '/disconnect/:client_id',
+  cacheController.clearCache,
   dockerController.removeMetricsContainers,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.sendStatus(200);

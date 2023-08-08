@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { query } from './models/appModel';
+import cache from 'memory-cache';
 
 interface Metric {
   env: string;
@@ -36,8 +37,13 @@ const storeMetrics = async (): Promise<void> => {
   ];
 
   try {
+    const currentClusterId: string = cache.get('connectedClusterId'); 
     for (let metricName of metricNames) {
-      const url = `http://localhost:3333/api/prom/${metricName}`; 
+      const url: string = 
+        metricName === 'offlineBrokersCount' 
+        ? `http://localhost:3333/api/prom/${metricName}/${currentClusterId}` 
+        : `http://localhost:3333/api/prom/${metricName}`;
+
       const response = await axios.get(url);
       const metrics = response.data;
 
@@ -78,8 +84,8 @@ const storeMetrics = async (): Promise<void> => {
       // Execute batch insert
       await Promise.all(metricEntries.map(async (metricEntry) => {
         await query(`
-            INSERT INTO metrics_table (endpoint, metric_name, env, instance, job, service, request, aggregate, scope, value, timestamp)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, TO_TIMESTAMP($11))
+            INSERT INTO metrics_table (endpoint, metric_name, env, instance, job, service, request, aggregate, scope, value, timestamp, cluster_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, TO_TIMESTAMP($11), $12)
             ON CONFLICT DO NOTHING`,
           [
             metricEntry.endpoint,
@@ -92,7 +98,8 @@ const storeMetrics = async (): Promise<void> => {
             metricEntry.aggregate,
             metricEntry.scope,
             metricEntry.value,
-            metricEntry.timestamp
+            metricEntry.timestamp,
+            currentClusterId,
           ]
         );
       }));

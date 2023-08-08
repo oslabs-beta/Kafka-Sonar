@@ -171,7 +171,7 @@ export default function SavedConnectionsDataGrid({
       .network;
     // request to connect to the selected cluster
     const connected: any = await ddClient.extension.vm.service.get(
-      `/api/clusters/connect/${selectedClientId}/${selectedNetwork}`
+      `/api/clusters/connect/${selectedClientId}/${selectedNetwork}/${selectedRow}`
     );
 
     // error handling

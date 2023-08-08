@@ -9,14 +9,14 @@ import React from 'react';
 export default function ClusterView() {
   return (
     <Fragment>
-      <Typography
+      {/* <Typography
         component="h1"
         variant="h5"
         align="center"
         margin="-20px auto 20px"
       >
         Cluster Activity
-      </Typography>
+      </Typography> */}
 
       {/* Direct child-items of this grid flex column-wise, enabling flex-basis to increase height of those rows */}
       <Grid container gap={1} direction={'column'}>

@@ -7,11 +7,15 @@ import List from '@mui/material/List';
 import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
 // Referenced guide for migration from MUI v5 to v6 in order to get import Data Grid from MUI X v6: https://mui.com/x/migration/migration-data-grid-v5/
-import { DataGrid, GridEventListener } from '@mui/x-data-grid';
+import { DataGrid, GridEventListener, useGridApiRef } from '@mui/x-data-grid';
 // MUI types
 import { GridColDef } from '@mui/x-data-grid';
 // TS types
-import { GridRowDef, UserConnection } from './../types/types';
+import {
+  GridRowDef,
+  SavedConnectionsProps,
+  UserConnection,
+} from './../types/types';
 // Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 import { format } from 'date-fns';
@@ -40,7 +44,7 @@ const columns: GridColDef[] = [
     description: 'Your cluster is found at this port.',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 100,
+    width: 110,
   },
   {
     field: 'auth',
@@ -61,39 +65,32 @@ const columns: GridColDef[] = [
   },
 ];
 
-// 1) need to send connectedClientId (for download file path in metricsServer.ts)
-// 2) need to send the database ClusterId (for numOfBrokers in ID 6 in promController.ts)
-// 3) need to convert to use ddClient.extension.vm.service
-const DownloadPastMetrics = async () => {
-  fetch(`http://localhost:3333/download/`)
-  .then(response => response.blob())
-  .then(blob => {
-      const url = window.URL.createObjectURL(new Blob([blob]));
-      const link = document.createElement('a');
-      const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-      const filename = `metrics_table_${currentDateTime}.csv`;
-      link.href = url;
-      link.setAttribute('download', `${filename}`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-  })
-}
-
-export default function SavedConnectionsDataGrid() {
+export default function SavedConnectionsDataGrid({
+  connectedClientId,
+  setConnectedClientId,
+}: SavedConnectionsProps) {
   const [rows, setRows] = useState<GridRowDef[]>([]);
-  const [selectedRow, setSelectedRow] = useState<number>(0); // on BE, cluster_id is a number type
-  const [connectedClientId, setConnectedClientId] = useState<string>('');
+  const [selectedRow, setSelectedRow] = useState<number>(0); // selectedRow = cluster_id on BE
+
   const navigate = useNavigate();
 
-  // handles updating selectedRow with cluster_id / id of the selected row in the DataGrid
-  const handleRowClick: GridEventListener<'rowClick'> = (params) => {
-    console.log('PARAMS --> ', params);
-    // console.log('EVENT --> ', event);
-    setSelectedRow(params.row.id);
-  };
-
-  // ISSUE: need to handle Cmd+click deselect of a row, which should reset selectedRow to 0
+  const apiRef = useGridApiRef();
+  useEffect(() => {
+    // Event reference: https://mui.com/x/react-data-grid/events/#api, see rowSelectionChange
+    // handles updating selectedRow in state with the id of the selected row in the DataGrid (id = cluster_id from BE)
+    // updates selectedRow to 0 when no rows are selected
+    const handleRowSelectionChange: GridEventListener<'rowSelectionChange'> = (
+      params
+    ) => {
+      params[0] ? setSelectedRow(Number(params[0])) : setSelectedRow(0);
+    };
+    // imperative subscription
+    // `subscribeEvent` method will automatically unsubscribe in the cleanup function of the `useEffect`
+    return apiRef.current.subscribeEvent(
+      'rowSelectionChange',
+      handleRowSelectionChange
+    );
+  }, [apiRef]);
 
   // instantiate DD client object
   const ddClient = createDockerDesktopClient();
@@ -105,10 +102,20 @@ export default function SavedConnectionsDataGrid() {
     const allUserConnections: any = await ddClient.extension.vm.service.get(
       `/api/clusters/userclusters/${localStorage.getItem('id')}`
     );
-    console.log('allUserConnections --> ', allUserConnections);
-    // map over allUserConnections to get only the data expected for the grid
+
+    // error handling
+    if (allUserConnections instanceof Error) {
+      // toast error message
+      ddClient.desktopUI.toast.error(
+        'ERROR retrieving your saved connections.'
+      );
+      // exit handler
+      return;
+    }
+
+    // map over allUserConnections
     const gridRows = allUserConnections.map(
-      // destructure and keep only the properties needed for the DataGrid
+      // destructure each connection object and keep only the properties needed for the DataGrid
       ({
         cluster_id,
         client_id,
@@ -128,97 +135,196 @@ export default function SavedConnectionsDataGrid() {
         };
       }
     );
+
+    // update rows in state
     setRows(gridRows);
   };
 
   // useEffect is called 2x on component mount as of React v18 (need to fact check version)
   useEffect(() => {
     getUserConnections();
-  }, []); // called once on component mount (and whenever rows updates?)
+  }, []); // called once on component mount
 
   const connectToSelected = async () => {
-    // if there IS a running connection, don't do the API call!
-    if (connectedClientId) {
-      // alert user there's a currently running cluster connection
-      alert(
-        `${connectedClientId} is currently running. Always disconnect a running client before connecting to another.`
-      );
-      // exit function
+    // if selectedRow is 0, don't do the API call!
+    if (selectedRow === 0) {
+      // alert user that no grid row is selected
+      alert('Select a row to connect to a client.');
+      // exit handler
       return;
     }
-    // must pass clientId and network of the selected row to BE
+
+    // if there IS a running connection, don't do the API call!
+    if (connectedClientId) {
+      // alert user there's a currently running connection
+      alert(
+        `${connectedClientId} is currently running. Disconnect a running client before connecting to another.`
+      );
+      // exit handler
+      return;
+    }
+
+    // must pass clientId AND network of the selected row to BE
     const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
       .clientId;
     const selectedNetwork = rows.filter((row) => row.id === selectedRow)[0]
       .network;
-    // store selectedClientId as connectedClientId (this will be used to disconnect later on)
-    setConnectedClientId(selectedClientId);
     // request to connect to the selected cluster
     const connected: any = await ddClient.extension.vm.service.get(
       `/api/clusters/connect/${selectedClientId}/${selectedNetwork}`
     );
+
     // error handling
-    // if (connected instanceof Error)
-    // else
+    if (connected instanceof Error) {
+      // toast error message
+      ddClient.desktopUI.toast.error(
+        `ERROR connecting to ${selectedClientId}.`
+      );
+      // exit handler
+      return;
+    }
+
+    // store selectedClientId as connectedClientId (this will be used to disconnect later on)
+    setConnectedClientId(selectedClientId);
+    // in case user leaves extension while cluster is running, store connectedClientId in localStorage
+    localStorage.setItem('connectedClientId', selectedClientId); // we're using selectedClientId instead of connectedClientId since the latter does not set in time!
+
     // toast success message
     ddClient.desktopUI.toast.success(
-      `You have connected to ${selectedClientId}. Please wait a moment for Grafana metrics to render.`
+      `SUCCESS! You are connected to ${selectedClientId}.`
     );
-    // redirect to ClusterView
-    navigate('/cluster');
+
+    // redirect to Metrics
+    navigate('/metrics');
+
     // reload after 2 seconds to allow Grafana panels a moment to appear
-    setTimeout(() => location.reload(), 2000);
+    setTimeout(() => {
+      location.reload();
+    }, 2000);
   };
 
   const disconnectFromCurrent = async () => {
-    const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
-    .clientId;
-    setConnectedClientId(selectedClientId);
-    console.log('selectedClientId', selectedClientId)
-    console.log('connectedClientId', connectedClientId)
     // if there is NO running connection, don't do the API call!
-    if (!connectedClientId || !selectedClientId) {
-      // alert user there's no currently running cluster connection
+    if (!connectedClientId) {
+      // alert user there's no currently running connection
       alert('You are not connected to any client.');
-      // exit function
+      // exit handler
       return;
     }
-    console.log('connectedClientId after alert', connectedClientId)
-    // must pass connectedClientId to BE
+
+    // must pass connectedClientId to BE (network is not necessary to disconnect)
     // request to disconnect from the connected cluster
     const disconnected: any = await ddClient.extension.vm.service.get(
       `/api/clusters/disconnect/${connectedClientId}`
     );
+
     // error handling
-    // if (disconnected instanceof Error)
-    // else
-    // alert user of successful disconnection
-    alert(`You have disconnected from ${connectedClientId}.`);
+    if (disconnected instanceof Error) {
+      // toast error message
+      ddClient.desktopUI.toast.error(
+        `ERROR disconnecting ${connectedClientId}.`
+      );
+      // exit handler
+      return;
+    }
+
+    // toast success message
+    ddClient.desktopUI.toast.success(
+      `SUCCESS! You have disconnected from ${connectedClientId}.`
+    );
     // reset connectedClientId to empty string
     setConnectedClientId('');
+    // in case user leaves extension while cluster is running, set connectedClientId in localStorage to be ''
+    localStorage.setItem('connectedClientId', '');
   };
 
-  // Needed checks:
-  // BUG: Delete works, nothing happens after.
-  const deleteUserConnection = async () => {
+  const DownloadPastMetrics = async () => {
+    // if selectedRow is 0, don't do the API call!
+    if (selectedRow === 0) {
+      // alert user that no grid row is selected
+      alert('Select a row / client to download metrics.');
+      // exit handler
+      return;
+    }
+
+    // must pass clientId AND clusterId of the selected row to BE
     const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
       .clientId;
+
+    // request to download metrics for selected cluster
+    const downloadResult: any = await ddClient.extension.vm.service.get(
+      `/download/${selectedClientId}/${selectedRow}`
+    );
+
+    // error handling
+    if (downloadResult instanceof Error) {
+      // toast error message
+      ddClient.desktopUI.toast.error(
+        `ERROR downloading metrics for ${selectedClientId}.`
+      );
+      // exit handler
+      return;
+    }
+
+    const blob = downloadResult.blob();
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement('a');
+    const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+    const filename = `metrics_table_${currentDateTime}.csv`;
+    link.href = url;
+    link.setAttribute('download', `${filename}`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+
+    // toast success message
+    ddClient.desktopUI.toast.success(
+      `SUCCESS! Downloaded metrics for ${selectedClientId}.`
+    );
+  };
+
+  const deleteUserConnection = async () => {
+    // if selectedRow is 0, don't do the API call!
+    if (selectedRow === 0) {
+      // alert user that no grid row is selected
+      alert('Select a saved connection to delete.');
+      // exit handler
+      return;
+    }
+
     // if the selected connection is currently running, don't do the API call! Users should NOT be able to delete a running connection.
+    const selectedClientId = rows.filter((row) => row.id === selectedRow)[0]
+      .clientId;
     if (connectedClientId === selectedClientId) {
       // alert user that the connection they selected is currently running
       alert(
-        `${connectedClientId} is currently running. Disconnect the client before deleting it from your saved connections.`
+        `${connectedClientId} is currently running. Disconnect the running client before deleting it from your saved connections.`
       );
       // exit function
       return;
     }
+
     // must pass user_id and cluster_id to BE
     // DELETE selected connection
     const deletedConnection: any = await ddClient.extension.vm.service.delete(
-      `/api/clusters/${localStorage.getItem('id')}/${selectedRow}/${selectedClientId}`
+      `/api/clusters/${localStorage.getItem(
+        'id'
+      )}/${selectedRow}/${selectedClientId}`
     );
+
     // error handling
-    // refresh page, should trigger useEffect / getUserConnections, which will update state
+    if (deletedConnection instanceof Error) {
+      // toast error message
+      ddClient.desktopUI.toast.error(`ERROR deleting ${selectedClientId}.`);
+      // exit handler
+      return;
+    }
+
+    // toast success message
+    ddClient.desktopUI.toast.success(
+      `SUCCESS! You have deleted ${selectedClientId}.`
+    );
+    // refreshing the page should trigger useEffect / getUserConnections to update the grid rows
     location.reload();
   };
 
@@ -243,9 +349,8 @@ export default function SavedConnectionsDataGrid() {
           },
         }}
       >
-        {/* <Typography component="h1" variant="h5"> */}
         <Typography component="h1" variant="h5" margin={'-20px auto 0'}>
-          SAVED CLUSTER CONNECTIONS
+          SAVED CONNECTIONS
         </Typography>
         <Button
           variant="contained"
@@ -257,7 +362,7 @@ export default function SavedConnectionsDataGrid() {
           ADD NEW CONNECTION
         </Button>
         <DataGrid
-          onRowClick={handleRowClick}
+          apiRef={apiRef}
           showCellVerticalBorder
           showColumnVerticalBorder
           columns={columns}
@@ -275,49 +380,49 @@ export default function SavedConnectionsDataGrid() {
       </Grid>
       <Grid container flexDirection={'column'} gap={1} item xs sm md>
         <Typography component="h1" variant="h6" margin={'-20px auto 0'}>
-          HOW THE ACTIONS WORK
+          AVAILABLE ACTIONS
         </Typography>
         <List>
-          <ListItemText primary="1. Except for Disconnect, select a row to take an action. Cmd+click to deselect a selected row." />
-          <ListItemText primary="2. You can run only ONE client at a time." />
-          <ListItemText primary="3. You must disconnect a running client before deleting it or connecting to another client." />
-          <ListItemText primary="4. If you download metrics or logs for a running client, you will get the most up-to-date data." />
+          <ListItemText primary="1. Select 1 row to take an action. To de-select a row, CMD+click on it or select another row. You cannot select multiple rows." />
+          <ListItemText primary="2. You can run only 1 client at a time. You must disconnect a running client before connecting to another client or deleting the running client from your saved connections." />
+          <ListItemText primary="3. You can navigate outside the extension while a client is running. However, if you log out, the client will be disconnected." />
+          <ListItemText primary="4. Downloading metrics or logs will get you up-to-the-minute data, including for a running client." />
         </List>
         <Button onClick={connectToSelected} variant="outlined" size="medium">
           CONNECT TO SELECTED CLUSTER
         </Button>
+        <Button
+          onClick={disconnectFromCurrent}
+          variant="outlined"
+          color="error"
+          size="medium"
+        >
+          DISCONNECT RUNNING CLUSTER
+        </Button>
         <Tooltip
-          title="You must disconnect a running cluster before connecting to another cluster!"
-          placement="top"
+          title="Gets a CSV of metrics for all runs of the selected client."
+          placement="left"
         >
           <Button
-            onClick={disconnectFromCurrent}
-            variant="outlined"
-            color="error"
+            variant="contained"
+            color="success"
             size="medium"
+            onClick={DownloadPastMetrics}
           >
-            DISCONNECT FROM RUNNING CLUSTER
-          </Button>
-        </Tooltip>
-        <Tooltip
-          title="Get a CSV of metrics from all previous runs of this cluster connection"
-          placement="top"
-        >
-          <Button variant="contained" color="success" size="medium" onClick={DownloadPastMetrics}>
             DOWNLOAD PAST METRICS
           </Button>
         </Tooltip>
         <Tooltip
-          title="Get a CSV of error logs from all previous runs of this cluster connection"
-          placement="top"
+          title="Gets a CSV of errors for all runs of the selected client."
+          placement="left"
         >
           <Button variant="contained" color="success" size="medium">
             DOWNLOAD PAST LOGS
           </Button>
         </Tooltip>
         <Tooltip
-          title="Delete this cluster connection from your saved connections. This action cannot be undone!"
-          placement="top"
+          title="Deletes the selected client from your saved connections. THIS ACTION CANNOT BE UNDONE!"
+          placement="left"
         >
           <Button
             onClick={deleteUserConnection}

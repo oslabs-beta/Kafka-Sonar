@@ -93,7 +93,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     setBrokerInfo(newBrokerInfo);
   };
 
-  // SAVENEWCONNECTIONSTEPPER STATE AND HANDLERS
+  // SAVE NEW CONNECTION STEPPER STATE AND HANDLERS
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const navigate = useNavigate();
@@ -146,6 +146,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     // instantiate DD client object
     const ddClient = createDockerDesktopClient();
 
+    // POST new connection
     const body: NewConnection = {
       client,
       host,
@@ -156,19 +157,23 @@ export default function SaveNewConnectionStepper(): JSX.Element {
       network,
       brokerInfo,
     };
-
-    // POST new connection
     const connectionResult = await ddClient.extension.vm.service.post(
       `/api/clusters/newconnection/${localStorage.getItem('id')}`,
       body
     );
 
+    // // error handling
+    // if (connectionResult instanceof Error) {
+    //   // toast error message
+    //   ddClient.desktopUI.toast.error('ERROR saving your new connection.');
+    //   // exit handler
+    //   return;
+    // }
+
     // redirect to SavedConnections page
     navigate('/saved');
     // toast success message
-    ddClient.desktopUI.toast.success(
-      'Your new cluster connection was added successfully.'
-    );
+    ddClient.desktopUI.toast.success('SUCCESS! Your new connection was saved.');
   };
 
   return (

@@ -8,14 +8,14 @@ import React from 'react';
 export default function ResourceUsage() {
   return (
     <Fragment>
-      <Typography
+      {/* <Typography
         component="h1"
         variant="h5"
         align="center"
         margin="-20px auto 20px"
       >
         Local Resource Utilization
-      </Typography>
+      </Typography> */}
 
       <Grid container gap={1} direction={'column'}>
         <Grid item flexBasis={'29vh'}>

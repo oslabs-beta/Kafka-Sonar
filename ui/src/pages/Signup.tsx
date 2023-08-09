@@ -37,15 +37,17 @@ export default function Signup(): JSX.Element {
   const postNewUser = async (): Promise<void> => {
     // if email or password are empty strings
     if (!email || !password) {
-      // alert user and exit handler
+      // alert user
       alert('Email and password are required.');
+      // exit handler
       return;
     }
 
     // Validate email input (reference: https://bobbyhadz.com/blog/react-check-if-email-is-valid)
     if (!/\S+@\S+\.\S+/.test(email)) {
-      // alert user and exit handler
+      // alert user
       alert('Provide a valid email.');
+      // exit handler
       return;
     }
 
@@ -65,19 +67,16 @@ export default function Signup(): JSX.Element {
       body
     );
 
-    if (signupResult.error) {
-      alert(signupResult.message);
-      return;
-    } else {
-      const { id, token } = signupResult;
-      // store returned user_id and token in localStorage
-      localStorage.setItem('id', id);
-      localStorage.setItem('token', token);
-    }
+    // Error handling TBD: alert user, exit handler
+
+    // store returned user_id and token in localStorage
+    const { id, token } = signupResult;
+    localStorage.setItem('id', id);
+    localStorage.setItem('token', token);
     // redirect to SavedConnections page
     navigate('/saved');
     // toast success message
-    ddClient.desktopUI.toast.success('Account creation successful!');
+    ddClient.desktopUI.toast.success('SUCCESS! Welcome to Kafka Sonar.');
   };
 
   return (

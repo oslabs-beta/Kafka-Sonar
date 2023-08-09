@@ -30,6 +30,8 @@ import Typography from '@mui/material/Typography';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SensorsIcon from '@mui/icons-material/Sensors';
+import SensorsOffIcon from '@mui/icons-material/SensorsOff';
 import SvgIcon from '@mui/material/SvgIcon';
 import { ReactComponent as OrangeLogo } from './assets/kafka-sonar-orange-logo.svg';
 
@@ -228,6 +230,28 @@ export default function App() {
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        {connectedClientId ? (
+          <Box
+            display={'flex'}
+            justifyContent={'flex-start'}
+            marginBottom={'40px'}
+          >
+            <SensorsIcon color="warning" />
+            <Typography sx={{ color: '#ff8c42' }}>
+              &nbsp; Sonar is emitting metrics for the client "
+              {connectedClientId}".
+            </Typography>
+          </Box>
+        ) : (
+          <Box
+            display={'flex'}
+            justifyContent={'flex-start'}
+            marginBottom={'40px'}
+          >
+            <SensorsOffIcon />
+            <Typography>&nbsp; Sonar is disconnected.</Typography>
+          </Box>
+        )}
         <Routes>
           <Route
             path="saved"

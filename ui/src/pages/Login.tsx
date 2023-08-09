@@ -22,43 +22,13 @@ export default function Login(): JSX.Element {
   const navigate = useNavigate();
 
   // a user's id and session token are only removed from localStorage on Log Out from the app's left side nav bar
-  // if the user switches extensions, Kafka Sonar's localStorage persists their id and token, but the user lands on Login when they return to the extension
+  // if the user leaves the extension, Kafka Sonar's localStorage persists their id and token, but the user lands on Login when they return to the extension
   // this useEffect checks if id and token are present; if so, it navigates to SavedConnections
   useEffect(() => {
     if (localStorage.getItem('id') && localStorage.getItem('token')) {
       navigate('/saved');
     }
-  }, []); // runs once on component mount
-
-  // Needed checks:
-  // 1) Finish writing functionality checking 3 cases when BE route for login is written.
-  // CASE 1: user doesn't exist in DB, redirect to Signup page
-  // CASE 2: user exists in DB AND password not a match, stay on Login
-  // CASE 3: user exists AND password matches, redirect to SavedConnections page
-
-  //     .then((data) => {
-  //       console.log('login data', data); // res.locals object
-  //       // CASE 1: user doesn't exist in DB, redirect to CreateProfile
-  //       if (!data.user) {
-  //         alert(
-  //           'No user exists for the email you entered. Please create a user profile.'
-  //         );
-  //         navigate('/create-profile');
-  //       }
-
-  //       // CASE 2: user exists in DB AND password not a match, stay on Login
-  //       else if (data.user && !data.passwordIsMatch) {
-  //         alert(
-  //           'The password is incorrect for the email you entered. Please try again.'
-  //         );
-  //       }
-
-  //       // CASE 3: user exists AND password matches, redirect to ApptSummary
-  //       else if (data.user && data.passwordIsMatch) {
-  //         navigate('/appt-summary');
-  //       }
-  //     });
-  // };
+  }, []); // runs on component mount
 
   const verifyUser = async (): Promise<void> => {
     // if email or password are empty strings
@@ -90,19 +60,23 @@ export default function Login(): JSX.Element {
       body
     );
 
-    if (!loginResult.id) {
-      alert(loginResult.message);
-      return;
-    } else {
-      const { id, token } = loginResult;
-      // store returned user_id and token in localStorage
-      localStorage.setItem('id', id);
-      localStorage.setItem('token', token);
-    }
+    // KNOWN BUG: Error handling not working
+    // console.log('loginResult', loginResult);
+    // if (loginResult.statusCode === 400) {
+    //   // alert user
+    //   alert(`ERROR: Invalid email or password.`);
+    //   // exit handler
+    //   return;
+    // }
+
+    // store returned user_id and token in localStorage
+    const { id, token } = loginResult;
+    localStorage.setItem('id', id);
+    localStorage.setItem('token', token);
     // redirect to SavedConnections page
     navigate('/saved');
     // toast success message
-    ddClient.desktopUI.toast.success('Login successful');
+    ddClient.desktopUI.toast.success('SUCCESS! Welcome back.');
   };
 
   return (
@@ -164,9 +138,9 @@ export default function Login(): JSX.Element {
       <Typography align="center">
         <Link to="/signup">No account yet? Sign up</Link>
       </Typography>
-      <Typography align="center">
+      {/* <Typography align="center">
         <a href="/login/google">Google OAuth</a>
-      </Typography>
+      </Typography> */}
     </Paper>
   );
 }

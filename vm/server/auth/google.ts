@@ -18,7 +18,7 @@ function googleOAuth(passport) {
       {
         clientID: process.env.GOOGLE_WEB_CLIENT_ID,
         clientSecret: process.env.GOOGLE_WEB_CLIENT_SECRET,
-        callbackURL: 'http://localhost:3333/oauth2/redirect/google', // endpoint '/oauth2/redirect/google' processes the authentication response and logs the user in, after Google redirects the user back to the app
+        callbackURL: 'http://localhost:3332/oauth2/redirect/google', // endpoint '/oauth2/redirect/google' processes the authentication response and logs the user in, after Google redirects the user back to the app
         scope: ['email', 'profile'],
         state: true,
       },

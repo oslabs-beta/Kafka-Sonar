@@ -256,7 +256,7 @@ export default function SavedConnectionsDataGrid({
     try {
       // must use fetch to receive res.download
       // downloadResult = await ddClient.extension.vm.service.get(`/download/${selectedClientId}/${selectedRow}`);
-      downloadResult = await fetch(`http://localhost:3333/download/${selectedClientId}/${selectedRow}`);
+      downloadResult = await fetch(`http://localhost:3332/download/${selectedClientId}/${selectedRow}`);
       // log the raw download result for debugging
       console.log("Download result:", downloadResult);
     } catch (error) {

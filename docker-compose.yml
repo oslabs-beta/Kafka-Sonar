@@ -7,9 +7,9 @@ services:
     networks:
       - kafka-sonar
     ports:
-      # Expose port 3333 to the host so that you can see metrics on localhost:3333
+      # Expose port 3332 to the host so that you can see metrics on localhost:3332
       # - 5175:5175
-      - 3333:3333
+      - 3332:3332
     volumes:
     # create named volume which is mapped to the /user directory in the extension container
     # this /user directory is copied into the extension container in the Dockerfile 

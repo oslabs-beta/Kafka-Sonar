@@ -40,7 +40,7 @@ const promController = {
     // Frontend sends clusterId and we use it to query the database
     const { currentClusterId } = req.params;
     // And then we query for the number of brokers
-    const portsArr: any = await axios.get(`http://localhost:3333/api/clusters/jmxports/${currentClusterId}`);
+    const portsArr: any = await axios.get(`http://localhost:3332/api/clusters/jmxports/${currentClusterId}`);
     console.log('Ports Array ----> ', portsArr.data);
     const numberOfBrokers = portsArr.data.length;
     console.log('numb brokers ----> ', numberOfBrokers);

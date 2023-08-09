@@ -41,8 +41,8 @@ const storeMetrics = async (): Promise<void> => {
     for (let metricName of metricNames) {
       const url: string = 
         metricName === 'offlineBrokersCount' 
-        ? `http://localhost:3333/api/prom/${metricName}/${currentClusterId}` 
-        : `http://localhost:3333/api/prom/${metricName}`;
+        ? `http://localhost:3332/api/prom/${metricName}/${currentClusterId}` 
+        : `http://localhost:3332/api/prom/${metricName}`;
 
       const response = await axios.get(url);
       const metrics = response.data;

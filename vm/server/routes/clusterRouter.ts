@@ -7,9 +7,11 @@ import cacheController from '../controllers/cacheController';
 
 const clusterRouter = express.Router();
 
-// SAVE NEW CONNECTION - DONE. Working fullstack.
-// This route handles all logic for writing custom configs for Prometheus / Grafana
-// As well as adding the cluster information to the database
+/*
+ SAVE NEW CONNECTION
+  This route handles all logic for writing custom configs for Prometheus / Grafana
+  As well as adding the cluster information to the database
+*/
 clusterRouter.post(
   '/newconnection/:user_id',
   configController.configPrometheus,
@@ -24,9 +26,12 @@ clusterRouter.post(
   }
 );
 
-// CONNECT TO A CLUSTER ROUTE - DONE. Working fullstack.
-// Connect to a running cluster that has already been added
-// This route spins up a Prometheus and Grafana container configured to scrape metrics from your cluster
+/*
+  CONNECT TO A CLUSTER ROUTE
+  Connect to a running cluster that has already been added
+  This route spins up a Prometheus and Grafana container configured to scrape metrics from your cluster
+  And render them as iframes on the extension's ui
+*/
 clusterRouter.get(
   '/connect/:client_id/:network/:cluster_id',
   cacheController.cacheClusterId,
@@ -37,7 +42,10 @@ clusterRouter.get(
   }
 );
 
-// DISCONNECT FROM A RUNNING CLUSTER ROUTE
+/* 
+  DISCONNECT FROM A RUNNING CLUSTER ROUTE
+  This route remove's metrics containers spun up on cluster connect
+*/
 clusterRouter.get(
   '/disconnect/:client_id',
   cacheController.clearCache,
@@ -47,7 +55,10 @@ clusterRouter.get(
   }
 )
 
-// SAVED CONNECTIONS getUserConnections - DONE. Working fullstack.
+/*
+  SAVED CONNECTIONS
+  Fetch all connections for a given user
+*/ 
 clusterRouter.get(
   '/userclusters/:user_id',
   clusterController.getUserClusters,
@@ -56,7 +67,10 @@ clusterRouter.get(
   }
 );
 
-// SAVED CONNECTIONS deleteUserConnection - DONE. Working fullstack.
+/* 
+  DELETE CONNECTIONS
+  Delete all data related to a given cluster from the DB and user volume
+*/
 clusterRouter.delete(
   '/:user_id/:cluster_id/:clientId',
   clusterController.deleteCluster,
@@ -68,73 +82,10 @@ clusterRouter.delete(
   }
 );
 
-// SAVED CONNECTIONS connectToSelected - WIP, will likly involve getting a specific cluster's data to spin up containers, posting metrics continuously, and posting errors continuously.
-// TASK: Add controllers for spinning up and posting metrics. All controllers will need to be consolidated into one route.
-
-clusterRouter.get(
-  '/:cluster_id',
-  clusterController.getCluster,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
-  }
-);
-
-// following controller seems fine, gets all ports associated with a cluster_id.
+// Get all JMX ports associated with a given cluster
 clusterRouter.get(
   '/jmxports/:cluster_id',
   clusterController.getJmxPorts,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.clusters);
-  }
-);
-
-clusterRouter.post(
-  '/clustererrors/:cluster_id',
-  clusterController.postClusterError,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
-  }
-);
-
-// SAVED CONNECTIONS disconnectFromCurrent - WIP, will likely involve getting a specific cluster's data to spin down containers, stopping metrics posts, and stopping errors posts.
-// TASK: Add controllers for spinning down, stopping metrics, and stopping logging. All controllers will need to be consolidated into one route.
-
-clusterRouter.get(
-  '/:cluster_id',
-  clusterController.getCluster,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.cluster);
-  }
-);
-
-// following controller seems fine, gets all ports associated with a cluster_id.
-clusterRouter.get(
-  '/jmxports/:cluster_id',
-  clusterController.getJmxPorts,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.clusters);
-  }
-);
-
-// SAVED CONNECTIONS downloadMetrics - Must for launch.
-// TASK: Decide and implement download format on FE.
-
-// SAVED CONNECTIONS downloadLogs - Nice-to-have. TBD download format on FE.
-
-clusterRouter.get(
-  '/clustererrors/:cluster_id',
-  clusterController.getClusterErrors,
-  (_req: Request, res: Response, _next: NextFunction): void => {
-    res.status(200).json(res.locals.clusters);
-  }
-);
-
-// For testing purposes
-// Not used in app - getting all clusters for all users
-
-clusterRouter.get(
-  '/allclusters',
-  clusterController.getAllClusters,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.clusters);
   }

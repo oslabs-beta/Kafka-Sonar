@@ -47,7 +47,7 @@ const dockerController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in dockerController.runGrafana Middleware',
+        log: 'Error occurred in dockerController.runGrafana Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }
@@ -77,7 +77,7 @@ const dockerController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in dockerController.removeMetricsContainers Middleware',
+        log: 'Error occurred in dockerController.removeMetricsContainers Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }
@@ -95,7 +95,7 @@ const dockerController = {
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in dockerController.deleteClusterDir Middleware',
+        log: 'Error occurred in dockerController.deleteClusterDir Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }

@@ -19,7 +19,6 @@ import {
 // Docker client library
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 import { format } from 'date-fns';
-import cache from 'memory-cache';
 
 const columns: GridColDef[] = [
   // Reference https://mui.com/x/react-data-grid/row-definition/#row-identifier: It is not necessary to create a column to display the unique identifier data. The data grid pulls this information directly from the data set itself, not from anything that is displayed on the screen.

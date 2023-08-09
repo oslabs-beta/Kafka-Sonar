@@ -74,12 +74,14 @@ app.get('/download/:clientId/:clusterId', async (req, res) => {
 
     const result = await query('SELECT * FROM metrics_table WHERE cluster_id = $1', values);
     
-    const csv = result.rows.map(row => {
+    const headers = "_id,endpoint,metric,env,instance,job,service,request,aggregate,scope,value,timestamp,cluster_id";
+    const csvContent = result.rows.map(row => {
       const date = new Date(row['timestamp']);
       // converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
       row['timestamp'] = format(date, 'yyyy-MM-dd HH:mm:ss');
       return Object.values(row).join(',');
     }).join('\n');
+    const csv = headers + '\n' + csvContent;
 
     const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
     const filename = `${clientId}_metrics_table_${currentDateTime}.csv`;

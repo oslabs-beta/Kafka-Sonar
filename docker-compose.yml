@@ -41,7 +41,6 @@ services:
 volumes:
   user:
   timescaledb-data:
-  # data.sql:
 
 networks:
   kafka-sonar:

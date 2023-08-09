@@ -6,6 +6,8 @@ import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
+// MUI icons
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 // Referenced guide for migration from MUI v5 to v6 in order to get import Data Grid from MUI X v6: https://mui.com/x/migration/migration-data-grid-v5/
 import { DataGrid, GridEventListener, useGridApiRef } from '@mui/x-data-grid';
 // MUI types
@@ -400,6 +402,7 @@ export default function SavedConnectionsDataGrid({
           }}
           pageSizeOptions={[10]}
           autoHeight
+          sx={{ backgroundColor: '#F9F9FA' }} // added to accommodate dark mode
         />
       </Grid>
       <Grid container flexDirection={'column'} gap={1} item xs sm md>
@@ -407,10 +410,11 @@ export default function SavedConnectionsDataGrid({
           AVAILABLE ACTIONS
         </Typography>
         <List>
-          <ListItemText primary="1. Select 1 row to take an action. To de-select a row, CMD+click on it or select another row. You cannot select multiple rows." />
-          <ListItemText primary="2. You can run only 1 client at a time. You must disconnect a running client before connecting to another client or deleting the running client from your saved connections." />
-          <ListItemText primary="3. You can navigate outside the extension while a client is running. However, if you log out, the client will be disconnected." />
-          <ListItemText primary="4. Downloading metrics or logs will get you up-to-the-minute data, including for a running client." />
+          <ListItemText primary="1. To get started, add a connection." />
+          <ListItemText primary="2. Select 1 row to take an action. To de-select a row, CMD+click on it or select another row. You cannot select multiple rows." />
+          <ListItemText primary="3. You can run only 1 client at a time. You must disconnect a running client before connecting to another client or deleting the running client from your saved connections." />
+          <ListItemText primary="4. You can navigate outside the extension while a client is running. However, if you log out, a running client will be disconnected." />
+          <ListItemText primary="5. Downloading metrics will get you up-to-the-minute data, including for a running client." />
         </List>
         <Button onClick={connectToSelected} variant="outlined" size="medium">
           CONNECT TO SELECTED CLUSTER
@@ -433,17 +437,18 @@ export default function SavedConnectionsDataGrid({
             size="medium"
             onClick={DownloadPastMetrics}
           >
-            DOWNLOAD PAST METRICS
+            <FileDownloadIcon />
+            DOWNLOAD LATEST METRICS
           </Button>
         </Tooltip>
-        <Tooltip
+        {/* <Tooltip
           title="Gets a CSV of errors for all runs of the selected client."
           placement="left"
         >
           <Button variant="contained" color="success" size="medium">
             DOWNLOAD PAST LOGS
           </Button>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip
           title="Deletes the selected client from your saved connections. THIS ACTION CANNOT BE UNDONE!"
           placement="left"

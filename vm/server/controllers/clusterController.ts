@@ -12,7 +12,7 @@ const clusterController = {
         req.body;
       const request =
         'INSERT INTO clusters (client_id, bootstrap_hostname, port_number, auth_mechanism, username, password, user_network) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *';
-      const values: string[] = [
+      const values: any[] = [
         client,
         host,
         port,
@@ -58,18 +58,13 @@ const clusterController = {
     try {
       const { brokerInfo } = req.body;
       const { cluster_id } = res.locals;
-      console.log('BROKER INFO in postJMXPorts', brokerInfo);
       // iterate through brokerInfo and make a query for each broker
       for (const broker of brokerInfo) {
-        const request = 'INSERT INTO jmx_ports (cluster_id, jmx_hostname, jmx_port_number) VALUES ($1,$2,$3) RETURNING *';
-        const values: string[] = [
-          cluster_id,
-          broker.host,
-          broker.port,
-        ];
+        const request =
+          'INSERT INTO jmx_ports (cluster_id, jmx_hostname, jmx_port_number) VALUES ($1,$2,$3) RETURNING *';
+        const values: string[] = [cluster_id, broker.host, broker.port];
         await query(request, values);
       }
-      //res.locals.cluster = response.rows;
       return next();
     } catch (err) {
       return next({
@@ -106,13 +101,12 @@ const clusterController = {
     try {
       const { cluster_id } = req.params;
       const request = 'DELETE FROM clusters WHERE cluster_id = $1 RETURNING *';
-      const values: any[] = [cluster_id];
-      const response: any = await query(request, values);
-      console.log('deleteCluster response-->', response.rows);
+      const values: string[] = [cluster_id];
+      const response = await query(request, values);
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in clusterController.deleteCluster Middleware',
+        log: 'Error occurred in clusterController.deleteCluster Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
@@ -144,8 +138,7 @@ const clusterController = {
   ): Promise<unknown> => {
     try {
       const { user_id, cluster_id } = req.params;
-      const request =
-        'DELETE FROM jmx_ports WHERE cluster_id = $1 RETURNING *';
+      const request = 'DELETE FROM jmx_ports WHERE cluster_id = $1 RETURNING *';
       const values: string[] = [cluster_id];
       const response: any = await query(request, values);
       res.locals.cluster = response.rows;

@@ -6,9 +6,11 @@ import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
+// MUI prop type and functional component from: https://mui.com/material-ui/react-tabs/#nav-tabs
 interface LinkTabProps {
   label?: string;
   href?: string;
+  style?: { color: string };
 }
 
 function LinkTab(props: LinkTabProps) {
@@ -22,6 +24,12 @@ export default function Metrics() {
     setTabVal(newValue);
   };
 
+  const linkTabs = [
+    { label: 'Cluster View', href: '#/metrics' },
+    { label: 'Partition View', href: '#/metrics/partition' },
+    { label: 'Resource Usage', href: '#/metrics/resources' },
+  ];
+
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -30,9 +38,14 @@ export default function Metrics() {
         </Typography>
         <Box display={'flex'} margin={'0 auto 20px'}>
           <Tabs value={tabVal} onChange={handleTabSwitch}>
-            <LinkTab label="Cluster View" href="#/metrics" />
-            <LinkTab label="Partition View" href="#/metrics/partition" />
-            <LinkTab label="Resource Usage" href="#/metrics/resources" />
+            {linkTabs.map((linkTab, i) => (
+              <LinkTab
+                key={i}
+                label={linkTab.label}
+                href={linkTab.href}
+                style={{ color: '#1976d2' }} // added to accommodate dark mode
+              />
+            ))}
           </Tabs>
         </Box>
       </Box>

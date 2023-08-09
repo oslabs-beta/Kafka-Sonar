@@ -1,0 +1,34 @@
+# This file defines the workflow for testing a new build. The testing workflow will run the tests on any PRs made to the main branch and ensure the new code passes before merging it in. GitHub will use our public Docker app images to spin up a container and run the tests.
+
+# What GitHub displays on its UI when the workflow is running
+name: build-tests
+
+# Defines which event(s) should trigger the workflow to run
+on:
+  # key = event, value: array of branches that the workflow will to apply to
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # A workflow contains a key for every job that is part of a workflow
+  e2e-testing:
+    # Type of machine / runner the job will run on
+    runs-on: macOS-latest
+    # Defines the tasks that will make up our job
+    steps:
+      # See reference: https://github.com/docker/desktop-action
+      # After start_desktop executes, DD starts and Docker CLI can run in later "run" steps.
+      # The start_desktop action is experimental and currently supports starting DD on Mac nodes in Github Actions.
+      - id: start_desktop
+        uses: docker/desktop-action/start@v0.1.0
+      - id: start_e2e_tests
+        # Checkout = a pre-published and reusable Actions workflow which checks out the your repo / latest commit to the GitHub Actions' runner's default working directory (i.e. under $GITHUB_WORKSPACE) so the job can access it.
+        uses: actions/checkout@v3
+        # value: script to run tests. Single or multi-line. Here, we Docker-compose up a testing container with a flag telling GH to abort if we exit the container.
+        runs: docker-compose up --abort-on-container-exit
+        # runs: docker-compose -f docker-compose.yml up --abort-on-container-exit

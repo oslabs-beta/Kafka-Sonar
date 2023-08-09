@@ -3,9 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "test": "jest"
   },
   "devDependencies": {
-    "eslint": "^8.38.0"
+    "@docker/extension-test-helper": "^0.1.1",
+    "@types/jest": "^29.5.3",
+    "eslint": "^8.38.0",
+    "jest": "^29.6.2",
+    "jest-puppeteer": "^9.0.0",
+    "puppeteer": "^21.0.2",
+    "ts-node": "^10.9.1"
   }
 }

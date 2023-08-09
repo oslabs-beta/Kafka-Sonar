@@ -173,7 +173,7 @@ export default function SavedConnectionsDataGrid({
       .network;
     // request to connect to the selected cluster
     const connected: any = await ddClient.extension.vm.service.get(
-      `/api/clusters/connect/${selectedClientId}/${selectedNetwork}`
+      `/api/clusters/connect/${selectedClientId}/${selectedNetwork}/${selectedRow}`
     );
 
     // error handling
@@ -254,30 +254,54 @@ export default function SavedConnectionsDataGrid({
       .clientId;
 
     // request to download metrics for selected cluster
-    const downloadResult: any = await ddClient.extension.vm.service.get(
-      `/download/${selectedClientId}/${selectedRow}`
-    );
-
-    // error handling
-    if (downloadResult instanceof Error) {
+    let downloadResult: any;
+    try {
+      // must use fetch to receive res.download
+      // downloadResult = await ddClient.extension.vm.service.get(`/download/${selectedClientId}/${selectedRow}`);
+      downloadResult = await fetch(`http://localhost:3332/download/${selectedClientId}/${selectedRow}`);
+      // log the raw download result for debugging
+      console.log("Download result:", downloadResult);
+    } catch (error) {
+      console.error("Error fetching data:", error);
       // toast error message
-      ddClient.desktopUI.toast.error(
-        `ERROR downloading metrics for ${selectedClientId}.`
-      );
-      // exit handler
+      ddClient.desktopUI.toast.error(`ERROR downloading metrics for ${selectedClientId}.`);
       return;
     }
 
-    const blob = downloadResult.blob();
-    const url = window.URL.createObjectURL(new Blob([blob]));
+    // convert the response into a blob and log possible issues
+    let blob;
+    try {
+      blob = await downloadResult.blob();
+      console.log("Blob data:", blob);
+    } catch (blobError) {
+      console.error("Error converting result to blob:", blobError);
+      return;
+    }
+
+    const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
-    const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-    const filename = `metrics_table_${currentDateTime}.csv`;
+
+    // get the filename from the Content-Disposition header
+    const contentDisposition = downloadResult.headers.get("content-disposition");
+    let filename = "";
+    if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?(.+?)"?(?:;|$)/);
+        if (match) filename = match[1];
+    }
+    // if filename wasn't found in the header or wasn't set, set a default name
+    if (!filename) {
+        const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+        filename = `metrics_table_${currentDateTime}.csv`;
+    }
+
     link.href = url;
-    link.setAttribute('download', `${filename}`);
+    link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();
-    link.parentNode.removeChild(link);
+    document.body.removeChild(link);
+
+    // log the successful download for debugging
+    console.log(`Metrics downloaded for clientId: ${selectedClientId}`);
 
     // toast success message
     ddClient.desktopUI.toast.success(

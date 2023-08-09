@@ -36,10 +36,17 @@ const promController = {
     return fetchData(query, 'onlineBrokersCount', res, next);
   },
   // "ID": 6
-  getOfflineBrokersCount: async (_req: Request, res: Response, next: NextFunction): Promise<unknown> => {
+  getOfflineBrokersCount: async (req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     // Frontend sends clusterId and we use it to query the database
-    // const query = `${numberOfBrokers}-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
-    const query = `3-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
+    const { currentClusterId } = req.params;
+    // And then we query for the number of brokers
+    const portsArr: any = await axios.get(`http://localhost:3332/api/clusters/jmxports/${currentClusterId}`);
+    console.log('Ports Array ----> ', portsArr.data);
+    const numberOfBrokers = portsArr.data.length;
+    console.log('numb brokers ----> ', numberOfBrokers);
+    
+    const query = `${numberOfBrokers}-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
+    // const query = `3-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
     return fetchData(query, 'offlineBrokersCount', res, next);
   },
   // "ID": 7
@@ -62,58 +69,52 @@ const promController = {
     const query = `sum(kafka_server_broker_topic_metrics_bytesoutpersec_rate{topic=""}) by (broker)`;
     return fetchData(query, 'bytesOutPerSec', res, next);
   },
-  // // "ID": 11
-  // getRequestMetricsTime: async (req: Request, res: Response, next: NextFunction): Promise<unknown> => {
-  //   const { request } = req.params;
-  //   const query = `kafka_network_request_metrics_time_ms{request=~"${request}", aggregate=~"Mean", scope=~"Total",env="${env}"}`;
-  //   return fetchData(query, 'requestMetricsTime', res, next);
-  // },
-  // "ID": 11a
+  // "ID": 11
   getFetchRequestMetricsTime: async (req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `kafka_network_request_metrics_time_ms{request=~"Fetch", aggregate=~"Mean", scope=~"Total",env="${env}"}`;
     return fetchData(query, 'fetchRequestMetricsTime', res, next);
   },
-  // "ID": 11b
+  // "ID": 12
   getFetchConsumerReqMetricsTime: async (req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `kafka_network_request_metrics_time_ms{request=~"FetchConsumer", aggregate=~"Mean", scope=~"Total",env="${env}"}`;
     return fetchData(query, 'fetchConsumerReqMetricsTime', res, next);
   },
-  // "ID": 11c
+  // "ID": 13
   getFetchFollowerReqMetricsTime: async (req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `kafka_network_request_metrics_time_ms{request=~"FetchFollower", aggregate=~"Mean", scope=~"Total",env="${env}"}`;
     return fetchData(query, 'fetchFollowerReqMetricsTime', res, next);
   },
-  // "ID": 11d
+  // "ID": 14
   getProduceRequestMetricsTime: async (req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `kafka_network_request_metrics_time_ms{request=~"Produce", aggregate=~"Mean", scope=~"Total",env="${env}"}`;
     return fetchData(query, 'produceRequestMetricsTime', res, next);
   },
-  // "ID": 12
+  // "ID": 15
   getOfflinePartitionsCount: async (_req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `sum(kafka_controller_offlinepartitionscount{env="${env}"})`;
     return fetchData(query, 'offlinePartitionsCount', res, next);
   },
-  // "ID": 13
+  // "ID": 16
   getUnderReplicatedPartitions: async (_req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `sum(kafka_server_replica_manager_underreplicatedpartitions{env="${env}"})`;
     return fetchData(query, 'underReplicatedPartitions', res, next);
   },
-  // "ID": 14
+  // "ID": 17
   getUnderMinISR: async (_req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `sum(kafka_cluster_partition_underminisr{env="${env}"})`;
     return fetchData(query, 'underMinISR', res, next);
   },
-  // "ID": 15
+  // "ID": 18
   getPartitionCount: async (_req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `kafka_server_replica_manager_partitioncount{env="${env}"}`;
     return fetchData(query, 'partitionCount', res, next);
   },
-  // "ID": 16
+  // "ID": 19
   getLeaderCount: async (_req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `kafka_server_replica_manager_leadercount{env="${env}"}`;
     return fetchData(query, 'leaderCount', res, next);
   },
-  // "ID": 17
+  // "ID": 20
   getUncleanLeaderElectionsPerSec: async (_req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     const query = `kafka_controller_stats_uncleanleaderelectionspersec{aggregate="OneMinuteRate",env="${env}"}`;
     return fetchData(query, 'uncleanLeaderElectionsPerSec', res, next);

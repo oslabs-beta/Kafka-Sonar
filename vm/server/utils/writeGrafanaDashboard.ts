@@ -682,7 +682,7 @@ export default (numberOfBrokers: String) => {
             "x": 3,
             "y": 1
           },
-          "id": 12,
+          "id": 15,
           "links": [],
           "maxDataPoints": 100,
           "options": {
@@ -766,7 +766,7 @@ export default (numberOfBrokers: String) => {
             "x": 7,
             "y": 1
           },
-          "id": 13,
+          "id": 16,
           "links": [],
           "maxDataPoints": 100,
           "options": {
@@ -850,7 +850,7 @@ export default (numberOfBrokers: String) => {
             "x": 11,
             "y": 1
           },
-          "id": 14,
+          "id": 17,
           "links": [],
           "maxDataPoints": 100,
           "options": {
@@ -906,7 +906,7 @@ export default (numberOfBrokers: String) => {
             "y": 38
           },
           "hiddenSeries": false,
-          "id": 15,
+          "id": 18,
           "isNew": true,
           "legend": {
             "avg": false,
@@ -1002,7 +1002,7 @@ export default (numberOfBrokers: String) => {
             "y": 38
           },
           "hiddenSeries": false,
-          "id": 16,
+          "id": 19,
           "isNew": true,
           "legend": {
             "alignAsTable": false,
@@ -1099,7 +1099,7 @@ export default (numberOfBrokers: String) => {
             "y": 31
           },
           "hiddenSeries": false,
-          "id": 17,
+          "id": 20,
           "isNew": true,
           "legend": {
             "avg": false,
@@ -1143,7 +1143,7 @@ export default (numberOfBrokers: String) => {
           ],
           "thresholds": [],
           "timeRegions": [],
-          "title": "Unclean Leader Election Rate (should be < 0)",
+          "title": "Unclean Leader Election Rate",
           "tooltip": {
             "msResolution": false,
             "shared": true,

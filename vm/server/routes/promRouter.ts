@@ -46,7 +46,7 @@ promRouter.get(
 );
 // "ID": 6
 promRouter.get(
-  '/offlineBrokersCount',
+  '/offlineBrokersCount/:currentClusterId',
   promController.getOfflineBrokersCount,
   (_req: Request, res: Response, _next: NextFunction): void => {
     res.status(200).json(res.locals.offlineBrokersCount);

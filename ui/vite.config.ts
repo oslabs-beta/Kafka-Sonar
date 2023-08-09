@@ -18,8 +18,8 @@ export default defineConfig({
     //   usePolling: true,
     // },
     proxy: {
-      '/test': 'http://localhost:3333',
-      '/login/google': 'http://localhost:3333',
+      '/test': 'http://localhost:3332',
+      '/login/google': 'http://localhost:3332',
     },
   },
 });

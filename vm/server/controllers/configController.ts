@@ -8,6 +8,7 @@ import writeGrafanaDashboardConfig from '../utils/writeGrafanaDashboardConfig';
 import writeGrafanaDatasource from '../utils/writeGrafanaDatasource';
 
 const configController = {
+  // configPrometheus: write a custom prometheus configuration to store it in the user volume under the connected cluster's directory
   configPrometheus: async (
     req: Request,
     res: Response,
@@ -21,10 +22,8 @@ const configController = {
       username, 
       password, 
       network, 
-      brokerInfo } = req.body;
-    // const { userData: { jmxPorts } } = req.body;
-    // const { userData: { clientData: { client_id } } } = req.body;
-    // const { userData: { user_network } } = req.body;
+      brokerInfo 
+    } = req.body;
     res.locals.network = network;
     const clusterDir = client;
     res.locals.clusterDir = clusterDir;
@@ -46,24 +45,26 @@ const configController = {
     // convert to buffer 
     const configBuffer = writeBuffer(prometheusConfigYml);
     try {
-      // we are currently in root/vm/server/controllers/configController.ts
-      // want to write to root/vm/user/configs/prometheus
+      // we are currently in backend; want to write to backend/user/configs/prometheus
       outputFileSync(`./user/${clusterDir}/configs/prometheus/prometheus.yml`, configBuffer);
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in configController.configPrometheus Middleware',
+        log: 'Error occurred in configController.configPrometheus Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }
   },
-
+  /*
+   writeGrafanaDashboard: write a custom grafana dashboard to store it in the user volume under the
+   connected cluster's directory, then copy the static dashboards to that same directory
+  */
   writeGrafanaDashboard: async (
     req: Request,
     res: Response,
     next: NextFunction
     ): Promise<void> => {
-      // get the number of brokers from preivous middleware
+      // get the number of brokers from previous middleware
       const { numberOfBrokers, clusterDir } = res.locals;
       // write the custom dashboard and convert it into a buffer
       const grafanaDashboardJson = writeGrafanaDashboard(numberOfBrokers);
@@ -75,50 +76,62 @@ const configController = {
         // first copy over static dashboards
         copySync(`./static/configs/grafana/dashboards/brokers_jvm_os.json`, `./user/${clusterDir}/configs/grafana/dashboards/brokers_jvm_os.json`);
         copySync(`./static/configs/grafana/dashboards/performance.json`, `./user/${clusterDir}/configs/grafana/dashboards/performance.json`);
-        // copy over the grafana.ini to allow for the embedding of iframs on ui
+        // copy over the grafana.ini to allow for the embedding of iframes on the ui
         copySync(`./static/configs/grafana/grafana.ini`, `./user/${clusterDir}/configs/grafana/grafana.ini`)
         return next();
       } catch (err) {
         return next({
-          log: 'Error occured in configController.writeGrafanaDashboard Middleware',
+          log: 'Error occurred in configController.writeGrafanaDashboard Middleware',
           message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
         });
       }
   },
-
+  /*
+   writeGrafanaDashboardConfig: write a custom grafana dashboard config to store it in the user volume under the
+   connected cluster's directory
+  */
   writeGrafanaDashboardConfig: async (
-    req: Request,
+    _req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     const { clusterDir } = res.locals;
+    // write the dashboard config
     const grafDashboardConfigYml = writeGrafanaDashboardConfig(clusterDir);
+    // convert it to a buffer
     const grafDashboardConfigBuffer = writeBuffer(grafDashboardConfigYml);
     try {
-      // write to ./user/clusterDir/configs/grafana/provisioning/dashboards/kafka-sonar.yml
+      // store it in the user volume under the cluster's directory
       outputFileSync(`./user/${clusterDir}/configs/grafana/provisioning/dashboards/kafka-sonar.yml`, grafDashboardConfigBuffer);
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in configController.writeGrafanaDashboardConfig Middleware',
+        log: 'Error occurred in configController.writeGrafanaDashboardConfig Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }
   },
+  /*
+   writeGrafanaDatasource: write a custom grafana datasource to store it in the user volume under the
+   connected cluster's directory
+  */
   writeGrafanaDatasource: async (
-    req: Request,
+    _req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     const { clusterDir } = res.locals;
+    // write the datasource file
     const grafDatasourceYml = writeGrafanaDatasource(clusterDir);
+    // convert it to a buffer
     const grafDatasourceBuffer = writeBuffer(grafDatasourceYml);
     try {
+      // store it in the user volume under the cluster's directory
       outputFileSync(`./user/${clusterDir}/configs/grafana/provisioning/datasources/datasource.yml`, grafDatasourceBuffer);
       return next();
     } catch (err) {
       return next({
-        log: 'Error occured in configController.writeGrafanaDatasource Middleware',
+        log: 'Error occurred in configController.writeGrafanaDatasource Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
       });
     }

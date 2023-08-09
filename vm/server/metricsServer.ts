@@ -2,53 +2,27 @@ import express from 'express';
 import { Express, Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import api from './routes/api';
-import session from 'express-session';
-import passport from 'passport';
-import googleOAuth from './auth/google';
 import 'dotenv/config';
 import { storeMetrics } from './metricService';
 import fs from 'fs';
 import { query } from './models/appModel';
 import { format } from 'date-fns';
+import cache from 'memory-cache';
 
 const app: Express = express();
 
-googleOAuth(passport);
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    maxAge: 100000000,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
-
-// redirects the user to Google, where they will authenticate
-app.get(
-  '/login/google',
-  passport.authenticate('google', { scope: ['email', 'profile'] })
-);
-// once done, Google redirects to the callbackURL (/oauth2/redirect/google here)
-
-// processes the authentication response and logs the user in, after Google redirects the user back to the app
-app.get(
-  '/oauth2/redirect/google',
-  passport.authenticate('google', {
-    successRedirect: 'http://localhost:5175/saved',
-    failureRedirect: 'http://localhost:5175/',
-    failureMessage: true,
-  })
-);
-// verify function in GoogleStrategy passed to passport.use is called (see server/auth/google.ts)
-
 app.use(bodyParser.json());
 
+// LEAVE UNTIL READY FOR PRODUCTION
 app.use('/api', api);
 
 // run storeMetrics every minute
 setInterval(async () => {
+  const currentClusterId = cache.get('connectedClusterId'); 
+  console.log('SET INTERVAL - cached cluster_id --->', currentClusterId)
+  // If currentClusterId is null i.e. there is no active connection, do not scrape
+  if (!currentClusterId) return;
+
   try {
     await storeMetrics();
     console.log(`Metrics stored successfully at ${new Date()}`);
@@ -59,29 +33,39 @@ setInterval(async () => {
   }
 }, 60 * 1000); // 60 seconds * 1000 ms/second
 
-// :clientId needed for number of brokers
-app.get(`/download/`, async (req, res) => {
-  // const { clientId } = req.params;
-  // const clusterDir = clientId;
+app.get('/download/:clientId/:clusterId', async (req, res) => {
+  try {
+    const { clientId, clusterId } = req.params;
+    console.log(`Processing download for clientId: ${clientId}, clusterId: ${clusterId}`);
+    const values = [clusterId];
 
-  const result = await query('SELECT * FROM metrics_table');
+    const result = await query('SELECT * FROM metrics_table WHERE cluster_id = $1', values);
+    
+    const headers = "_id,endpoint,metric,env,instance,job,service,request,aggregate,scope,value,timestamp,cluster_id";
+    const csvContent = result.rows.map(row => {
+      const date = new Date(row['timestamp']);
+      // converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
+      row['timestamp'] = format(date, 'yyyy-MM-dd HH:mm:ss');
+      return Object.values(row).join(',');
+    }).join('\n');
+    const csv = headers + '\n' + csvContent;
 
-  const csv = result.rows.map(row => {
-    const date = new Date(row['timestamp']);
-    // converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
-    row['timestamp'] = format(date, 'yyyy-MM-dd HH:mm:ss');
-    return Object.values(row).join(',');
-  }).join('\n');
+    const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+    const filename = `${clientId}_metrics_table_${currentDateTime}.csv`;
 
-  const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-  const filename = `metrics_table_${currentDateTime}.csv`;
-
-  fs.writeFile(filename, csv, function (err) { 
-    if (err) throw err;
-    console.log(`File is created successfully at ${new Date()}`);
-    // res.download(`../../user/${clusterDir}/${filename}`);
-    res.download(`${filename}`);
-  });  
+    console.log(`Writing to file: ${filename} with content size: ${csv.length}`);
+    
+    // write to /backend/user/<clientId>/
+    const fullPath = `./user/${clientId}/${filename}`;
+    fs.writeFile(fullPath, csv, function (err) { 
+      if (err) throw err;
+      console.log(`File is created successfully at ${new Date()} with path ${fullPath}`);
+      res.download(fullPath);
+    });
+  } catch (err) {
+    console.error(`Error processing download: ${err}`);
+    res.status(500).send("Error processing download.");
+  }
 });
 
 // catch-all route handler

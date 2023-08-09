@@ -11,7 +11,7 @@ import fs from 'fs';
 import path from 'path';
 import { query } from './models/appModel';
 import { format } from 'date-fns';
-import cache from 'memory-cache'
+import cache from 'memory-cache';
 
 const app: Express = express();
 
@@ -52,7 +52,7 @@ app.use('/api', api);
 // run storeMetrics every minute
 setInterval(async () => {
   const currentClusterId = cache.get('connectedClusterId'); 
-  console.log('here is the cached cluster_id ---->', currentClusterId)
+  console.log('SET INTERVAL - cached cluster_id --->', currentClusterId)
   // If currentClusterId is null i.e. there is no active connection, do not scrape
   if (!currentClusterId) return;
 
@@ -82,12 +82,12 @@ app.get('/download/:clientId/:clusterId', async (req, res) => {
     }).join('\n');
 
     const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-    const filename = `${clusterId}_metrics_table_${currentDateTime}.csv`;
+    const filename = `${clientId}_metrics_table_${currentDateTime}.csv`;
 
     console.log(`Writing to file: ${filename} with content size: ${csv.length}`);
     
+    // write to /backend/user/<clientId>/
     const fullPath = `./user/${clientId}/${filename}`;
-    // writes to /backend/user/<clientId>/
     fs.writeFile(fullPath, csv, function (err) { 
       if (err) throw err;
       console.log(`File is created successfully at ${new Date()} with path ${fullPath}`);

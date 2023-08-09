@@ -1,10 +1,11 @@
 import React, { useState, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
+import StepLabel, { stepLabelClasses } from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
@@ -12,6 +13,8 @@ import Connect from '../components/Connect';
 import Configure from '../components/Configure';
 
 import useInput from '../hooks/useInput';
+
+import '../index.css';
 
 // TS types
 import {
@@ -157,6 +160,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
       network,
       brokerInfo,
     };
+
     const connectionResult = await ddClient.extension.vm.service.post(
       `/api/clusters/newconnection/${localStorage.getItem('id')}`,
       body
@@ -176,6 +180,18 @@ export default function SaveNewConnectionStepper(): JSX.Element {
     ddClient.desktopUI.toast.success('SUCCESS! Your new connection was saved.');
   };
 
+  const ColorlibStepLabel = styled(StepLabel)(() => ({
+    [`& .${stepLabelClasses.label}`]: {
+      [`&.${stepLabelClasses.completed}`]: {
+        color: '#1976d2',
+      },
+      [`&.${stepLabelClasses.active}`]: {
+        color: '#1976d2',
+      },
+      color: '#1976d2',
+    },
+  }));
+
   return (
     <Fragment>
       <Box
@@ -191,7 +207,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
             const stepProps: { completed?: boolean } = {};
             return (
               <Step key={label} {...stepProps}>
-                <StepLabel>{label}</StepLabel>
+                <ColorlibStepLabel>{label}</ColorlibStepLabel>
               </Step>
             );
           })}

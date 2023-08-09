@@ -1,23 +1,14 @@
-import { Fragment } from 'react';
-import Typography from '@mui/material/Typography';
+import React, { Fragment } from 'react';
+
 import Grid from '@mui/material/Grid';
-import '../App.css';
-import React from 'react';
+
+import '../index.css';
 
 // NOTE: breakpoint props (xs, sm, md, etc.) do NOT work when flex-direction is column or reverse-column!
 
 export default function ClusterView() {
   return (
     <Fragment>
-      {/* <Typography
-        component="h1"
-        variant="h5"
-        align="center"
-        margin="-20px auto 20px"
-      >
-        Cluster Activity
-      </Typography> */}
-
       {/* Direct child-items of this grid flex column-wise, enabling flex-basis to increase height of those rows */}
       <Grid container gap={1} direction={'column'}>
         {/* Direct child-items of this grid flex row-wise, enabling use of breakpoint props */}

@@ -1,12 +1,20 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { query } from '../models/appModel';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from 'dotenv';
+// dotenv.config();
+import { CONFIG } from '../../config';
 import bcrypt from 'bcrypt';
 
+interface UserRequestBody {
+  username: string;
+  password: string;
+  role?: string;
+}
+
+// Handles user registration
 export const signUp = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body as UserRequestBody;
   const account_type = req.body.role;
 
   try {
@@ -21,7 +29,7 @@ export const signUp = async (req: Request, res: Response) => {
     const user = result.rows[0];
     const token = jwt.sign(
       { username: user.username, id: user.user_id },
-      process.env.JWT_SECRET as string,
+      CONFIG.JWT_SECRET as string,
       { expiresIn: '1h' }
     );
 
@@ -35,8 +43,9 @@ export const signUp = async (req: Request, res: Response) => {
   }
 };
 
+// Handles user login
 export const login = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body as UserRequestBody;
 
   try {
     const result = await query(
@@ -48,7 +57,7 @@ export const login = async (req: Request, res: Response) => {
     if (user && await bcrypt.compare(password, user.password)) {
       const token = jwt.sign(
         { username: user.username, id: user.user_id },
-        process.env.JWT_SECRET as string,
+        CONFIG.JWT_SECRET as string,
         { expiresIn: '1h' }
       );
       res
@@ -62,27 +71,4 @@ export const login = async (req: Request, res: Response) => {
       res.status(500).json({ message: 'Error logging in', error: err.message });
     }
   }
-};
-
-export const verifyToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET as string, (err: any, user: any) => {
-    if (err) {
-      return res.status(403).json({ message: 'Invalid token' });
-    }
-
-    // @ts-ignore
-    req.user = user;
-    next();
-  });
 };

@@ -1,4 +1,6 @@
 import { ContainerCreateOptions } from "dockerode";
+
+// utility function creates and returns an object which Dockerode uses to create a Grafana container
 export default (network: string, clusterDir: string) => {
   const grafContainerCreateOpts: ContainerCreateOptions = {
     name: `${clusterDir}-kafkasonar-grafana`,

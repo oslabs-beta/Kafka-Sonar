@@ -1,13 +1,9 @@
 import axios from 'axios';
-import { Buffer } from 'buffer';
-import fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
-import dotenv from 'dotenv';
-dotenv.config();
+import { CONFIG } from '../../config';
 
-const prometheusUrl = process.env.PROMETHEUS_URL;
-const env = process.env.ENV;
-const numberOfBrokers = process.env.NUMBER_OF_BROKERS;
+const prometheusUrl = CONFIG.PROMETHEUS_URL;
+const env = CONFIG.ENV;
 
 const promController = {
   // "ID": 1
@@ -39,14 +35,12 @@ const promController = {
   getOfflineBrokersCount: async (req: Request, res: Response, next: NextFunction): Promise<unknown> => {
     // Frontend sends clusterId and we use it to query the database
     const { currentClusterId } = req.params;
+
     // And then we query for the number of brokers
-    const portsArr: any = await axios.get(`http://localhost:3332/api/clusters/jmxports/${currentClusterId}`);
-    console.log('Ports Array ----> ', portsArr.data);
+    const portsArr: any = await axios.get(`http://localhost:${CONFIG.METRICS_PORT}/api/clusters/jmxports/${currentClusterId}`);
     const numberOfBrokers = portsArr.data.length;
-    console.log('numb brokers ----> ', numberOfBrokers);
     
     const query = `${numberOfBrokers}-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
-    // const query = `3-count((kafka_server_brokerstate{env="${env}"}) == 3 or (kafka_server_brokerstate{env="${env}"}) == 4)`;
     return fetchData(query, 'offlineBrokersCount', res, next);
   },
   // "ID": 7
@@ -122,6 +116,7 @@ const promController = {
 
 };
 
+// Fetch data and assign to res.locals object
 const fetchData = async (query: string, field: string, res: Response, next: NextFunction): Promise<unknown> => {
   try {
     const response = await axios.get(`${prometheusUrl}/api/v1/query?query=${query}`);

@@ -48,7 +48,7 @@ export interface BrokerInfo {
 
 // Login and Signup components, User type for verifyUser and postNewUser handlers
 export interface User {
-  email: string;
+  username: string;
   password: string;
   role?: string; // required for Signup since creating a user record in DB necessitates a role / account_type; not reqd for Login
 }
@@ -117,7 +117,7 @@ export interface NewConnection {
 
 // Login and Signup components, User type for verifyUser and postNewUser handlers
 export interface User {
-  email: string;
+  username: string;
   password: string;
   role?: string;
 }

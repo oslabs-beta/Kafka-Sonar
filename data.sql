@@ -1,6 +1,6 @@
 CREATE TABLE users (
 	"user_id" serial NOT NULL UNIQUE,
-	"email" varchar(255) NOT NULL,
+	"username" varchar(255) NOT NULL,
 	"password" TEXT NOT NULL,
 	"account_type" varchar(255) NOT NULL,
 	CONSTRAINT "users_pk" PRIMARY KEY ("user_id")

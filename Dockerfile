@@ -2,7 +2,6 @@
 FROM --platform=$BUILDPLATFORM node:19.6-alpine3.16 AS builder
 WORKDIR /backend
 COPY vm/package*.json .
-# RUN npm install # Could not find origin
 RUN --mount=type=cache,target=/user/src/app/.npm \
     npm set cache /usr/src/app/.npm && \ 
     npm ci
@@ -39,9 +38,7 @@ LABEL org.opencontainers.image.title="Kafka Sonar" \
 COPY docker-compose.yml .
 COPY metadata.json .
 COPY kafkasonar.svg .
-# COPY --chmod=755 --from=builder /backend /backend
 COPY --from=builder /backend backend
-# COPY --from=client-builder /ui/build ui
 COPY --from=client-builder /ui ui
 
 # Copy user directory and static directory into the extension image

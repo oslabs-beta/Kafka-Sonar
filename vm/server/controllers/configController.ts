@@ -24,9 +24,10 @@ const configController = {
       network, 
       brokerInfo 
     } = req.body;
-    res.locals.network = network;
+    // rename client semantically since it is used as the name of the cluster's directory
     const clusterDir = client;
     res.locals.clusterDir = clusterDir;
+    res.locals.network = network;
     // get number of brokers from user request and add to res.locals
     const numberOfBrokers = brokerInfo.length;
     if (numberOfBrokers <= 0) throw Error();

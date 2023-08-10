@@ -1,4 +1,6 @@
 import { ContainerCreateOptions } from "dockerode";
+
+// utility function that creates and returns an object which Dockerode uses to create a Prometheus container
 export default (network: string, clusterDir: string) => {
   const promContainerCreateOpts: ContainerCreateOptions = {
     name: `${clusterDir}-kafkasonar-prometheus`,

@@ -84,15 +84,7 @@ promRouter.get(
     res.status(200).json(res.locals.bytesOutPerSec);
   }
 );
-// // "ID": 11
-// promRouter.get(
-//   '/requestMetricsTime/:request',
-//   promController.getRequestMetricsTime,
-//   (_req: Request, res: Response, _next: NextFunction): void => {
-//     res.status(200).json(res.locals.requestMetricsTime);
-//   }
-// );
-// "ID": 11a
+// "ID": 11
 promRouter.get(
   '/fetchRequestMetricsTime',
   promController.getFetchRequestMetricsTime,
@@ -100,7 +92,7 @@ promRouter.get(
     res.status(200).json(res.locals.fetchRequestMetricsTime);
   }
 );
-// "ID": 11b
+// "ID": 12
 promRouter.get(
   '/fetchConsumerReqMetricsTime',
   promController.getFetchConsumerReqMetricsTime,
@@ -108,7 +100,7 @@ promRouter.get(
     res.status(200).json(res.locals.fetchConsumerReqMetricsTime);
   }
 );
-// "ID": 11c
+// "ID": 13
 promRouter.get(
   '/fetchFollowerReqMetricsTime',
   promController.getFetchFollowerReqMetricsTime,
@@ -116,7 +108,7 @@ promRouter.get(
     res.status(200).json(res.locals.fetchFollowerReqMetricsTime);
   }
 );
-// "ID": 11d
+// "ID": 14
 promRouter.get(
   '/produceRequestMetricsTime',
   promController.getProduceRequestMetricsTime,
@@ -124,7 +116,7 @@ promRouter.get(
     res.status(200).json(res.locals.produceRequestMetricsTime);
   }
 );
-// "ID": 12
+// "ID": 15
 promRouter.get(
   '/offlinePartitionsCount',
   promController.getOfflinePartitionsCount,
@@ -132,7 +124,7 @@ promRouter.get(
     res.status(200).json(res.locals.offlinePartitionsCount);
   }
 );
-// "ID": 13
+// "ID": 16
 promRouter.get(
   '/underReplicatedPartitions',
   promController.getUnderReplicatedPartitions,
@@ -140,7 +132,7 @@ promRouter.get(
     res.status(200).json(res.locals.underReplicatedPartitions);
   }
 );
-// "ID": 14
+// "ID": 17
 promRouter.get(
   '/underMinISR',
   promController.getUnderMinISR,
@@ -148,7 +140,7 @@ promRouter.get(
     res.status(200).json(res.locals.underMinISR);
   }
 );
-// "ID": 15
+// "ID": 18
 promRouter.get(
   '/partitionCount',
   promController.getPartitionCount,
@@ -156,7 +148,7 @@ promRouter.get(
     res.status(200).json(res.locals.partitionCount);
   }
 );
-// "ID": 16
+// "ID": 19
 promRouter.get(
   '/leaderCount',
   promController.getLeaderCount,
@@ -164,7 +156,7 @@ promRouter.get(
     res.status(200).json(res.locals.leaderCount);
   }
 );
-// "ID": 17
+// "ID": 20
 promRouter.get(
   '/uncleanLeaderElectionsPerSec',
   promController.getUncleanLeaderElectionsPerSec,

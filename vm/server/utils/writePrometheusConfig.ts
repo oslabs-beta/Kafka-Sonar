@@ -4,6 +4,7 @@ interface Targets {
   jmx_port_number: String,
 };
 
+// utility function to write a Prometheus config which targets the user's cluster's JMX ports
 export default (targets: Targets) => {
   const targetsString = JSON.stringify(targets);
   return (`

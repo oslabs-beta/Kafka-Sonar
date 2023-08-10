@@ -19,7 +19,7 @@ import { createDockerDesktopClient } from '@docker/extension-api-client';
 
 export default function Signup(): JSX.Element {
   // following use custom hook
-  const [email, emailOnChange] = useInput('');
+  const [username, usernameOnChange] = useInput('');
   const [password, passwordOnChange] = useInput('');
 
   // following uses useState
@@ -34,18 +34,19 @@ export default function Signup(): JSX.Element {
   const navigate = useNavigate();
 
   const postNewUser = async (): Promise<void> => {
-    // if email or password are empty strings
-    if (!email || !password) {
+    // if username or password are empty strings
+    if (!username || !password) {
       // alert user
-      alert('Email and password are required.');
+      alert('Username and password are required.');
       // exit handler
       return;
     }
 
-    // Validate email input (reference: https://bobbyhadz.com/blog/react-check-if-email-is-valid)
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    // Validate username input - checks if the username consists of at least 3 characters
+    // and only contains letters (both uppercase and lowercase), digits, and underscores
+    if (!/^[a-zA-Z0-9_]{3,}$/.test(username)) {
       // alert user
-      alert('Provide a valid email.');
+      alert('Provide a valid username.');
       // exit handler
       return;
     }
@@ -54,7 +55,7 @@ export default function Signup(): JSX.Element {
     const ddClient = createDockerDesktopClient();
 
     const body: User = {
-      email,
+      username,
       password,
       role,
     };
@@ -101,12 +102,12 @@ export default function Signup(): JSX.Element {
       </Typography>
       <TextField
         variant="standard"
-        name="email"
-        type="email"
-        id="email"
-        value={email}
-        onChange={emailOnChange}
-        label="Email"
+        name="username"
+        type="username"
+        id="username"
+        value={username}
+        onChange={usernameOnChange}
+        label="Username"
         fullWidth
         required
         autoFocus

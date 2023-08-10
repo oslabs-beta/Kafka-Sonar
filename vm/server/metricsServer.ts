@@ -2,49 +2,59 @@ import express from 'express';
 import { Express, Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import api from './routes/api';
-import 'dotenv/config';
 import { storeMetrics } from './metricService';
-import fs from 'fs';
 import { query } from './models/appModel';
 import { format } from 'date-fns';
 import cache from 'memory-cache';
+import pkg from 'fs-extra';
+const { outputFileSync } = pkg;
 
 const app: Express = express();
+const cors = require('cors');
 
 app.use(bodyParser.json());
 
-// LEAVE UNTIL READY FOR PRODUCTION
+// Allow specific origin - 'http://localhost:5175' - needed for debug mode
+app.use(cors({
+  origin: 'http://localhost:5175'
+}));
+
+// Remove for production
 app.use('/api', api);
 
-// run storeMetrics every minute
+/**
+ * Automatically store metrics data.
+ * The function will check for the currently connected cluster ID and, if found, invoke `storeMetrics`.
+ * This happens every 60 seconds.
+ */
 setInterval(async () => {
-  const currentClusterId = cache.get('connectedClusterId'); 
-  console.log('SET INTERVAL - cached cluster_id --->', currentClusterId)
-  // If currentClusterId is null i.e. there is no active connection, do not scrape
+  const currentClusterId: number | null = cache.get('connectedClusterId'); 
+
+  // If there is no active connection, don't scrape
   if (!currentClusterId) return;
 
   try {
     await storeMetrics();
-    console.log(`Metrics stored successfully at ${new Date()}`);
+    console.log(`Metrics stored successfully at ${new Date()}`); // Keep for monitoring
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);
     }
   }
-}, 60 * 1000); // 60 seconds * 1000 ms/second
+}, 60 * 1000);
 
+// Endpoint to download metrics data for a given client and cluster as a CSV file
 app.get('/download/:clientId/:clusterId', async (req, res) => {
   try {
     const { clientId, clusterId } = req.params;
-    console.log(`Processing download for clientId: ${clientId}, clusterId: ${clusterId}`);
-    const values = [clusterId];
 
+    const values: [number] = [Number(clusterId)];
     const result = await query('SELECT * FROM metrics_table WHERE cluster_id = $1', values);
     
     const headers = "_id,endpoint,metric,env,instance,job,service,request,aggregate,scope,value,timestamp,cluster_id";
     const csvContent = result.rows.map(row => {
       const date = new Date(row['timestamp']);
-      // converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
+      // Converts timestamp in each row with a string in the excel-friendly "YYYY-MM-DD HH:mm:ss" format
       row['timestamp'] = format(date, 'yyyy-MM-dd HH:mm:ss');
       return Object.values(row).join(',');
     }).join('\n');
@@ -52,28 +62,23 @@ app.get('/download/:clientId/:clusterId', async (req, res) => {
 
     const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
     const filename = `${clientId}_metrics_table_${currentDateTime}.csv`;
-
-    console.log(`Writing to file: ${filename} with content size: ${csv.length}`);
     
-    // write to /backend/user/<clientId>/
-    const fullPath = `./user/${clientId}/${filename}`;
-    fs.writeFile(fullPath, csv, function (err) { 
-      if (err) throw err;
-      console.log(`File is created successfully at ${new Date()} with path ${fullPath}`);
-      res.download(fullPath);
-    });
+    // Write to /backend/user/<clientId>/
+    const fullPath = `./user/${clientId}/metrics/${filename}`;
+    outputFileSync(fullPath, csv);
+    res.download(fullPath);
   } catch (err) {
     console.error(`Error processing download: ${err}`);
     res.status(500).send("Error processing download.");
   }
 });
 
-// catch-all route handler
+// Catch-all route handler
 app.use((_req: Request, res: Response): unknown =>
   res.status(404).send("This is not the page you're looking for...")
 );
 
-// global error handler
+// Global error handler
 app.use(
   (
     err: unknown,

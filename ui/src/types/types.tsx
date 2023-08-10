@@ -5,7 +5,7 @@ import { SelectChangeEvent } from '@mui/material/Select';
 // LOGIN / SIGNUP
 // verifyUser and postNewUser handlers, POST body data shape
 export interface User {
-  email: string;
+  username: string;
   password: string;
   role?: string; // not reqd for Login; required for Signup since creating a user record in DB necessitates a role / account_type
 }

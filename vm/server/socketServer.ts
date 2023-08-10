@@ -7,14 +7,15 @@ const app: Express = express();
 
 app.use(bodyParser.json());
 
+// Routes API calls to the respective handler
 app.use('/api', api);
 
-// catch-all route handler
+// Catch-all route handler
 app.use((_req: Request, res: Response): unknown =>
   res.status(404).send("This is not the page you're looking for...")
 );
 
-// global error handler
+// Global error handler
 app.use(
   (
     err: unknown,
@@ -28,7 +29,6 @@ app.use(
       message: { err: 'An error occurred' },
     };
     const errorObj = Object.assign({}, defaultErr, err);
-    console.log(errorObj.log);
     return res.status(errorObj.status).json(errorObj.message);
   }
 );

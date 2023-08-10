@@ -1,13 +1,14 @@
+import { CONFIG } from '../../config';
 import pkg from 'pg';
 
 const { Pool } = pkg;
 
 const pool = new Pool({
-  user: 'postgres',
-  password: 'mysecretpassword',
-  host: 'timescaledb',
-  port: 5432,
-  database: 'kafka_sonar_db',
+  user: CONFIG.DB_USER,
+  password: CONFIG.DB_PASSWORD,
+  host: CONFIG.DB_HOST,
+  port: CONFIG.DB_PORT,
+  database: CONFIG.DB_NAME,
 });
 
 const query = (
@@ -15,6 +16,7 @@ const query = (
   params?: any[],
   callback?: (err: Error, result: any) => void
 ): Promise<any> => {
+  // Remove the console.log for production
   console.log('Executed query: ', text);
   return pool.query(text, params, callback);
 };

@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { query } from '../models/appModel';
 import jwt from 'jsonwebtoken';
-// import dotenv from 'dotenv';
-// dotenv.config();
 import { CONFIG } from '../../config';
 import bcrypt from 'bcrypt';
 

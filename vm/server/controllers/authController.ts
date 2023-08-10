@@ -6,7 +6,7 @@ dotenv.config();
 import bcrypt from 'bcrypt';
 
 export const signUp = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
   const account_type = req.body.role;
 
   try {
@@ -14,13 +14,13 @@ export const signUp = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const result = await query(
-      `INSERT INTO users (email, password, account_type) VALUES ($1, $2, $3) RETURNING *`,
-      [email, hashedPassword, account_type]
+      `INSERT INTO users (username, password, account_type) VALUES ($1, $2, $3) RETURNING *`,
+      [username, hashedPassword, account_type]
     );
 
     const user = result.rows[0];
     const token = jwt.sign(
-      { email: user.email, id: user.user_id },
+      { username: user.username, id: user.user_id },
       process.env.JWT_SECRET as string,
       { expiresIn: '1h' }
     );
@@ -36,18 +36,18 @@ export const signUp = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
     const result = await query(
-      `SELECT * FROM users WHERE email = $1`,
-      [email]
+      `SELECT * FROM users WHERE username = $1`,
+      [username]
     );
 
     const user = result.rows[0];
     if (user && await bcrypt.compare(password, user.password)) {
       const token = jwt.sign(
-        { email: user.email, id: user.user_id },
+        { username: user.username, id: user.user_id },
         process.env.JWT_SECRET as string,
         { expiresIn: '1h' }
       );
@@ -55,7 +55,7 @@ export const login = async (req: Request, res: Response) => {
         .status(200)
         .json({ message: 'User logged in', id: user.user_id, token });
     } else {
-      res.status(400).json({ message: 'Invalid email or password' });
+      res.status(400).json({ message: 'Invalid username or password' });
     }
   } catch (err) {
     if (err instanceof Error) {

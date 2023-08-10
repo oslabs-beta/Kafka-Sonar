@@ -16,7 +16,7 @@ import { createDockerDesktopClient } from '@docker/extension-api-client';
 
 export default function Login(): JSX.Element {
   // following use custom hook
-  const [email, emailOnChange] = useInput('');
+  const [username, usernameOnChange] = useInput('');
   const [password, passwordOnChange] = useInput('');
 
   const navigate = useNavigate();
@@ -31,17 +31,18 @@ export default function Login(): JSX.Element {
   }, []); // runs on component mount
 
   const verifyUser = async (): Promise<void> => {
-    // if email or password are empty strings
-    if (!email || !password) {
+    // if username or password are empty strings
+    if (!username || !password) {
       // alert user and exit handler
-      alert('Email and password are required.');
+      alert(' and password are required.');
       return;
     }
 
-    // Validate email input (reference: https://bobbyhadz.com/blog/react-check-if-email-is-valid)
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    // Validate username input - checks if the username consists of at least 3 characters
+    // and only contains letters (both uppercase and lowercase), digits, and underscores
+    if (!/^[a-zA-Z0-9_]{3,}$/.test(username)) {
       // alert user and exit handler
-      alert('Provide a valid email.');
+      alert('Provide a valid username.');
       return;
     }
 
@@ -49,7 +50,7 @@ export default function Login(): JSX.Element {
     const ddClient = createDockerDesktopClient();
 
     const body: User = {
-      email,
+      username,
       password,
     };
 
@@ -64,7 +65,7 @@ export default function Login(): JSX.Element {
     // console.log('loginResult', loginResult);
     // if (loginResult.statusCode === 400) {
     //   // alert user
-    //   alert(`ERROR: Invalid email or password.`);
+    //   alert(`ERROR: Invalid username or password.`);
     //   // exit handler
     //   return;
     // }
@@ -102,12 +103,12 @@ export default function Login(): JSX.Element {
       </Typography>
       <TextField
         variant="standard"
-        name="email"
-        type="email"
-        id="email"
-        value={email}
-        onChange={emailOnChange}
-        label="Email"
+        name="username"
+        type="username"
+        id="username"
+        value={username}
+        onChange={usernameOnChange}
+        label="Username"
         fullWidth
         required
         autoFocus

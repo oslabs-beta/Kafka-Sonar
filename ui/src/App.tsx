@@ -32,9 +32,6 @@ import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SensorsIcon from '@mui/icons-material/Sensors';
 import SensorsOffIcon from '@mui/icons-material/SensorsOff';
-import SvgIcon from '@mui/material/SvgIcon';
-// import { ReactComponent as OrangeLogo } from './assets/kafka-sonar-orange-logo.png';
-import OrangeLogo from './assets/kafka-sonar-orange-logo.png';
 
 // TS types
 import { NavTabOption } from './types/types';
@@ -173,22 +170,13 @@ export default function App() {
           >
             <ChevronRightIcon />
           </IconButton>
-          {/* <SvgIcon fontSize="large">
-            <OrangeLogo />
-          </SvgIcon> */}
-          {/* <img
-            src="./../public/kafka-sonar-white-logo.svg"
-            style={{ margin: 20, width: 120 }}
-          /> */}
-          <img
-            src="./../public/kafka-sonar-white-logo.png"
-            style={{ margin: 20, width: 120 }}
-          />
+          <img src="kafka-sonar-white-logo.png" style={{ width: 115 }} />
           <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerClose}
             sx={{
+              marginLeft: 8,
               ...(!open && { display: 'none' }),
             }}
           >

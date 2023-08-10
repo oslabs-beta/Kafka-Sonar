@@ -19,7 +19,8 @@ export default defineConfig({
     // },
     proxy: {
       '/test': 'http://localhost:3332',
-      '/login/google': 'http://localhost:3332',
+      // following is for a deferred Google OAuth 2.0 PassportJS implementation
+      // '/login/google': 'http://localhost:3332',
     },
   },
 });

@@ -4,13 +4,12 @@ import Grid from '@mui/material/Grid';
 
 import '../index.css';
 
-// NOTE: breakpoint props (xs, sm, md, etc.) do NOT work when flex-direction is column or reverse-column!
-
 export default function ClusterView() {
   return (
     <Fragment>
       {/* Direct child-items of this grid flex column-wise, enabling flex-basis to increase height of those rows */}
       <Grid container gap={1} direction={'column'}>
+        {/* NOTE: breakpoint props (xs, sm, md, etc.) do NOT work when flex-direction is column or reverse-column! */}
         {/* Direct child-items of this grid flex row-wise, enabling use of breakpoint props */}
         <Grid container item gap={1} flexBasis={'21vh'}>
           <Grid item xs sm md>
@@ -55,8 +54,3 @@ export default function ClusterView() {
     </Fragment>
   );
 }
-
-// Following metrics were deprioritized:
-// Messages in per broker: <iframe src="http://localhost:3000/d-solo/e-6AJQOik/kafka-cluster-global-healthcheck?orgId=1&refresh=5s&panelId=37"></iframe>
-// Following metrics we were unable to query using PromQL due to lack of documentation / bandwidth to research:
-// Avg Replication Factor (stat)

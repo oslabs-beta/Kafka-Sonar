@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 // import Select from '@mui/material/Select';
 // import MenuItem from '@mui/material/MenuItem';
 
-import '../assets/kafka-sonar-orange-logo.png';
 // custom hook
 import useInput from '../hooks/useInput';
 // TS types

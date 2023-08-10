@@ -4,13 +4,12 @@ import Grid from '@mui/material/Grid';
 
 import '../index.css';
 
-// NOTE: breakpoint props (xs, sm, md, etc.) do NOT work when flex-direction is column or reverse-column!
-
 export default function PartitionView() {
   return (
     <Fragment>
       {/* Direct child-items of this grid flex column-wise, enabling flex-basis to increase height of those rows */}
       <Grid container gap={1} direction={'column'}>
+        {/* NOTE: breakpoint props (xs, sm, md, etc.) do NOT work when flex-direction is column or reverse-column! */}
         {/* Direct child-items of this grid flex row-wise, enabling use of breakpoint props */}
         <Grid container item gap={1} flexBasis={'21vh'}>
           <Grid item xs sm md>
@@ -36,7 +35,3 @@ export default function PartitionView() {
     </Fragment>
   );
 }
-
-// Following metrics we were unable to query using PromQL due to lack of documentation / bandwidth to research:
-// In-sync Replicas (stat)
-// Out-of-sync Replicas (stat)

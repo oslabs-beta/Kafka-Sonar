@@ -6,7 +6,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import '../assets/kafka-sonar-orange-logo.png';
 // custom hook
 import useInput from '../hooks/useInput';
 // TS types

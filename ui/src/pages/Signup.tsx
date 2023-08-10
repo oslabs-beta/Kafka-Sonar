@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 // import Select from '@mui/material/Select';
 // import MenuItem from '@mui/material/MenuItem';
 
-import '../assets/kafka-sonar-orange-logo.svg';
 // custom hook
 import useInput from '../hooks/useInput';
 // TS types
@@ -89,7 +88,7 @@ export default function Signup(): JSX.Element {
       }}
     >
       <img
-        src="kafka-sonar-orange-logo.svg"
+        src="kafka-sonar-orange-logo.png"
         style={{
           width: 40,
           position: 'relative',

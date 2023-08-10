@@ -1,3 +1,4 @@
+// utility function to write a Grafana datasource file pointing to a cluster's instance of Prometheus
 export default (clusterDir: string) => {
   return (`
 # config file version

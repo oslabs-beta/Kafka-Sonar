@@ -4,10 +4,11 @@ import bodyParser from 'body-parser';
 import api from './routes/api';
 import 'dotenv/config';
 import { storeMetrics } from './metricService';
-import fs from 'fs';
 import { query } from './models/appModel';
 import { format } from 'date-fns';
 import cache from 'memory-cache';
+import pkg from 'fs-extra';
+const { outputFileSync } = pkg;
 
 const app: Express = express();
 
@@ -56,12 +57,10 @@ app.get('/download/:clientId/:clusterId', async (req, res) => {
     console.log(`Writing to file: ${filename} with content size: ${csv.length}`);
     
     // write to /backend/user/<clientId>/
-    const fullPath = `./user/${clientId}/${filename}`;
-    fs.writeFile(fullPath, csv, function (err) { 
-      if (err) throw err;
-      console.log(`File is created successfully at ${new Date()} with path ${fullPath}`);
-      res.download(fullPath);
-    });
+    const fullPath = `./user/${clientId}/metrics/${filename}`;
+    outputFileSync(fullPath, csv);
+    console.log(`File is created successfully at ${new Date()} with path ${fullPath}`);
+    res.download(fullPath);
   } catch (err) {
     console.error(`Error processing download: ${err}`);
     res.status(500).send("Error processing download.");

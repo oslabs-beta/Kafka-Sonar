@@ -1,3 +1,4 @@
+// utilty function to write a Grafana dashboard config with the path correctly pointing towrard the cluster's directory in the user volume
 export default (clusterDir: string) => {
   return (`
   apiVersion: 1

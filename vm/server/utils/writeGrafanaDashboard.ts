@@ -1,3 +1,4 @@
+// utility function to write a grafana dashboard configured to check for the number of brokers in the user's cluster
 export default (numberOfBrokers: String) => {
   return (`
   {

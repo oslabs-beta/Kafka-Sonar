@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import '../assets/kafka-sonar-orange-logo.svg';
+import '../assets/kafka-sonar-orange-logo.png';
 // custom hook
 import useInput from '../hooks/useInput';
 // TS types
@@ -90,7 +90,7 @@ export default function Login(): JSX.Element {
       }}
     >
       <img
-        src="kafka-sonar-orange-logo.svg"
+        src="kafka-sonar-orange-logo.png"
         style={{
           width: 40,
           position: 'relative',

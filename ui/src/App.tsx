@@ -33,7 +33,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SensorsIcon from '@mui/icons-material/Sensors';
 import SensorsOffIcon from '@mui/icons-material/SensorsOff';
 import SvgIcon from '@mui/material/SvgIcon';
-import { ReactComponent as OrangeLogo } from './assets/kafka-sonar-orange-logo.svg';
+// import { ReactComponent as OrangeLogo } from './assets/kafka-sonar-orange-logo.png';
+import OrangeLogo from './assets/kafka-sonar-orange-logo.png';
 
 // TS types
 import { NavTabOption } from './types/types';
@@ -172,12 +173,16 @@ export default function App() {
           >
             <ChevronRightIcon />
           </IconButton>
-          <SvgIcon fontSize="large">
+          {/* <SvgIcon fontSize="large">
             <OrangeLogo />
-          </SvgIcon>
-          <img
+          </SvgIcon> */}
+          {/* <img
             src="./../public/kafka-sonar-white-logo.svg"
-            style={{ margin: 20, width: 75 }}
+            style={{ margin: 20, width: 120 }}
+          /> */}
+          <img
+            src="./../public/kafka-sonar-white-logo.png"
+            style={{ margin: 20, width: 120 }}
           />
           <IconButton
             color="inherit"

@@ -26,6 +26,8 @@ dist-ssr
 # Environment
 .env
 cypress/videos
+workflows
+# When ready to test, move workflows back into .github and delete from .gitignore
 
 # Extra
 ui/Leftover.md

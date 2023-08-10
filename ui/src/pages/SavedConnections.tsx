@@ -382,7 +382,8 @@ export default function SavedConnectionsDataGrid({
         md
         sx={{
           '.header': {
-            backgroundColor: '#ff8c42',
+            // backgroundColor: '#ff8c42',
+            backgroundColor: '#ed6c02',
           },
         }}
       >
@@ -426,6 +427,7 @@ export default function SavedConnectionsDataGrid({
           <ListItemText primary="3. You can run only 1 client at a time. You must disconnect a running client before connecting to another client or deleting the running client from your saved connections." />
           <ListItemText primary="4. You can navigate outside the extension while a client is running. However, if you log out, a running client will be disconnected." />
           <ListItemText primary="5. Downloading metrics will get you up-to-the-minute data, including for a running client." />
+          {/* <ListItemText primary="6. Client authentication credentials are saved but not displayed." /> */}
         </List>
         <Button onClick={connectToSelected} variant="outlined" size="medium">
           CONNECT TO SELECTED CLUSTER

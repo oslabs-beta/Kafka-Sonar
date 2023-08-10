@@ -7,9 +7,9 @@ name: build-tests
 on:
   # key = event, value: array of branches that the workflow will to apply to
   push:
-    branches: ['main']
+    branches: ['main', 'dev']
   pull_request:
-    branches: ['main']
+    branches: ['main', 'dev']
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -30,5 +30,6 @@ jobs:
         # Checkout = a pre-published and reusable Actions workflow which checks out the your repo / latest commit to the GitHub Actions' runner's default working directory (i.e. under $GITHUB_WORKSPACE) so the job can access it.
         uses: actions/checkout@v3
         # value: script to run tests. Single or multi-line. Here, we Docker-compose up a testing container with a flag telling GH to abort if we exit the container.
+        # spin up demo-clusters in another container (docker run command?)
         runs: docker-compose up --abort-on-container-exit
         # runs: docker-compose -f docker-compose.yml up --abort-on-container-exit

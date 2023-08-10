@@ -5,6 +5,6 @@ module.exports = {
   launch: {
     headless: false,
     // By default, the timeout is 30 seconds in puppeteer which is not usually enough time for  code to run. slowMo delays test actions by 35 milliseconds to see every puppeteer action in the browser.
-    slowMo: 30,
+    // slowMo: 30,
   },
 };

@@ -10,9 +10,7 @@
     "preview": "vite preview",
     "frontend": "vite",
     "ui-source": "docker extension dev ui-source kafkasonar/kafkasonar:latest http://localhost:5175",
-    "debug": "docker extension dev debug kafkasonar/kafkasonar:latest",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "debug": "docker extension dev debug kafkasonar/kafkasonar:latest"
   },
   "dependencies": {
     "@docker/docker-mui-theme": "^0.0.11",

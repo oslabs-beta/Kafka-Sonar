@@ -14,8 +14,8 @@ import { DataGrid, GridEventListener, useGridApiRef } from '@mui/x-data-grid';
 import { GridColDef } from '@mui/x-data-grid';
 // TS types
 import {
-  GridRowDef,
   SavedConnectionsProps,
+  GridRowDef,
   UserConnection,
 } from './../types/types';
 // Docker client library
@@ -23,7 +23,7 @@ import { createDockerDesktopClient } from '@docker/extension-api-client';
 import { format } from 'date-fns';
 
 const columns: GridColDef[] = [
-  // Reference https://mui.com/x/react-data-grid/row-definition/#row-identifier: It is not necessary to create a column to display the unique identifier data. The data grid pulls this information directly from the data set itself, not from anything that is displayed on the screen.
+  // Reference https://mui.com/x/react-data-grid/row-definition/#row-identifier: It is not necessary to create a column to display the row id. The data grid pulls this information directly from the data set itself, not from anything that is displayed on the screen.
   {
     field: 'clientId',
     headerName: 'Client ID',

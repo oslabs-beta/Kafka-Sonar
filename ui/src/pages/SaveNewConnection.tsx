@@ -18,9 +18,9 @@ import '../index.css';
 
 // TS types
 import {
-  BrokerInfo,
   ConnectProps,
   ConfigureProps,
+  BrokerInfo,
   NewConnection,
 } from './../types/types';
 
@@ -73,7 +73,7 @@ export default function SaveNewConnectionStepper(): JSX.Element {
   };
 
   // add new broker paper
-  const addBroker = () => {
+  const addBroker: ConfigureProps['addBroker'] = () => {
     setBrokerInfo([
       ...brokerInfo,
       {

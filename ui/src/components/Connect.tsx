@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -54,7 +55,7 @@ export default function Connect({
         type="text"
         id="text"
         value={host}
-        placeholder='localhost'
+        placeholder="localhost"
         onChange={hostOnChange}
         label="Hostname"
         fullWidth
@@ -89,7 +90,7 @@ export default function Connect({
         <InputLabel>Authentication mechanism</InputLabel>
         <Select
           name="mechanisms"
-          // following 3 attrs are needed to persist selected value when user clicks Next and then comes Back
+          // following 3 attrs are needed to persist selected value in state when user clicks Next and then comes Back
           displayEmpty
           renderValue={(value) => value}
           value={auth}

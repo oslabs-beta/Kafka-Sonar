@@ -30,7 +30,8 @@ const columns: GridColDef[] = [
     description: 'Kafka application name',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 130,
+    minWidth: 130,
+    flex: 1,
   },
   {
     field: 'host',
@@ -38,7 +39,8 @@ const columns: GridColDef[] = [
     description: 'Your cluster is found at this host.',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 140,
+    minWidth: 140,
+    flex: 1,
   },
   {
     field: 'port',
@@ -46,7 +48,8 @@ const columns: GridColDef[] = [
     description: 'Your cluster is found at this port.',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 110,
+    minWidth: 110,
+    flex: 1,
   },
   {
     field: 'auth',
@@ -55,7 +58,8 @@ const columns: GridColDef[] = [
       'SASL method to authenticate to the cluster (or not applicable)',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 170,
+    minWidth: 170,
+    flex: 1,
   },
   {
     field: 'network',
@@ -63,7 +67,8 @@ const columns: GridColDef[] = [
     description: 'Your cluster is in this network.',
     headerClassName: 'header',
     headerAlign: 'center',
-    width: 180,
+    minWidth: 180,
+    flex: 1,
   },
 ];
 
@@ -258,13 +263,17 @@ export default function SavedConnectionsDataGrid({
     try {
       // must use fetch to receive res.download
       // downloadResult = await ddClient.extension.vm.service.get(`/download/${selectedClientId}/${selectedRow}`);
-      downloadResult = await fetch(`http://localhost:3332/download/${selectedClientId}/${selectedRow}`);
+      downloadResult = await fetch(
+        `http://localhost:3332/download/${selectedClientId}/${selectedRow}`
+      );
       // log the raw download result for debugging
-      console.log("Download result:", downloadResult);
+      console.log('Download result:', downloadResult);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
       // toast error message
-      ddClient.desktopUI.toast.error(`ERROR downloading metrics for ${selectedClientId}.`);
+      ddClient.desktopUI.toast.error(
+        `ERROR downloading metrics for ${selectedClientId}.`
+      );
       return;
     }
 
@@ -272,9 +281,9 @@ export default function SavedConnectionsDataGrid({
     let blob;
     try {
       blob = await downloadResult.blob();
-      console.log("Blob data:", blob);
+      console.log('Blob data:', blob);
     } catch (blobError) {
-      console.error("Error converting result to blob:", blobError);
+      console.error('Error converting result to blob:', blobError);
       return;
     }
 
@@ -282,16 +291,18 @@ export default function SavedConnectionsDataGrid({
     const link = document.createElement('a');
 
     // get the filename from the Content-Disposition header
-    const contentDisposition = downloadResult.headers.get("content-disposition");
-    let filename = "";
+    const contentDisposition = downloadResult.headers.get(
+      'content-disposition'
+    );
+    let filename = '';
     if (contentDisposition) {
-        const match = contentDisposition.match(/filename="?(.+?)"?(?:;|$)/);
-        if (match) filename = match[1];
+      const match = contentDisposition.match(/filename="?(.+?)"?(?:;|$)/);
+      if (match) filename = match[1];
     }
     // if filename wasn't found in the header or wasn't set, set a default name
     if (!filename) {
-        const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
-        filename = `metrics_table_${currentDateTime}.csv`;
+      const currentDateTime = format(new Date(), 'yyyy-MM-dd_HH-mm-ss');
+      filename = `metrics_table_${currentDateTime}.csv`;
     }
 
     link.href = url;
@@ -371,7 +382,8 @@ export default function SavedConnectionsDataGrid({
         md
         sx={{
           '.header': {
-            backgroundColor: '#ff8c42',
+            // backgroundColor: '#ff8c42',
+            backgroundColor: '#ed6c02',
           },
         }}
       >
@@ -415,6 +427,7 @@ export default function SavedConnectionsDataGrid({
           <ListItemText primary="3. You can run only 1 client at a time. You must disconnect a running client before connecting to another client or deleting the running client from your saved connections." />
           <ListItemText primary="4. You can navigate outside the extension while a client is running. However, if you log out, a running client will be disconnected." />
           <ListItemText primary="5. Downloading metrics will get you up-to-the-minute data, including for a running client." />
+          {/* <ListItemText primary="6. Client authentication credentials are saved but not displayed." /> */}
         </List>
         <Button onClick={connectToSelected} variant="outlined" size="medium">
           CONNECT TO SELECTED CLUSTER

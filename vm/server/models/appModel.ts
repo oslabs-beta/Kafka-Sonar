@@ -16,8 +16,7 @@ const query = (
   params?: any[],
   callback?: (err: Error, result: any) => void
 ): Promise<any> => {
-  // Remove the console.log for production
-  console.log('Executed query: ', text);
+  // console.log('Executed query: ', text);
   return pool.query(text, params, callback);
 };
 

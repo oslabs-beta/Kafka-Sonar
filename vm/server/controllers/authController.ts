@@ -16,6 +16,16 @@ export const signUp = async (req: Request, res: Response) => {
   const account_type = req.body.role;
 
   try {
+    // Check if username exists
+    const existingUser = await query(
+      `SELECT username FROM users WHERE username = $1`,
+      [username]
+    );
+
+    if (existingUser.rows.length > 0) {
+      return res.status(409).json({ message: 'Username already exists' });
+    }
+    
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 

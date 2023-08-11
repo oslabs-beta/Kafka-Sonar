@@ -60,23 +60,36 @@ export default function Signup(): JSX.Element {
       role,
     };
 
-    // POST new user
-    // TS issue to resolve: AuthResult type not working
-    const signupResult: any = await ddClient.extension.vm.service.post(
-      '/api/auth/signup',
-      body
-    );
+    try {
+      // POST new user
+      // TS issue to resolve: AuthResult type not working
+      const signupResult: any = await ddClient.extension.vm.service.post(
+        '/api/auth/signup',
+        body
+      );
 
-    // Error handling TBD: alert user, exit handler
+      // store returned user_id and token in localStorage
+      const { id, token } = signupResult;
+      localStorage.setItem('id', id);
+      localStorage.setItem('token', token);
 
-    // store returned user_id and token in localStorage
-    const { id, token } = signupResult;
-    localStorage.setItem('id', id);
-    localStorage.setItem('token', token);
-    // redirect to SavedConnections page
-    navigate('/saved');
-    // toast success message
-    ddClient.desktopUI.toast.success('SUCCESS! Welcome to Kafka Sonar.');
+      // redirect to SavedConnections page
+      navigate('/saved');
+      // toast success message
+      ddClient.desktopUI.toast.success('SUCCESS! Welcome to Kafka Sonar.');
+    } catch (err) {
+      console.error("Error during signup:", err);
+
+      // If the caught error has a message, display that
+      if (err.message) {
+        const messageValue = JSON.parse(err.message).message
+        alert(messageValue);
+        return;
+      }
+
+      // For any other error, show the generic message
+      alert("An error occurred during signup. Please try again.");
+    }
   };
 
   return (

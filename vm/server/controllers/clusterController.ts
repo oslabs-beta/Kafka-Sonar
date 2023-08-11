@@ -25,6 +25,12 @@ const clusterController = {
       res.locals.cluster_id = response.rows[0].cluster_id;
       return next();
     } catch (err) {
+      const errorCode = (err as any).code;
+      // Check for a unique constraint violation and send a meaningful error
+      if (errorCode === '23505') { 
+        return res.status(400).send({ message: 'Client ID already exists.' });
+      }
+      
       return next({
         log: 'Error occurred in clusterController.postCluster Middleware',
         message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },

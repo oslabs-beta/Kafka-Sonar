@@ -19,7 +19,6 @@ app.use(cors({
   origin: 'http://localhost:5175'
 }));
 
-// Remove for production
 app.use('/api', api);
 
 /**

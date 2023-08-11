@@ -161,23 +161,37 @@ export default function SaveNewConnectionStepper(): JSX.Element {
       brokerInfo,
     };
 
-    const connectionResult = await ddClient.extension.vm.service.post(
-      `/api/clusters/newconnection/${localStorage.getItem('id')}`,
-      body
-    );
+    try {
+      const connectionResult = await ddClient.extension.vm.service.post(
+        `/api/clusters/newconnection/${localStorage.getItem('id')}`,
+        body
+      );
+  
+      // // error handling
+      // if (connectionResult instanceof Error) {
+      //   // toast error message
+      //   ddClient.desktopUI.toast.error('ERROR saving your new connection.');
+      //   // exit handler
+      //   return;
+      // }
+  
+      // redirect to SavedConnections page
+      navigate('/saved');
+      // toast success message
+      ddClient.desktopUI.toast.success('SUCCESS! Your new connection was saved.');
+    } catch (err) {
+      console.error("Error during new connection setup:", err);
 
-    // // error handling
-    // if (connectionResult instanceof Error) {
-    //   // toast error message
-    //   ddClient.desktopUI.toast.error('ERROR saving your new connection.');
-    //   // exit handler
-    //   return;
-    // }
+      // If the caught error has a message, display that
+      if (err.message) {
+        const messageValue = JSON.parse(err.message).message
+        alert(messageValue);
+        return;
+      }
 
-    // redirect to SavedConnections page
-    navigate('/saved');
-    // toast success message
-    ddClient.desktopUI.toast.success('SUCCESS! Your new connection was saved.');
+      // For any other error, show the generic message
+      alert("An error occurred during new connection setup. Please try again.");
+    }
   };
 
   const ColorlibStepLabel = styled(StepLabel)(() => ({

@@ -1,16 +1,16 @@
 CREATE TABLE users (
-	"user_id" serial NOT NULL UNIQUE,
-	"username" varchar(255) NOT NULL,
-	"password" TEXT NOT NULL,
-	"account_type" varchar(255) NOT NULL,
-	CONSTRAINT "users_pk" PRIMARY KEY ("user_id")
+  "user_id" serial NOT NULL UNIQUE,
+  "username" varchar(255) NOT NULL UNIQUE,
+  "password" TEXT NOT NULL,
+  "account_type" varchar(255) NOT NULL,
+  CONSTRAINT "users_pk" PRIMARY KEY ("user_id")
 ) WITH (
   OIDS=FALSE
 );
 
 CREATE TABLE clusters (
 	"cluster_id" serial NOT NULL UNIQUE,
-	"client_id" varchar (255) NOT NULL,
+	"client_id" varchar (255) NOT NULL UNIQUE,
 	"bootstrap_hostname" varchar(255) NOT NULL,
 	"port_number" varchar(255) NOT NULL,
 	"auth_mechanism" varchar (255) NOT NULL,

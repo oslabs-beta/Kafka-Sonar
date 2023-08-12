@@ -32,6 +32,8 @@ import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SensorsIcon from '@mui/icons-material/Sensors';
 import SensorsOffIcon from '@mui/icons-material/SensorsOff';
+import SvgIcon from '@mui/material/SvgIcon';
+import { ReactComponent as WhiteLogo } from './logos/kafka-sonar-white-logo.svg';
 
 // TS types
 import { NavTabOption } from './types/types';
@@ -170,7 +172,9 @@ export default function App() {
           >
             <ChevronRightIcon />
           </IconButton>
-          <img src="kafka-sonar-white-logo.png" style={{ width: 115 }} />
+          <SvgIcon sx={{ fontSize: '115px', margin: '-15px 0' }}>
+            <WhiteLogo />
+          </SvgIcon>
           <IconButton
             color="inherit"
             aria-label="open drawer"

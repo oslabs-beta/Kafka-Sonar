@@ -53,30 +53,34 @@ export default function Login(): JSX.Element {
       password,
     };
 
-    // POST user
-    // TS issue to resolve: AuthResult type not working
-    const loginResult: any = await ddClient.extension.vm.service.post(
-      '/api/auth/login',
-      body
-    );
+    try {
+      // POST user
+      // TS issue to resolve: AuthResult type not working
+      const loginResult: any = await ddClient.extension.vm.service.post(
+        '/api/auth/login',
+        body
+      );
 
-    // KNOWN BUG: Error handling not working
-    // console.log('loginResult', loginResult);
-    // if (loginResult.statusCode === 400) {
-    //   // alert user
-    //   alert(`ERROR: Invalid username or password.`);
-    //   // exit handler
-    //   return;
-    // }
+      // store returned user_id and token in localStorage
+      const { id, token } = loginResult;
+      localStorage.setItem('id', id);
+      localStorage.setItem('token', token);
 
-    // store returned user_id and token in localStorage
-    const { id, token } = loginResult;
-    localStorage.setItem('id', id);
-    localStorage.setItem('token', token);
-    // redirect to SavedConnections page
-    navigate('/saved');
-    // toast success message
-    ddClient.desktopUI.toast.success('SUCCESS! Welcome back.');
+      // redirect to SavedConnections page
+      navigate('/saved');
+
+      // toast success message
+      ddClient.desktopUI.toast.success('SUCCESS! Welcome back.');
+    } catch (err) {
+      // displays error message for the case where the entered username or pw is invalid
+      if (err.message) {
+        const messageValue = JSON.parse(err.message).message;
+        alert(messageValue);
+        return;
+      }
+      // for any other error, show the generic message
+      alert('An error occurred during login. Please try again.');
+    }
   };
 
   return (
@@ -91,10 +95,10 @@ export default function Login(): JSX.Element {
       <img
         src="kafka-sonar-orange-logo.png"
         style={{
-          width: 40,
+          width: 75,
           position: 'relative',
-          left: '25vh',
-          margin: '20px auto',
+          left: '22vh',
+          margin: '20px 0',
         }}
       />
       <Typography component="h1" variant="h5" align="center">

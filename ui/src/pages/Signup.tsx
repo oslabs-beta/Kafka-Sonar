@@ -75,20 +75,18 @@ export default function Signup(): JSX.Element {
 
       // redirect to SavedConnections page
       navigate('/saved');
+
       // toast success message
       ddClient.desktopUI.toast.success('SUCCESS! Welcome to Kafka Sonar.');
     } catch (err) {
-      console.error("Error during signup:", err);
-
-      // If the caught error has a message, display that
+      // displays error message for the case where the entered username already exists in DB
       if (err.message) {
-        const messageValue = JSON.parse(err.message).message
+        const messageValue = JSON.parse(err.message).message;
         alert(messageValue);
         return;
       }
-
-      // For any other error, show the generic message
-      alert("An error occurred during signup. Please try again.");
+      // for any other error, show the generic message
+      alert('An error occurred during signup. Please try again.');
     }
   };
 
@@ -104,9 +102,9 @@ export default function Signup(): JSX.Element {
       <img
         src="kafka-sonar-orange-logo.png"
         style={{
-          width: 40,
+          width: 75,
           position: 'relative',
-          left: '25vh',
+          left: '22vh',
           margin: '20px 0',
         }}
       />

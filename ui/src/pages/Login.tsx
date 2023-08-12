@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 
 // custom hook
 import useInput from '../hooks/useInput';
@@ -29,6 +30,9 @@ export default function Login(): JSX.Element {
     }
   }, []); // runs on component mount
 
+  // instantiate DD client object
+  const ddClient = createDockerDesktopClient();
+
   const verifyUser = async (): Promise<void> => {
     // if username or password are empty strings
     if (!username || !password) {
@@ -45,38 +49,39 @@ export default function Login(): JSX.Element {
       return;
     }
 
-    // instantiate DD client object
-    const ddClient = createDockerDesktopClient();
-
     const body: User = {
       username,
       password,
     };
 
-    // POST user
-    // TS issue to resolve: AuthResult type not working
-    const loginResult: any = await ddClient.extension.vm.service.post(
-      '/api/auth/login',
-      body
-    );
+    try {
+      // POST user
+      // TS issue to resolve: AuthResult type not working
+      const loginResult: any = await ddClient.extension.vm.service.post(
+        '/api/auth/login',
+        body
+      );
 
-    // KNOWN BUG: Error handling not working
-    // console.log('loginResult', loginResult);
-    // if (loginResult.statusCode === 400) {
-    //   // alert user
-    //   alert(`ERROR: Invalid username or password.`);
-    //   // exit handler
-    //   return;
-    // }
+      // store returned user_id and token in localStorage
+      const { id, token } = loginResult;
+      localStorage.setItem('id', id);
+      localStorage.setItem('token', token);
 
-    // store returned user_id and token in localStorage
-    const { id, token } = loginResult;
-    localStorage.setItem('id', id);
-    localStorage.setItem('token', token);
-    // redirect to SavedConnections page
-    navigate('/saved');
-    // toast success message
-    ddClient.desktopUI.toast.success('SUCCESS! Welcome back.');
+      // redirect to SavedConnections page
+      navigate('/saved');
+
+      // toast success message
+      ddClient.desktopUI.toast.success('SUCCESS! Welcome back.');
+    } catch (err) {
+      // displays error message for the case where the entered username or pw is invalid
+      if (err.message) {
+        const messageValue = JSON.parse(err.message).message;
+        alert(messageValue);
+        return;
+      }
+      // for any other error, show the generic message
+      alert('An error occurred during login. Please try again.');
+    }
   };
 
   return (
@@ -85,16 +90,16 @@ export default function Login(): JSX.Element {
       style={{
         width: '60vh',
         padding: 20,
-        margin: '15vh auto',
+        margin: '7vh auto',
       }}
     >
       <img
         src="kafka-sonar-orange-logo.png"
         style={{
-          width: 40,
+          width: 75,
           position: 'relative',
-          left: '25vh',
-          margin: '20px auto',
+          left: '22vh',
+          margin: '20px 0',
         }}
       />
       <Typography component="h1" variant="h5" align="center">
@@ -135,12 +140,33 @@ export default function Login(): JSX.Element {
       >
         Log In
       </Button>
-      <Typography align="center">
+      <Typography align="center" marginBottom={'40px'}>
         <Link to="/signup">No account yet? Sign up</Link>
       </Typography>
-      {/* <Typography align="center">
-        <a href="/login/google">Google OAuth</a>
-      </Typography> */}
+      <Typography fontSize={11} align="center" style={{ margin: '10px auto' }}>
+        <EnhancedEncryptionIcon />
+        <br></br>
+        <strong>Safeguarded & Self-contained!</strong>
+      </Typography>
+      <Typography fontSize={11} align="left" style={{ margin: '0 auto' }}>
+        Your credentials and metrics are securely housed in a containerized DB
+        right on your device. Total control. Zero external transmissions.&nbsp;
+        <br></br>
+        <Button
+          variant="text"
+          sx={{
+            padding: 0,
+            textTransform: 'inherit',
+          }}
+          onClick={() => {
+            ddClient.host.openExternal(
+              'https://github.com/oslabs-beta/Kafka-Sonar'
+            );
+          }}
+        >
+          See the Kafka Sonar docs for more details.
+        </Button>
+      </Typography>
     </Paper>
   );
 }

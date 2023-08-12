@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 
 // custom hook
 import useInput from '../hooks/useInput';
@@ -29,6 +30,9 @@ export default function Login(): JSX.Element {
     }
   }, []); // runs on component mount
 
+  // instantiate DD client object
+  const ddClient = createDockerDesktopClient();
+
   const verifyUser = async (): Promise<void> => {
     // if username or password are empty strings
     if (!username || !password) {
@@ -44,9 +48,6 @@ export default function Login(): JSX.Element {
       alert('Provide a valid username.');
       return;
     }
-
-    // instantiate DD client object
-    const ddClient = createDockerDesktopClient();
 
     const body: User = {
       username,
@@ -89,7 +90,7 @@ export default function Login(): JSX.Element {
       style={{
         width: '60vh',
         padding: 20,
-        margin: '15vh auto',
+        margin: '7vh auto',
       }}
     >
       <img
@@ -139,12 +140,33 @@ export default function Login(): JSX.Element {
       >
         Log In
       </Button>
-      <Typography align="center">
+      <Typography align="center" marginBottom={'40px'}>
         <Link to="/signup">No account yet? Sign up</Link>
       </Typography>
-      {/* <Typography align="center">
-        <a href="/login/google">Google OAuth</a>
-      </Typography> */}
+      <Typography fontSize={11} align="center" style={{ margin: '10px auto' }}>
+        <EnhancedEncryptionIcon />
+        <br></br>
+        <strong>Safeguarded & Self-contained!</strong>
+      </Typography>
+      <Typography fontSize={11} align="left" style={{ margin: '0 auto' }}>
+        Your credentials and metrics are securely housed in a containerized DB
+        right on your device. Total control. Zero external transmissions.&nbsp;
+        <br></br>
+        <Button
+          variant="text"
+          sx={{
+            padding: 0,
+            textTransform: 'inherit',
+          }}
+          onClick={() => {
+            ddClient.host.openExternal(
+              'https://github.com/oslabs-beta/Kafka-Sonar'
+            );
+          }}
+        >
+          See the Kafka Sonar docs for more details.
+        </Button>
+      </Typography>
     </Paper>
   );
 }

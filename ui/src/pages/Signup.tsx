@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 // import InputLabel from '@mui/material/InputLabel';
 // import Select from '@mui/material/Select';
 // import MenuItem from '@mui/material/MenuItem';
+import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 
 // custom hook
 import useInput from '../hooks/useInput';
@@ -33,6 +34,9 @@ export default function Signup(): JSX.Element {
 
   const navigate = useNavigate();
 
+  // instantiate DD client object
+  const ddClient = createDockerDesktopClient();
+
   const postNewUser = async (): Promise<void> => {
     // if username or password are empty strings
     if (!username || !password) {
@@ -50,9 +54,6 @@ export default function Signup(): JSX.Element {
       // exit handler
       return;
     }
-
-    // instantiate DD client object
-    const ddClient = createDockerDesktopClient();
 
     const body: User = {
       username,
@@ -96,7 +97,7 @@ export default function Signup(): JSX.Element {
       style={{
         width: '60vh',
         padding: 20,
-        margin: '15vh auto',
+        margin: '7vh auto',
       }}
     >
       <img
@@ -159,8 +160,32 @@ export default function Signup(): JSX.Element {
       >
         Get Started
       </Button>
-      <Typography align="center">
+      <Typography align="center" marginBottom={'40px'}>
         <Link to="/">Have an account? Log in</Link>
+      </Typography>
+      <Typography fontSize={11} align="center" style={{ margin: '10px auto' }}>
+        <EnhancedEncryptionIcon />
+        <br></br>
+        <strong>Safeguarded & Self-contained!</strong>
+      </Typography>
+      <Typography fontSize={11} align="left" style={{ margin: '0 auto' }}>
+        Your credentials and metrics are securely housed in a containerized DB
+        right on your device. Total control. Zero external transmissions.&nbsp;
+        <br></br>
+        <Button
+          variant="text"
+          sx={{
+            padding: 0,
+            textTransform: 'inherit',
+          }}
+          onClick={() => {
+            ddClient.host.openExternal(
+              'https://github.com/oslabs-beta/Kafka-Sonar'
+            );
+          }}
+        >
+          See the Kafka Sonar docs for more details.
+        </Button>
       </Typography>
     </Paper>
   );

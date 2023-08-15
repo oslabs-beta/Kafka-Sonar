@@ -1,0 +1,44 @@
+{
+  "name": "kafka-sonar",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite & nodemon ../vm/server/server.ts",
+    "build": "tsc -b && vite build",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "frontend": "vite",
+    "ui-source": "docker extension dev ui-source kafkasonar/kafkasonar:latest http://localhost:5175",
+    "debug": "docker extension dev debug kafkasonar/kafkasonar:latest"
+  },
+  "dependencies": {
+    "@docker/docker-mui-theme": "^0.0.11",
+    "@docker/extension-api-client": "^0.3.4",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource-variable/montserrat": "^5.0.3",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.4",
+    "@mui/x-data-grid": "^6.10.0",
+    "date-fns": "^2.30.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.11.2",
+    "ts-node": "^10.9.1",
+    "vite-plugin-svgr": "^3.2.0"
+  },
+  "devDependencies": {
+    "@docker/extension-api-client-types": "^0.3.4",
+    "@types/react": "^18.0.37",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9"
+  }
+}

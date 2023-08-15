@@ -1,0 +1,11 @@
+{
+  "name": "kafka-sonar",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "devDependencies": {
+    "eslint": "^8.38.0"
+  }
+}

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./ui/public/kafka-sonar-orange-logo.png">
+  <img src="./ui/public/kafka-sonar-orange-logo.png" width=150px height=150px>
 </p>
 
 # Kafka-Sonar
@@ -46,14 +46,32 @@ In order to use Kafka Sonar, you must have a containerized Kafka cluster set up 
 
 ### Install
 Install the extension from Docker Desktop, or build it yourself by forking this repo, navigating to the root folder and running
-```make build-extension```
-and
-```make install-extension```
+```console
+make build-extension
+```
+and then
+```console
+make install-extension
+```
 Make sure Docker Desktop is running to build it yourself.
 
 ### Click to Connect
 Once installed, navigate to the extension, create an account, and click Add A Connection. Enter your cluster's information to allow Sonar to connect and begin rendering metrics. It's that simple. Your cluster's configurations for Prometheus and Grafana are stored in a volume to facilitate rapid reconnection.
-
+<div align="center">
+  <img src="./assets/add-connection.gif" width=800px height=400px>
+  <br>
+  Enter your cluster's information
+  <br>
+  <img src="./assets/connect-disconnect.gif" width=800px height=400px>
+  <br>
+  Click to connect and view metrics
+  <br>
+  <img src="./assets/download.gif" width=800px height=400px>
+  <br>
+  Download historic metrics
+  <br>
+</div>
+<br>
 🔒 Your cluster's credentials and metrics are stored exclusively in a containerized database right on your own machine, giving you complete control over your data. Kafka Sonar does not externally transmit any of your sensitive data.
 
 ## Roadmap
@@ -65,29 +83,21 @@ Some features the team is looking to implement in the future include:
 - Add E2E testing with Jest-puppeteer
 - Implement CI workflow with GitHub Actions
 - Add a PassportJS Google OAuth 2.0 login feature
-- Grow the metrics dashboards with additional useful cluster metrics. Here are some metrics we researched that were commonly documented, as a starting point, but that we didn't include for the reasons specified:
-  BROKER:
-    - Messages in per broker (exists, not used) 
-    - Bytes in per broker (not sure if this exists, using bytes in already but not sure if this is an average or total) 
-    - Bytes out per broker (not sure if this exists, using bytes out already but not sure if this is an average or total)
-  - The following were metrics we were unable to query using PromQL due to lack of documentation / bandwidth to research:
-    NETWORK:
-      - Failed producer request rate OR failed req to server / sec (graph)
-      - Broker response rate OR res to consumers / sec (graph)
-      - Failed fetch request rate OR req to server (broker?) / sec (graph)
-    PARTITION:
-      - Avg Replication Factor (stat)
-      - In-sync Replicas (stat)
-      - Out-of-sync Replicas (stat)
-  - The following were metrics that didn't work while running our demo cluster:
-    NETWORK: 
-      - Requests in-flight (awaiting responses) (graph)
-    TOPIC:
-      - Messages in per topic
-      - Bytes in per topic
-      - Bytes out per topic
-    RESOURCE:
-      - Time spend in GC (garbage collection)
+- Grow the metrics dashboards with additional useful cluster metrics:
+  - Messages in per broker 
+  - Bytes in per broker
+  - Bytes out per broker
+  - Messages in per topic
+  - Bytes in per topic
+  - Bytes out per topic
+  - Avg Replication Factor
+  - In-sync Replicas
+  - Out-of-sync Replicas
+  - Failed producer request rate OR failed req to server / sec
+  - Broker response rate OR res to consumers / sec
+  - Failed fetch request rate OR req to broker / sec
+  - Requests in-flight (awaiting responses)
+  - Time spend in Garbage Collection
 
 ## Contributors
 - Michael Way | [Github](https://github.com/mjsway) | [Linkedin](https://www.linkedin.com/in/michaeljway/)

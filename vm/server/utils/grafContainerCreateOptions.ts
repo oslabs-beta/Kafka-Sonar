@@ -1,4 +1,4 @@
-import { ContainerCreateOptions } from "dockerode";
+import { ContainerCreateOptions } from 'dockerode';
 
 // utility function creates and returns an object which Dockerode uses to create a Grafana container
 export default (network: string, clusterDir: string) => {
@@ -10,16 +10,16 @@ export default (network: string, clusterDir: string) => {
     Cmd: [''],
     ExposedPorts: { ['3000/tcp']: {} },
     HostConfig: {
-      VolumesFrom: ['kafka-sonar:rw'],
+      VolumesFrom: ['kafkasonar:rw'],
       PortBindings: {
-        "3000/tcp": [ { HostPort: "3000"} ]
+        '3000/tcp': [{ HostPort: '3000' }],
       },
-      AutoRemove: false
+      AutoRemove: false,
     },
     NetworkingConfig: {
       EndpointsConfig: {
         [network]: { Aliases: [`${network}`] },
-      }
+      },
     },
     Env: [
       `GF_PATHS_DATA=/backend/user/${clusterDir}/configs/grafana/dashboards`,
@@ -28,7 +28,7 @@ export default (network: string, clusterDir: string) => {
       'CORS_ALLOW_ORIGIN=*',
       'GF_AUTH_ANONYMOUS_ENABLED=true',
       'GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer',
-    ]
-  }
+    ],
+  };
   return grafContainerCreateOpts;
-}
+};

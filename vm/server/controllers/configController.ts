@@ -12,17 +12,17 @@ const configController = {
   configPrometheus: async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
-    const { 
-      client, 
-      host, 
-      port, 
-      auth, 
-      username, 
-      password, 
-      network, 
-      brokerInfo 
+    const {
+      client,
+      host,
+      port,
+      auth,
+      username,
+      password,
+      network,
+      brokerInfo,
     } = req.body;
     // rename client semantically since it is used as the name of the cluster's directory
     const clusterDir = client;
@@ -37,22 +37,25 @@ const configController = {
       [ { broker: number, port: string, host: string }, ...]
     */
     // create prometheus targets based on jmxPorts
-    const targets = brokerInfo.map(jmxObj => {
+    const targets = brokerInfo.map((jmxObj) => {
       const { host, port } = jmxObj;
       return `${host}:${port}`;
     });
     // insert targets into a custom yml
     const prometheusConfigYml = writePrometheusConfig(targets);
-    // convert to buffer 
+    // convert to buffer
     const configBuffer = writeBuffer(prometheusConfigYml);
     try {
       // we are currently in backend; want to write to backend/user/configs/prometheus
-      outputFileSync(`./user/${clusterDir}/configs/prometheus/prometheus.yml`, configBuffer);
+      outputFileSync(
+        `./user/${clusterDir}/configs/prometheus/prometheus.yml`,
+        configBuffer
+      );
       return next();
     } catch (err) {
       return next({
         log: 'Error occurred in configController.configPrometheus Middleware',
-        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
   },
@@ -64,28 +67,40 @@ const configController = {
     req: Request,
     res: Response,
     next: NextFunction
-    ): Promise<void> => {
-      // get the number of brokers from previous middleware
-      const { numberOfBrokers, clusterDir } = res.locals;
-      // write the custom dashboard and convert it into a buffer
-      const grafanaDashboardJson = writeGrafanaDashboard(numberOfBrokers);
-      const dashboardBuffer = writeBuffer(grafanaDashboardJson);
-      try {
-        // write the custom dashboard
-        outputFileSync(`./user/${clusterDir}/configs/grafana/dashboards/health.json`, dashboardBuffer);
-        // copy all static grafana files into this specific cluster's directory
-        // first copy over static dashboards
-        copySync(`./static/configs/grafana/dashboards/brokers_jvm_os.json`, `./user/${clusterDir}/configs/grafana/dashboards/brokers_jvm_os.json`);
-        copySync(`./static/configs/grafana/dashboards/performance.json`, `./user/${clusterDir}/configs/grafana/dashboards/performance.json`);
-        // copy over the grafana.ini to allow for the embedding of iframes on the ui
-        copySync(`./static/configs/grafana/grafana.ini`, `./user/${clusterDir}/configs/grafana/grafana.ini`)
-        return next();
-      } catch (err) {
-        return next({
-          log: 'Error occurred in configController.writeGrafanaDashboard Middleware',
-          message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
-        });
-      }
+  ): Promise<void> => {
+    // get the number of brokers from previous middleware
+    const { numberOfBrokers, clusterDir } = res.locals;
+    // write the custom dashboard and convert it into a buffer
+    const grafanaDashboardJson = writeGrafanaDashboard(numberOfBrokers);
+    const dashboardBuffer = writeBuffer(grafanaDashboardJson);
+    try {
+      // write the custom dashboard
+      outputFileSync(
+        `./user/${clusterDir}/configs/grafana/dashboards/health.json`,
+        dashboardBuffer
+      );
+      // copy all static grafana files into this specific cluster's directory
+      // first copy over static dashboards
+      copySync(
+        `./static/configs/grafana/dashboards/brokers_jvm_os.json`,
+        `./user/${clusterDir}/configs/grafana/dashboards/brokers_jvm_os.json`
+      );
+      copySync(
+        `./static/configs/grafana/dashboards/performance.json`,
+        `./user/${clusterDir}/configs/grafana/dashboards/performance.json`
+      );
+      // copy over the grafana.ini to allow for the embedding of iframes on the ui
+      copySync(
+        `./static/configs/grafana/grafana.ini`,
+        `./user/${clusterDir}/configs/grafana/grafana.ini`
+      );
+      return next();
+    } catch (err) {
+      return next({
+        log: 'Error occurred in configController.writeGrafanaDashboard Middleware',
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      });
+    }
   },
   /*
    writeGrafanaDashboardConfig: write a custom grafana dashboard config to store it in the user volume under the
@@ -103,12 +118,15 @@ const configController = {
     const grafDashboardConfigBuffer = writeBuffer(grafDashboardConfigYml);
     try {
       // store it in the user volume under the cluster's directory
-      outputFileSync(`./user/${clusterDir}/configs/grafana/provisioning/dashboards/kafka-sonar.yml`, grafDashboardConfigBuffer);
+      outputFileSync(
+        `./user/${clusterDir}/configs/grafana/provisioning/dashboards/kafkasonar.yml`,
+        grafDashboardConfigBuffer
+      );
       return next();
     } catch (err) {
       return next({
         log: 'Error occurred in configController.writeGrafanaDashboardConfig Middleware',
-        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
   },
@@ -128,15 +146,18 @@ const configController = {
     const grafDatasourceBuffer = writeBuffer(grafDatasourceYml);
     try {
       // store it in the user volume under the cluster's directory
-      outputFileSync(`./user/${clusterDir}/configs/grafana/provisioning/datasources/datasource.yml`, grafDatasourceBuffer);
+      outputFileSync(
+        `./user/${clusterDir}/configs/grafana/provisioning/datasources/datasource.yml`,
+        grafDatasourceBuffer
+      );
       return next();
     } catch (err) {
       return next({
         log: 'Error occurred in configController.writeGrafanaDatasource Middleware',
-        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err))}
+        message: { err: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       });
     }
-  }
+  },
 };
 
 export default configController;

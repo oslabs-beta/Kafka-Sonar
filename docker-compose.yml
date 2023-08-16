@@ -1,18 +1,14 @@
-# Use the Docker socket from the extension backend:
-# https://docs.docker.com/desktop/extensions-sdk/guides/use-docker-socket-from-backend/
 services:
-  kafka-sonar:
+  kafkasonar:
     image: ${DESKTOP_PLUGIN_IMAGE}
-    container_name: kafka-sonar
+    container_name: kafkasonar
     networks:
-      - kafka-sonar
+      - kafkasonar
     ports:
-      # Expose port 3332 to the host so that you can see metrics on localhost:3332
-      # - 5175:5175
       - 3332:3332
     volumes:
-    # create named volume which is mapped to the /user directory in the extension container
-    # this /user directory is copied into the extension container in the Dockerfile 
+      # create named volume which is mapped to the backend/user directory in the extension container
+      # this /user directory is copied into the extension container in the Dockerfile
       - user:/backend/user
       - /var/run/docker.sock.raw:/var/run/docker.sock
 
@@ -20,7 +16,7 @@ services:
     image: kafkasonar/kafkasonar-tsdb:latest
     container_name: timescaledb
     networks:
-      - kafka-sonar
+      - kafkasonar
     ports:
       - 5432:5432
     volumes:
@@ -31,6 +27,6 @@ volumes:
   timescaledb-data:
 
 networks:
-  kafka-sonar:
+  kafkasonar:
     driver: bridge
-    name: kafka-sonar
+    name: kafkasonar

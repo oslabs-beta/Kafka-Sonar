@@ -21,19 +21,20 @@ RUN --mount=type=cache,target=/usr/src/app/.npm \
 COPY ui /ui
 RUN npm run build
 
-# copy from the above what we needed (backend service, frontend assets)
+
 FROM --platform=$BUILDPLATFORM node:19.6-alpine3.16
 LABEL org.opencontainers.image.title="Kafka Sonar" \
-    org.opencontainers.image.description="One stop shop for Kafka Cluster Monitoring" \
+    org.opencontainers.image.description="The one-stop shop Docker Desktop Extension for seamless Kafka cluster monitoring and troubleshooting." \
     org.opencontainers.image.vendor="Kafka Sonar" \
-    com.docker.desktop.extension.api.version="0.1.0" \
-    com.docker.extension.screenshots="" \
-    com.docker.desktop.extension.icon="" \
-    com.docker.extension.detailed-description="" \
-    com.docker.extension.publisher-url="" \
-    com.docker.extension.additional-urls="" \
-    com.docker.extension.categories="" \
-    com.docker.extension.changelog=""
+    com.docker.desktop.extension.api.version="0.3.4" \
+    com.docker.desktop.extension.icon="https://raw.githubusercontent.com/oslabs-beta/Kafka-Sonar/dev/.github/images/kafka-sonar-orange-logo.png" \
+    com.docker.extension.screenshots='[{"alt": "First step to connect to cluster", "url": "https://raw.githubusercontent.com/oslabs-beta/Kafka-Sonar/dev/.github/images/add1.png"}, {"alt": "Second step to connect to cluster", "url": "https://raw.githubusercontent.com/oslabs-beta/Kafka-Sonar/dev/.github/images/add2.png"}, {"alt": "View metrics for connected cluster", "url": "https://raw.githubusercontent.com/oslabs-beta/Kafka-Sonar/dev/.github/images/connected.png"}, {"alt": "Grid view of saved cluster connections", "url": "https://raw.githubusercontent.com/oslabs-beta/Kafka-Sonar/dev/.github/images/saved.png"}]' \
+    com.docker.extension.detailed-description="<br>Kafka Sonar is the first-of-its-kind Docker Desktop Extension aimed at enhancing the Kafka developer experience. For developers monitoring or testing their Kafka clusters, Sonar offers an at-a-glance overview of cluster health with 20 essential metrics, and archives those metrics for postmortem retrieval and analysis. Sonar provides a transparent, no-code configuration solution to your Kafka cluster monitoring needs, all in Docker Desktop. It's as simple as entering your cluster information and clicking to connect." \
+    com.docker.extension.publisher-url="https://www.kafkasonar.io/" \
+    com.docker.extension.additional-urls='[{"title":"Documentation","url":"https://github.com/oslabs-beta/Kafka-Sonar"}]' \
+    com.docker.extension.changelog="v1.0.0 Launch" \
+    com.docker.extension.account-info="" \
+    com.docker.extension.categories="testing-tools, utility-tools"
 
 COPY docker-compose.yml .
 COPY metadata.json .

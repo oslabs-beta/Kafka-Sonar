@@ -76,7 +76,8 @@ export default function Login(): JSX.Element {
       // displays error message for the case where the entered username or pw is invalid
       if (err.message) {
         const messageValue = JSON.parse(err.message).message;
-        alert(messageValue);
+        const errorValue = JSON.parse(err.message).error;
+        alert(messageValue + ": " + errorValue);
         return;
       }
       // for any other error, show the generic message

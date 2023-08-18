@@ -184,8 +184,9 @@ export default function SaveNewConnectionStepper(): JSX.Element {
 
       // If the caught error has a message, display that
       if (err.message) {
-        const messageValue = JSON.parse(err.message).message
-        alert(messageValue);
+        const messageValue = JSON.parse(err.message).message;
+        const errorValue = JSON.parse(err.message).error;
+        alert(messageValue + ": " + errorValue);
         return;
       }
 
